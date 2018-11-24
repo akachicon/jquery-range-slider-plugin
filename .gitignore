@@ -1,0 +1,13 @@
+# Node build artifacts
+node_modules
+
+# Logs
+npm-debug.log
+bundle-report.html
+
+# Local development
+.idea
+
+# Misc
+*.txt
+dist/*
