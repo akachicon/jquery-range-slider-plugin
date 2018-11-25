@@ -8,7 +8,7 @@ const __PROD__ = project.env === 'production';
 
 const postCssPlugins = __PROD__ ? [
   require('autoprefixer')({}),
-  require('cssnano')()
+  require('cssnano')({})
 ] : [];
 /* eslint-enable */
 
@@ -23,7 +23,7 @@ module.exports = {
     path: inProject(project.outDir)
   },
   resolve: {
-    extensions: ['*', '.js', '.css'] // TODO: add less | scss
+    extensions: ['*', '.js', '.css', '.scss']
   },
   module: {
     rules: [
@@ -48,7 +48,7 @@ module.exports = {
         ]
       },
       {
-        test: /\.css$/,
+        test: /\.(css|scss)$/,
         use: [
           {
             loader: 'style-loader',
@@ -61,21 +61,29 @@ module.exports = {
             loader: 'css-loader',
             options: {
               localIdentName: `${project.main.production}--[hash:base64:10]`,
+              modules: true,
               importLoaders: 1,
-              modules: true
             }
           },
+          'resolve-url-loader', // sourceMap option must be used in following loaders in order to get this loader to work
           {
             loader: 'postcss-loader',
             options: {
               ident: 'postcss',
-              plugins: postCssPlugins
+              plugins: postCssPlugins,
+              sourceMap: true
+            }
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true
             }
           }
         ]
       },
       {
-        test: /\.(svg|woff|woff2)$/,
+        test: /\.(jpg|png|svg|woff|woff2)$/,
         loader: 'url-loader',
         options: {
           limit: 8192

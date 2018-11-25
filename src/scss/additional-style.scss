@@ -1,0 +1,13 @@
+$width: 25em;
+
+.main {
+  //background: orangered;
+  background-image: url('../app-logo.png');
+  height: 100px;
+}
+
+div {
+  @if 1 + 1 == 2 { border: 1px solid;  }
+  @if 5 < 3      { border: 2px dotted; }
+  @if null       { border: 3px double; }
+}

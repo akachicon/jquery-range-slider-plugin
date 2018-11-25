@@ -1,6 +1,6 @@
 // eslint-disable-next-line
 import jQuery from 'jquery';
-import style from './style.css';
+import style from './style.scss';
 
 const div = document.createElement('div');
 document.body.appendChild(div);

@@ -1,0 +1,14 @@
+@import "scss/additional-style";
+
+body {
+  background: cadetblue;
+  .main {
+    width: $width;
+  }
+}
+
+/* useless comment */
+
+.submain {
+  display: flex;
+}
