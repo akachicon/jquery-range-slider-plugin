@@ -62,7 +62,7 @@ module.exports = {
             options: {
               localIdentName: `${project.main.production}--[hash:base64:10]`,
               modules: true,
-              importLoaders: 1,
+              importLoaders: 2,
             }
           },
           'resolve-url-loader', // sourceMap option must be used in following loaders in order to get this loader to work
@@ -83,7 +83,7 @@ module.exports = {
         ]
       },
       {
-        test: /\.(jpg|png|svg|woff|woff2)$/,
+        test: /\.(jpg|png|svg|woff|woff2|otf)$/,
         loader: 'url-loader',
         options: {
           limit: 8192

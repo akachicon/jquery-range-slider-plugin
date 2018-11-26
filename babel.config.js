@@ -1,6 +1,11 @@
 module.exports = (api) => {
+  /* eslint-disable */
+
   // const __DEV__ = api.env('development');
   // const __PROD__ = api.env('production');
+  const __TEST__ = api.env('test');
+
+  /* eslint-enable */
 
   api.cache.forever();
 
@@ -10,7 +15,7 @@ module.exports = (api) => {
         '@babel/plugin-transform-runtime',
         {
           regenerator: false,
-          useESModules: true
+          useESModules: !__TEST__
         }
       ]
     ],
@@ -18,9 +23,9 @@ module.exports = (api) => {
       [
         '@babel/preset-env',
         {
-          modules: false,
+          modules: __TEST__ ? 'commonjs' : false,
           useBuiltIns: 'usage',
-          debug:  true
+          debug: !__TEST__
           // forceAllTransforms: __PROD__  // in case of using UglifyJS
         }
       ]

@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 import jQuery from 'jquery';
 import './range-slider-plugin';
 import style from './style.scss';
