@@ -1,14 +1,87 @@
-@import "scss/additional-style";
+$thumbDiameter: 15px;
+$trackThickness: 6px;
 
-body {
-  background: cadetblue;
-  .main {
-    width: $width;
-  }
+.main {
+  width: 200px;
+  height: 400px;
+  margin: 0;
+  background: #b2eeb0;
 }
 
-/* useless comment */
+.rangeSliderContainer {
+  box-sizing: border-box !important;
+  padding: ($thumbDiameter - $trackThickness) / 2;
+  position: relative;
 
-.submain {
-  display: flex;
+  background: coral;
+
+  .track {
+    border-radius: $trackThickness;
+    position: relative;
+
+    background: darkslateblue;
+
+    &:after {
+      content: '';
+      display: block;
+      width: $trackThickness;
+      height: $trackThickness;
+      position: absolute;
+
+      background: blue;
+    }
+  }
+
+  .thumb {
+    border-radius: 50%;
+    width: $thumbDiameter;
+    height: $thumbDiameter;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+
+    background: green;
+  }
+
+  &.horizontal {
+    padding-right: ($thumbDiameter + $trackThickness) / 2;
+
+    .track {
+      height: $trackThickness;
+      border: {
+        top-right-radius: 0;
+        bottom-right-radius: 0;
+      }
+
+      &:after {
+        right: -$trackThickness;
+        border: {
+          top-right-radius: $trackThickness;
+          bottom-right-radius: $trackThickness;
+        }
+      }
+    }
+  }
+
+  &.vertical {
+    padding-bottom: ($thumbDiameter + $trackThickness) / 2;
+
+    .track {
+      height: 100%;
+      width: $trackThickness;
+      border: {
+        bottom-right-radius: 0;
+        bottom-left-radius: 0;
+      }
+
+      &:after {
+        bottom: -$trackThickness;
+        border: {
+          bottom-right-radius: $trackThickness;
+          bottom-left-radius: $trackThickness;
+        }
+      }
+    }
+  }
 }

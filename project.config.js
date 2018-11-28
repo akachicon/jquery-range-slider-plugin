@@ -1,3 +1,4 @@
+const path = require('path');
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 module.exports = {
@@ -9,7 +10,7 @@ module.exports = {
   srcDir: 'src',
   /** The file name of the application's entry point */
   main: {
-    development: 'dev-env',
+    development: path.join('dev', 'dev-env'),
     production: 'range-slider-plugin'
   },
   /** The file name of the application's bootstrap */
@@ -27,7 +28,7 @@ module.exports = {
   /** An html related data (basically supposed for WebpackHtmlPlugin) */
   html: {
     title: 'jQuery slider',
-    template: 'index.html', // relative to srcDir
+    template: path.join('dev', 'index.html'), // relative to srcDir
     // templateParameters: {}
   },
   dev: {

@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const project = require('../project.config');
 const { inProject, inProjectSrc } = require('../utils');
@@ -61,8 +62,8 @@ module.exports = {
             loader: 'css-loader',
             options: {
               localIdentName: `${project.main.production}--[hash:base64:10]`,
-              modules: true,
-              importLoaders: 2,
+              // modules: true,
+              importLoaders: 2
             }
           },
           'resolve-url-loader', // sourceMap option must be used in following loaders in order to get this loader to work
@@ -102,5 +103,8 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(['dist'], { root: project.basePath }),
+    new webpack.DefinePlugin(Object.assign({
+      'process.env': { NODE_ENV: JSON.stringify(project.env) },
+    }, project.globals))
   ]
 };
