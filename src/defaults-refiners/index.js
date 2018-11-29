@@ -1,24 +1,38 @@
-import { minMax, step, orientation } from './refiners';
+import {
+  minMax,
+  step,
+  orientation,
+  value,
+  values,
+  marks
+} from './refiners';
+
+// Some checks should be performed on top of others, e. g.
+// we cannot check value unless we have checked minMax
+// thus, refiners are arranged in an array
 
 const refiners = [
   minMax,
   step,
-  orientation
+  orientation,
+  value,
+  values,
+  marks
 ];
 
-export default (incomingDefaults, currentDefaults) => {
-  let refinedIncomingDefaults = {};
-
-  refiners.forEach((refine) => {
+export default (incomingDefaults, currentDefaults) => (
+  refiners.reduce((refinedIncomingDefaults, refine) => {
     const newProps = refine(incomingDefaults, currentDefaults);
 
-    if (!newProps) return;
+    if (!newProps) {
+      return refinedIncomingDefaults;
+    }
 
-    refinedIncomingDefaults = {
-      ...refinedIncomingDefaults,
-      ...newProps
-    };
-  });
+    Object.assign(
+      refinedIncomingDefaults, newProps
+    );
 
-  return refinedIncomingDefaults;
-};
+    // eslint-disable-next-line consistent-return
+    return refinedIncomingDefaults;
+  }, {})
+);

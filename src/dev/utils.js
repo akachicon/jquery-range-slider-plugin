@@ -1,5 +1,5 @@
-export const error = (message) => {
+export const warn = (message) => {
   if (process.env.NODE_ENV === 'production') return;
 
-  throw new Error(`jQuery.rangeSlider: ${message}`);
+  console.log(`jQuery.rangeSlider: ${message}`);
 };

@@ -8,18 +8,19 @@ let defaults = {
   max: 100,
   step: 1,
   range: false,
-  orientation: 'horizontal',
+  hint: false,
+  orientation: 'h',
   value: 50,
   values: [30, 70],
   marks: {
     0: '0',
-    100: '100'
+    50: 'default_mark',
+    100: '100_super'
   }
 };
 
 (($) => {
-  /* eslint-disable */
-
+  // eslint-disable-next-line no-param-reassign
   $.fn.rangeSlider = function (options) {
     rangeSlider.call(this, defaults, options);
   };
@@ -35,9 +36,7 @@ let defaults = {
     },
 
     get() {
-      return $.extend({}, defaults);  // to prevent changing of the defaults from the outside code
+      return $.extend({}, defaults); // to prevent changing of the defaults from the outside code
     }
   });
-
-  /* eslint-enable */
 })(jQuery);
