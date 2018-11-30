@@ -1,4 +1,4 @@
-// eslint-disable-next-line
+// eslint-disable-next-line import/no-extraneous-dependencies
 import jQuery from 'jquery';
 import rangeSlider from './range-slider';
 import refineIncomingDefaults from './defaults-refiners';

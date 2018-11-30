@@ -55,7 +55,9 @@ export const value = (
   let checker;
 
   if (typeof next.value !== 'number') {
-    warn(`"${warnField}" must be a number!`);
+    if (value in next) {
+      warn(`"${warnField}" must be a number!`);
+    }
 
     checker = { ...next, ...current };
   } else {

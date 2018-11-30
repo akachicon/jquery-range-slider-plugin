@@ -1,4 +1,4 @@
-// eslint-disable-next-line
+// eslint-disable-next-line import/no-extraneous-dependencies
 import $ from 'jquery';
 import '../range-slider-plugin';
 
