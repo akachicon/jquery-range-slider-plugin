@@ -32,7 +32,6 @@ export default (incomingDefaults, currentDefaults) => (
       refinedIncomingDefaults, newProps
     );
 
-    // eslint-disable-next-line consistent-return
     return refinedIncomingDefaults;
   }, {})
 );

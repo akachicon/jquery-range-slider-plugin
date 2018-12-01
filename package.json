@@ -2,7 +2,7 @@
   "name": "wp-react-boilerplate",
   "version": "1.0.0",
   "description": "",
-  "browserslist": "Chrome 5",
+  "browserslist": "Chrome 59",
   "main": "dist/index.js",
   "scripts": {
     "build:prod": "cross-env NODE_ENV=production webpack --config \"./webpack-config/webpack.config.prod.js\"",

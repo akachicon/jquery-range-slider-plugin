@@ -1,23 +1,27 @@
-import { warn } from '../dev/utils';
+// These functions never change any existing data,
+// but may pass it to their results
 
 export const minMax = (
   { min: newMin, max: newMax },
   { min, max }
 ) => {
   const current = { min, max };
-  const next = { min: newMin, max: newMax };
-  const checker = { ...current, ...next };
+  const next = {};
 
-  if (typeof checker.min !== 'number'
-      || typeof checker.max !== 'number') {
-    warn('Incorrect types for "min"/"max"!');
+  if (typeof newMin === 'number') {
+    next.min = newMin;
+  }
+  if (typeof newMax === 'number') {
+    next.max = newMax;
+  }
 
+  if (!next.min && !next.max) {
     return null;
   }
 
-  if (checker.min > checker.max) {
-    warn('"min" must be less than or equal to "max"!');
+  const checker = { ...current, ...next };
 
+  if (checker.min > checker.max) {
     return null;
   }
 
@@ -26,8 +30,6 @@ export const minMax = (
 
 export const step = ({ step: st }) => {
   if (typeof st !== 'number' || st <= 0) {
-    warn('"step" must be a positive number!');
-
     return null;
   }
 
@@ -36,8 +38,6 @@ export const step = ({ step: st }) => {
 
 export const orientation = ({ orientation: or }) => {
   if (or !== 'h' && or !== 'v') {
-    warn('"orientation" must have a value of "h" or "v"!');
-
     return null;
   }
 
@@ -46,53 +46,30 @@ export const orientation = ({ orientation: or }) => {
 
 export const value = (
   { value: newVal, min, max }, // must already contain checked min/max
-  { value: val },
-  warnField = 'value'
+  { value: val }
 ) => {
-  const current = { value: val };
-  const next = { min, max, value: newVal };
+  let checker = val;
 
-  let checker;
-
-  if (typeof next.value !== 'number') {
-    if (value in next) {
-      warn(`"${warnField}" must be a number!`);
-    }
-
-    checker = { ...next, ...current };
-  } else {
-    checker = { ...current, ...next };
+  if (typeof newVal === 'number') {
+    checker = newVal;
+  }
+  if (checker > max) {
+    checker = max;
+  }
+  if (checker < min) {
+    checker = min;
   }
 
-  if (checker.value < checker.min
-      || checker.value > checker.max) {
-    if (typeof next.value === 'number') {
-      warn(`"${warnField}" must be in range [min, max]!`);
-
-      checker.value = current.value;
-    }
-
-    if (checker.value > checker.max) {
-      checker.value = checker.max;
-    }
-
-    if (checker.value < checker.min) {
-      checker.value = checker.min;
-    }
-  }
-
-  return { value: checker.value };
+  return { value: checker };
 };
 
 export const values = (
   { values: newVals, min, max }, // must already contain checked min/max
   { values: vals }
 ) => {
-  let next = newVals;
+  let next;
 
   if (newVals instanceof Array === false) {
-    warn('"values" must be an array!');
-
     next = new Array(2);
   }
 
@@ -100,8 +77,7 @@ export const values = (
     values: [0, 1].map(i => (
       value(
         { value: next[i], min, max },
-        { value: vals[i] },
-        `values[${i}]`
+        { value: vals[i] }
       ).value
     ))
   };
@@ -128,8 +104,6 @@ export const marks = (
   };
 
   if (newMks instanceof Object === false) {
-    warn('"marks" must be an object!');
-
     return { marks: filterMarks(mks) };
   }
 

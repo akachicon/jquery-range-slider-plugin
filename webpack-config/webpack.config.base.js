@@ -103,8 +103,6 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(['dist'], { root: project.basePath }),
-    new webpack.DefinePlugin(Object.assign({
-      'process.env': { NODE_ENV: JSON.stringify(project.env) },
-    }, project.globals))
+    new webpack.DefinePlugin(project.globals)
   ]
 };

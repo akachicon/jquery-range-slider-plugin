@@ -4,43 +4,100 @@ import Publisher from './publisher';
 import refineIncomingDefaults from './defaults-refiners';
 import * as refiners from './defaults-refiners/refiners';
 
-class Model extends Publisher {
-  constructor(options) {
+export default class Model extends Publisher {
+  constructor(defaults, options) {
     super();
 
-    const defaults = {
-      min: 0,
-      max: 100,
-      step: 5,
-      range: false,
-      hint: false,
-      orientation: 'h',
-      value: 50,
-      values: [30, 70],
-      marks: {
-        0: 'zero',
-        // 60: { super: 'svg' },
-        100: '100'
-      }
+    this.state = defaults; // we can use this because updateAll will perform deep copy
+    this.updateAll(options);
+    this._defineStateAccessDescriptors();
+
+    this._updateStateField = this._updateStateField.bind(this); // TODO: consider 'bindThis' syntax
+  }
+
+  _defineStateAccessDescriptors() {
+    this.__state = this.state;
+    delete this.state;
+
+    const that = this;
+
+    const defineStatePropsDescriptors = (stateObject) => {
+      Object.keys(stateObject).forEach(key => (
+        Object.defineProperty(stateObject, key, {
+          set(newVal) {
+            if (key === 'enabled' && newVal) {
+              that.__state.enabled = true;
+
+              return;
+            }
+            if (!that.__state.enabled) return;
+
+            that.__state[key] = newVal;
+          },
+
+          get() {
+            return that.__state[key];
+          }
+        })
+      ));
     };
 
-    // TODO: switch to some lib instead of $.extend utility for production
-    this.state = $.extend({}, { // to prevent changing of the defaults from the options object
-      ...defaults,
-      ...refineIncomingDefaults(options, defaults)
+    Object.defineProperty(that, 'state', {
+      set(newState) {
+        if (!that.__state.enabled) return;
+
+        that.__state = $.extend({}, newState); // TODO: deep copy
+        defineStatePropsDescriptors(newState);
+        that._state = newState;
+      },
+
+      get() {
+        return that._state;
+      }
     });
+
+    that._state = $.extend({}, that.__state); // TODO: deep copy
+    defineStatePropsDescriptors(that._state);
+  }
+
+  _updateStateField(field, refiner, update) {
+    const { state } = this;
+    const newVal = refiner(
+      {
+        ...state,
+        [field]: update
+      }, state
+    );
+
+    if (newVal === null) return;
+
+    state[field] = newVal[field];
+
+    return true;
+  }
+
+  updateAll(options = {}) {
+    const { state, _publish } = this;
+
+    // TODO: switch to some lib instead of $.extend utility for production
+    // deep copy to prevent changing of the defaults from the options object
+    // e. g. for nested objects in the marks
+
+    this.state = $.extend({}, {
+      ...state,
+      ...refineIncomingDefaults(options, state)
+    });
+
+    _publish('globalUpdate', this.getState());
   }
 
   updateValue(val) {
-    const { state, publish } = this;
+    const { state, _publish, _updateStateField } = this;
+    const update = _updateStateField('value', refiners.value, val);
 
-    const { value: newVal } = refiners.value({
-      value: val,
-      min: state.min,
-      max: state.max,
-    }, state);
+    if (!update) return;
 
-    publish('valueUpdate', newVal);
+    _publish('valueUpdate', state.value);
   }
 
   updateValues() {
@@ -67,21 +124,21 @@ class Model extends Publisher {
 
   }
 
-  updateAll() {
-
-  }
-
   enable() {
-
+    this.state.enabled = true;
+    this._publish('enabled');
   }
 
   disable() {
+    this.state.enabled = false;
+    this._publish('disabled');
+  }
 
+  destroy() {
+    this._publish('destroyed');
   }
 
   getState() {
-    return $.extend({}, this.state); // TODO: use immutable
+    return $.extend({}, this.state); // TODO: use immutable or deep copy
   }
 }
-
-export default Model;

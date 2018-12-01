@@ -16,12 +16,13 @@ let defaults = {
     0: '0',
     50: 'default_mark',
     100: '100_super'
-  }
+  },
+  enabled: true
 };
 
 (($) => {
   // eslint-disable-next-line no-param-reassign
-  $.fn.rangeSlider = function (options) {
+  $.fn.rangeSlider = function rangeSliderPlugin(options) {
     rangeSlider.call(this, defaults, options);
   };
 
