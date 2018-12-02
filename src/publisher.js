@@ -1,17 +1,17 @@
 export default class Publisher {
   constructor() {
-    this.subscribers = {};
+    this._subscribers = {};
 
     this._publish = this._publish.bind(this); // TODO: consider 'bindThis' syntax
   }
 
   subscribe(event, cb) {
-    const { subscribers } = this;
+    const { _subscribers } = this;
 
-    if (subscribers[event]) {
-      subscribers[event].push(cb);
+    if (_subscribers[event]) {
+      _subscribers[event].push(cb);
     } else {
-      subscribers[event] = [cb];
+      _subscribers[event] = [cb];
     }
 
     return () => {
@@ -20,19 +20,21 @@ export default class Publisher {
   }
 
   unsubscribe(event, cb) {
-    const { subscribers } = this;
-    const cbArr = subscribers[event];
+    const { _subscribers } = this;
+    const evtSubscribers = _subscribers[event];
 
-    subscribers[event] = cbArr.filter(s => s !== cb);
+    if (!evtSubscribers) return;
+
+    _subscribers[event] = evtSubscribers.filter(s => s !== cb);
   }
 
   _publish(event, ...data) {
-    const { subscribers } = this;
+    const { _subscribers } = this;
 
-    if (!subscribers[event]) {
+    if (!_subscribers[event]) {
       return;
     }
 
-    subscribers[event].forEach(cb => cb(...data));
+    _subscribers[event].forEach(cb => cb(...data));
   }
 }
