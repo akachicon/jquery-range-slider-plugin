@@ -1,7 +1,9 @@
 // These functions never change any existing data,
 // but may pass it to their results
 
-export const minMax = (
+/* eslint-disable no-shadow */
+
+const minMax = (
   { min: newMin, max: newMax },
   { min, max }
 ) => {
@@ -28,24 +30,40 @@ export const minMax = (
   return checker;
 };
 
-export const step = ({ step: st }) => {
-  if (typeof st !== 'number' || st <= 0) {
-    return null;
-  }
+export const min = (next, current) => {
+  const res = minMax(next, current);
 
-  return { step: st };
+  if (!res) return null;
+
+  return res.min;
 };
 
-export const orientation = ({ orientation: or }) => {
-  if (or !== 'h' && or !== 'v') {
+export const max = (next, current) => {
+  const res = minMax(next, current);
+
+  if (!res) return null;
+
+  return res.max;
+};
+
+export const step = ({ step }) => {
+  if (typeof step !== 'number' || step <= 0) {
     return null;
   }
 
-  return { orientation: or };
+  return step;
+};
+
+export const orientation = ({ orientation }) => {
+  if (orientation !== 'h' && orientation !== 'v') {
+    return null;
+  }
+
+  return orientation;
 };
 
 export const value = (
-  { value: newVal, min, max }, // must already contain checked min/max
+  { value: newVal, min, max },
   { value: val }
 ) => {
   let checker = val;
@@ -60,31 +78,29 @@ export const value = (
     checker = min;
   }
 
-  return { value: checker };
+  return checker;
 };
 
 export const values = (
-  { values: newVals, min, max }, // must already contain checked min/max
+  { values: newVals, min, max },
   { values: vals }
 ) => {
-  let next;
+  let next = newVals;
 
   if (newVals instanceof Array === false) {
     next = new Array(2);
   }
 
-  return {
-    values: [0, 1].map(i => (
-      value(
-        { value: next[i], min, max },
-        { value: vals[i] }
-      ).value
-    ))
-  };
+  return [0, 1].map(i => (
+    value(
+      { value: next[i], min, max },
+      { value: vals[i] }
+    )
+  ));
 };
 
-export const marks = (
-  { marks: newMks, min, max }, // must already contain checked min/max
+export const marks = ( // TODO: consider returning object deep copy
+  { marks: newMks, min, max },
   { marks: mks }
 ) => {
   const filterMarks = (mksHash) => {
@@ -93,8 +109,8 @@ export const marks = (
     Object.keys(mksHash).forEach((position) => {
       // eslint-disable-next-line no-restricted-globals
       if (isNaN(parseFloat(position))
-        || position > max
-        || position < min) {
+          || position > max
+          || position < min) {
         return;
       }
       filteredMks[position] = mksHash[position];
@@ -104,8 +120,8 @@ export const marks = (
   };
 
   if (newMks instanceof Object === false) {
-    return { marks: filterMarks(mks) };
+    return filterMarks(mks);
   }
 
-  return { marks: filterMarks(newMks) };
+  return filterMarks(newMks);
 };
