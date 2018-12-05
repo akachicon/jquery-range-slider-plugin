@@ -13,7 +13,10 @@ export default (incoming, current, clone) => {
   const incomingKeys = resolveDeps(incoming);
   const refined = incomingKeys.reduce(
     (refinedIncoming, refinerKey) => {
-      const newPropValue = refiners[refinerKey](incoming, current);
+      const newPropValue = refiners[refinerKey]({
+        ...incoming,
+        ...refinedIncoming
+      }, current);
 
       if (newPropValue === null) {
         return refinedIncoming;

@@ -1,7 +1,6 @@
+import deepCopy from 'deep-copy';
 import Publisher from './publisher';
 import mergeSettings from './merge-settings';
-
-// any state returned from Model supposed to be readonly
 
 export default class Model extends Publisher {
   constructor(options) {
@@ -25,7 +24,7 @@ export default class Model extends Publisher {
     if (!this._state.enabled) return;
 
     this._state = mergeSettings(options, this._state);
-    this._publish('update', this._state);
+    this._publish('update', deepCopy(this._state));
   }
 
   enable() {
@@ -47,6 +46,6 @@ export default class Model extends Publisher {
   }
 
   getState() {
-    return this._state;
+    return deepCopy(this._state);
   }
 }

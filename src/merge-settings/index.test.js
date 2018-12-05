@@ -83,7 +83,7 @@ describe('merger', () => {
         });
       });
 
-      test('with first two arguments or their clones', () => {
+      test('with refiners results merged into first argument (except null) and second argument or their clones', () => {
         jest.resetModules();
 
         jest.mock('./resolve-dependencies', () => jest.fn());
@@ -91,23 +91,31 @@ describe('merger', () => {
         resolveDeps.mockImplementation(() => ['1', '2', '3']);
 
         const refinersExports = {
-          1: jest.fn(),
-          2: jest.fn(),
-          3: jest.fn()
+          1: jest.fn(() => ({ test: true })),
+          2: jest.fn(() => null),
+          3: jest.fn(() => 3)
         };
 
         jest.setMock('./refiners', refinersExports);
         refiners = require('./refiners');
         mergeSettings = require('./index').default;
 
-        const arg1 = {};
+        const arg1 = {
+          some: 'data',
+          1: {
+            data: ''
+          }
+        };
         const arg2 = {};
+        const expectedArg1 = { ...arg1 };
 
         mergeSettings(arg1, arg2);
 
         [1, 2, 3].forEach((i) => {
-          expect(refinersExports[`${i}`].mock.calls[0][0]).toBe(arg1);
-          expect(refinersExports[`${i}`].mock.calls[0][1]).toBe(arg2);
+          if (i === 2) expectedArg1['1'] = { test: true };
+
+          expect(refinersExports[`${i}`].mock.calls[0][0]).toEqual(expectedArg1);
+          expect(refinersExports[`${i}`].mock.calls[0][1]).toEqual(arg2);
         });
       });
     });
@@ -122,7 +130,7 @@ describe('merger', () => {
       expect(mergeSettings(1, '0')).toBeUndefined();
     });
 
-    describe('results from refiners merged with a provided second argument in a shallow fashion', () => {
+    describe('results from refiners merged into a provided second argument in a shallow fashion', () => {
       let incoming;
       let current;
       let expectations;
