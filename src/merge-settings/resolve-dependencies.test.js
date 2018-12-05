@@ -1,7 +1,9 @@
 import resolveDeps from './resolve-dependencies';
 
-describe('dependencies', () => {
-  test('should be resolved correctly', () => {
+// This test suite is based on the current dependency graph
+
+describe('dependency resolver', () => {
+  test('should resolve correctly', () => {
     let resolvedDeps = resolveDeps({
       min: '',
       step: '',
@@ -10,6 +12,7 @@ describe('dependencies', () => {
     });
 
     expect(resolvedDeps).toIncludeAllMembers(['min', 'step', 'range', 'hint', 'value', 'values', 'marks']);
+    expect(resolvedDeps[0]).toBe('min');
     expect(resolvedDeps.length).toBe(7);
 
     resolvedDeps = resolveDeps({

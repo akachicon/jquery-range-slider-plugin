@@ -1,5 +1,7 @@
-// These functions never change any existing data,
-// but may pass it to their results
+import deepCopy from 'deep-copy';
+
+// These functions must never change any existing data
+// or return original objects (nested included)
 
 /* eslint-disable no-shadow */
 
@@ -99,7 +101,7 @@ export const values = (
   ));
 };
 
-export const marks = ( // TODO: consider returning object deep copy
+export const marks = (
   { marks: newMks, min, max },
   { marks: mks }
 ) => {
@@ -120,8 +122,8 @@ export const marks = ( // TODO: consider returning object deep copy
   };
 
   if (newMks instanceof Object === false) {
-    return filterMarks(mks);
+    return deepCopy(filterMarks(mks));
   }
 
-  return filterMarks(newMks);
+  return deepCopy(filterMarks(newMks));
 };

@@ -1,45 +1,44 @@
 import Publisher from './publisher';
 import mergeSettings from './merge-settings';
 
+// any state returned from Model supposed to be readonly
+
 export default class Model extends Publisher {
   constructor(options) {
     super();
 
-    this.state = options;
-    this._defineStateAccessDescriptor();
-  }
-
-  _defineStateAccessDescriptor() {
-    this._state = this.state;
-    delete this.state;
-
-    Object.defineProperty(this, 'state', {
-      set(newState) {
-        if (!this._state.enabled) return;
-
-        this._state = newState;
-      },
-
-      get() {
-        return this._state;
-      }
+    this._state = mergeSettings(options, {
+      min: 0,
+      max: 10,
+      step: 1,
+      range: false,
+      hint: false,
+      orientation: 'h',
+      value: 0,
+      values: [0, 10],
+      marks: {},
+      enabled: true
     });
   }
 
   update(options = {}) {
-    const { state, _publish } = this;
+    if (!this._state.enabled) return;
 
-    this.state = mergeSettings(options, state);
-    _publish('update', this.state); // TODO: check this.state.enabled
+    this._state = mergeSettings(options, this._state);
+    this._publish('update', this._state);
   }
 
   enable() {
-    this.state.enabled = true;
+    if (this._state.enabled) return;
+
+    this._state.enabled = true;
     this._publish('enabled');
   }
 
   disable() {
-    this.state.enabled = false;
+    if (!this._state.enabled) return;
+
+    this._state.enabled = false;
     this._publish('disabled');
   }
 
@@ -48,6 +47,6 @@ export default class Model extends Publisher {
   }
 
   getState() {
-    return this.state;
+    return this._state;
   }
 }

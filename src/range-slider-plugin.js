@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import jQuery from 'jquery';
+import deepCopy from 'deep-copy';
 import rangeSlider from './range-slider';
 import mergeSettings from './merge-settings';
 
@@ -28,11 +29,11 @@ let defaults = {
 
   Object.defineProperty($.fn.rangeSlider, 'defaults', {
     set(userDefaults) {
-      defaults = mergeSettings(userDefaults, defaults, true);
+      defaults = mergeSettings(userDefaults, defaults);
     },
 
     get() {
-      return $.extend({}, defaults); // TODO: deep copy
+      return deepCopy({}, defaults);
     }
   });
 })(jQuery);

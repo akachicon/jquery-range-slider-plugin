@@ -1,9 +1,15 @@
+import deepCopy from 'deep-copy';
 import * as refiners from './refiners';
 import resolveDeps from './resolve-dependencies';
 
-const deepCopy = arg => arg; // TODO: deep copy
+// TODO: consider turning into a Model static method
 
-export default (incoming, current, copy) => {
+export default (incoming, current, clone) => {
+  if (typeof incoming !== 'object'
+      || typeof current !== 'object') {
+    return undefined;
+  }
+
   const incomingKeys = resolveDeps(incoming);
   const refined = incomingKeys.reduce(
     (refinedIncoming, refinerKey) => {
@@ -20,9 +26,9 @@ export default (incoming, current, copy) => {
     }, {}
   );
 
-  if (copy) {
+  if (clone) {
     return deepCopy({ ...current, ...refined });
   }
 
-  return { ...current, ...refined };
+  return Object.assign(current, refined);
 };

@@ -55,6 +55,7 @@
   "dependencies": {
     "@babel/runtime": "^7.1.2",
     "core-js": "^2.5.7",
+    "deep-copy": "^1.4.2",
     "regenerator-runtime": "^0.12.1"
   }
 }
