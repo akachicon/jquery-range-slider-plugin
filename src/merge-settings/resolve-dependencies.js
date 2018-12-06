@@ -5,8 +5,8 @@ const forwardDeps = {
   range: null,
   hint: null,
   orientation: null,
-  value: ['min', 'max'],
-  values: ['min', 'max'],
+  value: ['min', 'max', 'step'],
+  values: ['min', 'max', 'step'],
   marks: ['min', 'max'],
   enabled: null
 };
@@ -14,7 +14,7 @@ const forwardDeps = {
 const backwardDeps = {
   min: ['value', 'values', 'marks'],
   max: ['value', 'values', 'marks'],
-  step: null,
+  step: ['value', 'values'],
   range: null,
   hint: null,
   orientation: null,
@@ -24,38 +24,33 @@ const backwardDeps = {
   enabled: null
 };
 
-// There should be dependency resolving function,
-// but because of simple deps structure we don't use it
-
 export default (options) => {
-  let forward;
+  const cache = {};
+  const resolveDeps = (depsArray, depsHash) => {
+    const result = [];
+    const resolve = (fields) => {
+      if (!fields) return;
 
-  const keys = Object.keys(options);
-  const minMax = keys.some(key => forwardDeps[key]);
+      fields.forEach((field) => {
+        resolve(depsHash[field]);
 
-  if (minMax) {
-    forward = [
-      'min',
-      'max',
-      ...keys.filter(key => key !== 'min'
-        && key !== 'max')
-    ];
-  } else {
-    forward = keys;
-  }
+        if (!cache[field]) {
+          result.push(field);
+          cache[field] = true;
+        }
+      });
+    };
 
-  const valueValuesMarks = forward.some(key => backwardDeps[key]);
+    resolve(depsArray);
 
-  if (valueValuesMarks) {
-    return [
-      ...forward.filter(key => key !== 'value'
-        && key !== 'values'
-        && key !== 'marks'),
-      'value',
-      'values',
-      'marks'
-    ];
-  }
+    return result;
+  };
 
-  return forward;
+  const optionsArray = Object.keys(options);
+  const backwardAppendix = resolveDeps(optionsArray, backwardDeps);
+  const forward = resolveDeps(backwardAppendix, forwardDeps);
+
+  backwardAppendix.reverse();
+
+  return [...forward, ...backwardAppendix];
 };

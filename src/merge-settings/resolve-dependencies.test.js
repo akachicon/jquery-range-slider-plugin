@@ -3,48 +3,80 @@ import resolveDeps from './resolve-dependencies';
 // This test suite is based on the current dependency graph
 
 describe('dependency resolver', () => {
-  test('should resolve correctly', () => {
-    let resolvedDeps = resolveDeps({
-      min: '',
-      step: '',
-      range: '',
-      hint: '',
-    });
+  let resolvedDeps = [];
+  const iof = key => resolvedDeps.indexOf(key);
 
-    expect(resolvedDeps).toIncludeAllMembers(['min', 'step', 'range', 'hint', 'value', 'values', 'marks']);
-    expect(resolvedDeps[0]).toBe('min');
-    expect(resolvedDeps.length).toBe(7);
-
+  test('#1', () => {
     resolvedDeps = resolveDeps({
       min: '',
-      step: '',
-      value: '',
-      hint: '',
     });
 
-    expect(resolvedDeps).toIncludeAllMembers(['min', 'max', 'step', 'hint', 'value', 'values', 'marks']);
-    expect(resolvedDeps.slice(0, 2)).toIncludeAllMembers(['min', 'max']);
-    expect(resolvedDeps.length).toBe(7);
+    expect(resolvedDeps).toIncludeAllMembers(['min', 'max', 'step', 'value', 'values', 'marks']);
+    expect(resolvedDeps.length).toBe(6);
 
+    ['value', 'values', 'marks'].forEach((key) => {
+      expect(iof('min')).toBeLessThan(iof(key));
+      expect(iof('max')).toBeLessThan(iof(key));
+    });
+
+    ['value', 'values'].forEach((key) => {
+      expect(iof('step')).toBeLessThan(iof(key));
+    });
+  });
+
+  test('#2', () => {
     resolvedDeps = resolveDeps({
-      min: '',
-      step: '',
-      value: '',
-      values: '',
-      hint: '',
+      step: ''
     });
 
-    expect(resolvedDeps).toIncludeAllMembers(['min', 'max', 'step', 'hint', 'value', 'values', 'marks']);
-    expect(resolvedDeps.slice(0, 2)).toIncludeAllMembers(['min', 'max']);
-    expect(resolvedDeps.length).toBe(7);
+    expect(resolvedDeps).toIncludeAllMembers(['min', 'max', 'step', 'value', 'values']);
+    expect(resolvedDeps.length).toBe(5);
 
+    ['value', 'values'].forEach((key) => {
+      expect(iof('min')).toBeLessThan(iof(key));
+      expect(iof('max')).toBeLessThan(iof(key));
+      expect(iof('step')).toBeLessThan(iof(key));
+    });
+  });
+
+  test('#3', () => {
     resolvedDeps = resolveDeps({
-      step: '',
-      orientation: '',
-      hint: '',
+      value: ''
     });
 
-    expect(resolvedDeps).toIncludeAllMembers(['step', 'orientation', 'hint']);
+    expect(resolvedDeps).toIncludeAllMembers(['min', 'max', 'step', 'value']);
+    expect(resolvedDeps.length).toBe(4);
+    expect(iof('value')).toBe(3);
+  });
+
+  test('#4', () => {
+    resolvedDeps = resolveDeps({
+      marks: ''
+    });
+
+    expect(resolvedDeps).toIncludeAllMembers(['min', 'max', 'marks']);
     expect(resolvedDeps.length).toBe(3);
+    expect(iof('marks')).toBe(2);
+  });
+
+  test('#5', () => {
+    resolvedDeps = resolveDeps({
+      max: '',
+      hint: '',
+      orientation: '',
+      values: ''
+    });
+
+    expect(resolvedDeps).toIncludeAllMembers(['min', 'max', 'step', 'value', 'values', 'marks', 'orientation', 'hint']);
+    expect(resolvedDeps.length).toBe(8);
+
+    ['value', 'values', 'marks'].forEach((key) => {
+      expect(iof('min')).toBeLessThan(iof(key));
+      expect(iof('max')).toBeLessThan(iof(key));
+    });
+
+    ['value', 'values'].forEach((key) => {
+      expect(iof('step')).toBeLessThan(iof(key));
+    });
   });
 });

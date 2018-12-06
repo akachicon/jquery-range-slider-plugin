@@ -1,7 +1,8 @@
 import deepCopy from 'deep-copy';
 
 // These functions must never change any existing data
-// or return original objects (nested included)
+// or return original objects (nested included).
+// They return null if they want to use current state.
 
 /* eslint-disable no-shadow */
 
@@ -65,26 +66,40 @@ export const orientation = ({ orientation }) => {
 };
 
 export const value = (
-  { value: newVal, min, max },
+  {
+    value: newVal,
+    min,
+    max,
+    step
+  },
   { value: val }
 ) => {
   let checker = val;
+  const len = max - min;
 
   if (typeof newVal === 'number') {
     checker = newVal;
   }
-  if (checker > max) {
-    checker = max;
+
+  if (checker < min || step >= len) {
+    return min;
   }
-  if (checker < min) {
-    checker = min;
+  if (checker > max) {
+    return max - (len % step);
   }
 
-  return checker;
+  return min
+    + step * Math.floor((checker - min) / step)
+    + step * ((checker - min) % step >= step / 2);
 };
 
 export const values = (
-  { values: newVals, min, max },
+  {
+    values: newVals,
+    min,
+    max,
+    step
+  },
   { values: vals }
 ) => {
   let next = newVals;
@@ -101,7 +116,12 @@ export const values = (
 
   return [0, 1].map(i => (
     value(
-      { value: next[i], min, max },
+      {
+        value: next[i],
+        min,
+        max,
+        step
+      },
       { value: vals[i] }
     )
   ));

@@ -47,7 +47,7 @@ describe('merger', () => {
       expect(resolveDeps.mock.calls[1][0]).toEqual(options02);
     });
 
-    describe('all refinres returned by the dependency resolver', () => {
+    describe('all refiners returned by the dependency resolver', () => {
       test('in an appropriate order', () => {
         jest.resetModules();
 
@@ -83,7 +83,8 @@ describe('merger', () => {
         });
       });
 
-      test('with refiners results merged into first argument (except null) and second argument or their clones', () => {
+      test('with refiners results (or corresponding second arg fields if null) merged into first argument and '
+          + 'second argument or their clones', () => {
         jest.resetModules();
 
         jest.mock('./resolve-dependencies', () => jest.fn());
@@ -106,13 +107,18 @@ describe('merger', () => {
             data: ''
           }
         };
-        const arg2 = {};
+        const arg2 = {
+          1: false,
+          2: { second: true },
+          3: false
+        };
         const expectedArg1 = { ...arg1 };
 
         mergeSettings(arg1, arg2);
 
         [1, 2, 3].forEach((i) => {
           if (i === 2) expectedArg1['1'] = { test: true };
+          if (i === 3) expectedArg1[2] = { second: true };
 
           expect(refinersExports[`${i}`].mock.calls[0][0]).toEqual(expectedArg1);
           expect(refinersExports[`${i}`].mock.calls[0][1]).toEqual(arg2);

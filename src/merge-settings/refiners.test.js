@@ -118,35 +118,105 @@ describe('refiners', () => {
   test('value', () => {
     ['x', undefined, null, false, {}, Symbol(1), () => {}].forEach((type) => {
       expect(value(
-        { value: type, min: -10, max: 10 },
+        {
+          value: type,
+          min: -10,
+          max: 10,
+          step: 1
+        },
         { value: 0 }
       )).toBe(0);
 
       expect(value(
-        { value: type, min: -10, max: 10 },
+        {
+          value: type,
+          min: -10,
+          max: 10,
+          step: 1
+        },
         { value: -11 }
       )).toBe(-10);
 
       expect(value(
-        { value: type, min: -10, max: 10 },
+        {
+          value: type,
+          min: -10,
+          max: 10,
+          step: 1
+        },
         { value: 11 }
       )).toBe(10);
     });
 
     expect(value(
-      { value: 5, min: -10, max: 10 },
+      {
+        value: 5,
+        min: -10,
+        max: 10,
+        step: 1
+      },
       { value: 0 },
     )).toBe(5);
 
     expect(value(
-      { value: -11, min: -10, max: 10 },
+      {
+        value: -11,
+        min: -10,
+        max: 10,
+        step: 1
+      },
       { value: 0 },
     )).toBe(-10);
 
     expect(value(
-      { value: 11, min: -10, max: 10 },
-      { value: 0 },
+      {
+        value: 11,
+        min: -10,
+        max: 10,
+        step: 1
+      },
+      { value: 0 }
     )).toBe(10);
+
+    expect(value(
+      {
+        value: 2.5,
+        min: -10,
+        max: 10,
+        step: 0.5
+      },
+      { value: 0 }
+    )).toBe(2.5);
+
+    expect(value(
+      {
+        value: 2.7,
+        min: -10,
+        max: 10,
+        step: 0.5
+      },
+      { value: 0 }
+    )).toBe(2.5);
+
+    expect(value(
+      {
+        value: 2.8,
+        min: -10,
+        max: 10,
+        step: 0.5
+      },
+      { value: 0 }
+    )).toBe(3);
+
+    expect(value(
+      {
+        value: 2.5,
+        min: -10,
+        max: 10,
+        step: 100
+      },
+      { value: 0 }
+    )).toBe(-10);
   });
 
   test('values', () => {
@@ -158,7 +228,12 @@ describe('refiners', () => {
       incoming = [type, 5];
       current = [0, 0];
       executed = values(
-        { values: incoming, min: -10, max: 10 },
+        {
+          values: incoming,
+          min: -10,
+          max: 10,
+          step: 1
+        },
         { values: current }
       );
 
@@ -169,7 +244,12 @@ describe('refiners', () => {
       incoming = [-5, type];
       current = [0, 0];
       executed = values(
-        { values: incoming, min: -10, max: 10 },
+        {
+          values: incoming,
+          min: -10,
+          max: 10,
+          step: 1
+        },
         { values: current }
       );
 
@@ -180,7 +260,12 @@ describe('refiners', () => {
       incoming = [type, type];
       current = [-1, 1];
       executed = values(
-        { values: incoming, min: -10, max: 10 },
+        {
+          values: incoming,
+          min: -10,
+          max: 10,
+          step: 1
+        },
         { values: current }
       );
 
@@ -191,7 +276,12 @@ describe('refiners', () => {
       incoming = type;
       current = [-11, 1];
       executed = values(
-        { values: incoming, min: -10, max: 10 },
+        {
+          values: incoming,
+          min: -10,
+          max: 10,
+          step: 1
+        },
         { values: current }
       );
 
@@ -203,7 +293,12 @@ describe('refiners', () => {
     incoming = 2;
     current = [-11, 1];
     executed = values(
-      { values: incoming, min: -10, max: 10 },
+      {
+        values: incoming,
+        min: -10,
+        max: 10,
+        step: 1
+      },
       { values: current }
     );
 
@@ -213,7 +308,12 @@ describe('refiners', () => {
     incoming = [-11, 11];
     current = [0, 0];
     executed = values(
-      { values: incoming, min: -10, max: 10 },
+      {
+        values: incoming,
+        min: -10,
+        max: 10,
+        step: 1
+      },
       { values: current }
     );
 
@@ -224,7 +324,12 @@ describe('refiners', () => {
     incoming = [5, -5];
     current = [0, 0];
     executed = values(
-      { values: incoming, min: -10, max: 10 },
+      {
+        values: incoming,
+        min: -10,
+        max: 10,
+        step: 1
+      },
       { values: current }
     );
 
@@ -235,11 +340,68 @@ describe('refiners', () => {
     incoming = [5, 12];
     current = [0, 0];
     executed = values(
-      { values: incoming, min: -10, max: 10 },
+      {
+        values:
+        incoming,
+        min: -10,
+        max: 10,
+        step: 1
+      },
       { values: current }
     );
 
     expect(executed).toEqual([5, 10]);
+    expect(executed).not.toBe(incoming);
+    expect(executed).not.toBe(current);
+
+    incoming = [5.2, 5.3];
+    current = [0, 0];
+    executed = values(
+      {
+        values:
+        incoming,
+        min: -10,
+        max: 10,
+        step: 0.5
+      },
+      { values: current }
+    );
+
+    expect(executed).toEqual([5, 5.5]);
+    expect(executed).not.toBe(incoming);
+    expect(executed).not.toBe(current);
+
+    incoming = [-1.3, -1.2];
+    current = [0, 0];
+    executed = values(
+      {
+        values:
+        incoming,
+        min: -10,
+        max: 10,
+        step: 0.5
+      },
+      { values: current }
+    );
+
+    expect(executed).toEqual([-1.5, -1]);
+    expect(executed).not.toBe(incoming);
+    expect(executed).not.toBe(current);
+
+    incoming = [-1.2, -1.3];
+    current = [0, 0];
+    executed = values(
+      {
+        values:
+        incoming,
+        min: -10,
+        max: 10,
+        step: 0.5
+      },
+      { values: current }
+    );
+
+    expect(executed).toEqual([-1.5, -1]);
     expect(executed).not.toBe(incoming);
     expect(executed).not.toBe(current);
   });

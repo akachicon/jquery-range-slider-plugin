@@ -19,6 +19,9 @@ export default (incoming, current, clone) => {
       }, current);
 
       if (newPropValue === null) {
+        // eslint-disable-next-line no-param-reassign
+        refinedIncoming[refinerKey] = current[refinerKey];
+
         return refinedIncoming;
       }
 
