@@ -7,7 +7,7 @@ import mergeSettings from './merge-settings';
 let defaults = {
   min: 0,
   max: 100,
-  step: 1,
+  step: 3,
   range: false,
   hint: false,
   orientation: 'h',
@@ -24,7 +24,7 @@ let defaults = {
 (($) => {
   // eslint-disable-next-line no-param-reassign
   $.fn.rangeSlider = function rangeSliderPlugin(options) {
-    rangeSlider.call(this, mergeSettings(options, defaults, true));
+    rangeSlider(mergeSettings(options, defaults, true), this);
   };
 
   Object.defineProperty($.fn.rangeSlider, 'defaults', {

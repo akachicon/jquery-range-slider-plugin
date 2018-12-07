@@ -153,3 +153,21 @@ export const marks = (
 
   return deepCopy(filterMarks(newMks));
 };
+
+export const hint = ({ hint }) => {
+  if (hint !== undefined) {
+    return !!hint;
+  }
+
+  return null;
+};
+
+export const range = ({ range }) => {
+  if (range !== undefined) {
+    return !!range;
+  }
+
+  return null;
+};
+
+export const enabled = () => null;

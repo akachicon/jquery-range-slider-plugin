@@ -16,6 +16,10 @@ export default class Model extends Publisher {
   constructor(options) {
     super();
 
+    // We can reckon on fully correct options object to form initial state but we don't.
+    // This way the state remains persistent for those who want to use it in readonly mode,
+    // e.g. view as its initial state.
+
     this._state = mergeSettings(options, {
       min: 0,
       max: 10,
@@ -31,36 +35,13 @@ export default class Model extends Publisher {
   }
 
   update(options = {}) {
-    if (!this._state.enabled) return;
-
-    this._state = mergeSettings(options, this._state);
-    this._publish('update', { ...this._state });
-  }
-
-  updateValuePortion(fraction) {
-    const { _state } = this._state;
-    const calculateValue = (multiplier) => {
-      if (typeof multiplier !== 'number') {
-        return;
-      }
-
-      return _state.min + (_state.max - _state.min) * multiplier;
-    };
-
-    if (fraction instanceof Array) {
-      this.update({
-        values: [
-          calculateValue(fraction[0]),
-          calculateValue(fraction[1]),
-        ]
-      });
-
+    if (!this._state.enabled
+        || typeof options !== 'object') {
       return;
     }
 
-    this.update({
-      value: calculateValue(fraction)
-    });
+    this._state = mergeSettings(options, this._state);
+    this._publish('update', { ...this._state });
   }
 
   enable() {

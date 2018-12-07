@@ -10,7 +10,7 @@
     "lint": "eslint --ext .js src/",
     "lint:fix": "eslint --ext .js src/ --fix",
     "test": "cross-env NODE_ENV=test jest --detectOpenHandles .test.js",
-    "test:watch": "cross-env NODE_ENV=test jest --watch --no-cache .test.js"
+    "test:watch": "cross-env NODE_ENV=test jest --watch .test.js"
   },
   "keywords": [],
   "author": "",
@@ -56,6 +56,7 @@
     "@babel/runtime": "^7.1.2",
     "core-js": "^2.5.7",
     "deep-copy": "^1.4.2",
+    "lodash.throttle": "^4.1.1",
     "regenerator-runtime": "^0.12.1"
   }
 }

@@ -6,66 +6,34 @@ export default class AbstractView extends Publisher {
     super();
 
     const bindings = {
-      globalUpdate: this.onGlobalUpdate,
-      valueUpdate: this.onValueUpdate,
-      valuesUpdate: this.onValuesUpdate,
-      marksUpdate: this.onMarksUpdate,
-      hintOn: this.onHintOn,
-      hintOff: this.onHintOff,
-      enabled: this.onEnabled,
-      disabled: this.onDisabled,
-      destroyed: this._onDestroyed
+      update: this._onUpdate,
+      enabled: this._onEnabled,
+      disabled: this._onDisabled,
+      destroyed: this._onDestroy
     };
 
     Object.keys(bindings).forEach((event) => {
       if (!bindings[event]) return;
 
-      this._unsubscriptionList = {
+      this._unsubscribeList = {
         [event]: model.subscribe(event, bindings[event].bind(this))
       };
     });
 
-    this.getState = () => (
+    this.getModelState = () => ( // readonly
       model.getState()
     );
   }
 
-  _removeAllSubscriptions() {
-    Object.keys(this._unsubscriptionList).forEach(
-      unsubscribe => unsubscribe()
-    );
-  }
-
-  _destroy() {
-    this._removeAllSubscriptions();
-  }
-
-  _onDestroyed() {
-    this._destroy();
-    if (this.destroy) {
-      this.destroy();
-    }
-  }
-
   /*
 
-  onGlobalUpdate(data) {}
+  _onUpdate() {}
 
-  onValueUpdate(value) {}
+  _onEnabled() {}
 
-  onValuesUpdate(values) {}
+  _onDisabled() {}
 
-  onMarksUpdate(marks) {}
-
-  onHintOn() {}
-
-  onHintOff() {}
-
-  onEnabled() {}
-
-  onDisabled() {}
-
-  destroy() {}
+  _onDestroy() {}
 
   */
 }

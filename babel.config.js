@@ -1,11 +1,7 @@
 module.exports = (api) => {
-  /* eslint-disable */
-
   // const __DEV__ = api.env('development');
   // const __PROD__ = api.env('production');
   const __TEST__ = api.env('test');
-
-  /* eslint-enable */
 
   api.cache.forever();
 

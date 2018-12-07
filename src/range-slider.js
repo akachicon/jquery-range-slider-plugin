@@ -2,18 +2,19 @@
 import $ from 'jquery';
 import Model from './model';
 import View from './view';
+import Controller from './controller';
 
-export default function (options) {
-  // const mythicalRootElement = this;
-
+export default function (options, root) {
   const model = new Model(options);
-  // const view = new View(model, mythicalRootElement);
+  const view = new View(model, root, options);
+  const controller = new Controller(model, view);
 
-  console.log(model.getState());
-  model.update({ value: 12 });
-  console.log(model.getState());
-  model.update({ max: 5 });
-  console.log(model.getState());
+  // let value = 0.5;
+  //
+  // setInterval(() => {
+  //   value += 0.01;
+  //   view._update({ value });
+  // }, 500);
 
   return this;
 }

@@ -2,41 +2,33 @@
 import $ from 'jquery';
 import '../range-slider-plugin';
 
-$('body').append('<div>block</div>').rangeSlider({});
+$('body').append(`
+    <div class="main">
+        <div style="background: palegoldenrod">some space</div>
+        <div id='rsh'></div>
+        <div style="background: palegoldenrod">some space</div>
+        <div id="rsv" style="height: 80px"></div>
+        <div style="background: palegoldenrod">some space</div>
+    </div>
+`);
 
+$.fn.rangeSlider.defaults = {
+  min: -10,
+  max: 10,
+  step: 1,
+  orientation: 'h',
+  value: 0,
+  values: [-15, 5],
+  marks: {
+    '-5': 'yes',
+    0: { super: 'object' },
+    101: 'excluded'
+  }
+};
 
-// $.fn.rangeSlider.defaults = {
-//   min: 40,
-//   max: 60,
-//   step: 1.4,
-//   orientation: 'h',
-//   value: -1,
-//   values: [0, 100],
-//   marks: {
-//     50: 'yes',
-//     60: { super: 'svg' },
-//     101: 'excluded'
-//   }
-// };
+$('#rsh').rangeSlider({});
+$('#rsv').rangeSlider({ orientation: 'v' });
 
-// const body = $('body');
-//
-// $('body').append(`
-//     <div class="main">
-//         <div style="background: palegoldenrod">some space</div>
-//         <div class="rangeSliderContainer horizontal">
-//             <div class="track"></div>
-//             <div class="thumb"></div>
-//         </div>
-//         <div style="background: palegoldenrod">some space</div>
-//         <div class="rangeSliderContainer vertical" style="height: 80px">
-//             <div class="track"></div>
-//             <div class="thumb"></div>
-//         </div>
-//         <div style="background: palegoldenrod">some space</div>
-//     </div>
-// `);
-//
 // function handleMouseMove(e) {
 //   const { left } = e.data.track.offset();
 //   const { thumb } = e.data;
