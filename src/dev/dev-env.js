@@ -7,7 +7,10 @@ $('body').append(`
         <div style="background: palegoldenrod">some space</div>
         <div id='rsh'></div>
         <div style="background: palegoldenrod">some space</div>
-        <div id="rsv" style="height: 80px"></div>
+        <div id="rsh01"></div>
+        <div id="rsh02"></div>
+        <div id="rsh03"></div>
+        <div id="rsv" style="height: 400px; width: 50px"></div>
         <div style="background: palegoldenrod">some space</div>
     </div>
 `);
@@ -15,10 +18,11 @@ $('body').append(`
 $.fn.rangeSlider.defaults = {
   min: -10,
   max: 10,
-  step: 1,
+  step: 0.001,
   orientation: 'h',
+  range: true,
   value: 0,
-  values: [-15, 5],
+  values: [-5, 5],
   marks: {
     '-5': 'yes',
     0: { super: 'object' },
@@ -27,25 +31,7 @@ $.fn.rangeSlider.defaults = {
 };
 
 $('#rsh').rangeSlider({});
+$('#rsh01').rangeSlider({ orientation: 'h' });
+$('#rsh02').rangeSlider({ orientation: 'h' });
+$('#rsh03').rangeSlider({ orientation: 'h' });
 $('#rsv').rangeSlider({ orientation: 'v' });
-
-// function handleMouseMove(e) {
-//   const { left } = e.data.track.offset();
-//   const { thumb } = e.data;
-//
-//   thumb.css({ left: e.pageX - left });
-//
-//   console.log(e.pageX - left);
-// }
-//
-// $('.rangeSliderContainer .thumb').on('mousedown', (e) => {
-//   const t = $(e.target);
-//
-//   body.on('mousemove', {
-//     track: t.parent().find('.track'),
-//     thumb: t
-//   }, handleMouseMove);
-//   body.one('mouseup', () => {
-//     body.off('mousemove', handleMouseMove);
-//   });
-// });

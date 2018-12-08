@@ -33,7 +33,7 @@ export default class Controller {
         ...data,
         value: calculateValue(value),
         values: [
-          calculateValue(value[0]),
+          calculateValue(values[0]),
           calculateValue(values[1]),
         ]
       });

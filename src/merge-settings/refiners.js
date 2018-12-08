@@ -108,12 +108,6 @@ export const values = (
     next = new Array(2);
   }
 
-  if (typeof next[0] === 'number'
-      && typeof next[1] === 'number'
-      && next[0] > next[1]) {
-    next = [next[1], next[0]];
-  }
-
   return [0, 1].map(i => (
     value(
       {
@@ -124,7 +118,7 @@ export const values = (
       },
       { value: vals[i] }
     )
-  ));
+  )).sort((a, b) => a - b);
 };
 
 export const marks = (

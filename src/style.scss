@@ -1,8 +1,8 @@
-$thumbDiameter: 15px;
-$trackThickness: 6px;
+$thumbDiameter: 40px;
+$trackThickness: 20px;
 
 .main {
-  width: 200px;
+  width: 600px;
   height: 400px;
   margin: 0;
   background: #b2eeb0;
@@ -13,8 +13,7 @@ $trackThickness: 6px;
   padding: ($thumbDiameter - $trackThickness) / 2;
   position: relative;
 
-  background: coral;
-
+  background: pink;
   .track {
     border-radius: $trackThickness;
     position: relative;
@@ -39,10 +38,26 @@ $trackThickness: 6px;
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 1;
+    z-index: 2;
     transition: left .1s, top .1s;
 
-    background: green;
+    background: limegreen;
+  }
+
+  .range-first {
+    border-bottom-left-radius: $trackThickness;
+    border-top-left-radius: $trackThickness;
+    transition: width .1s, height .1s;
+
+    background: darkorange;
+  }
+
+  .range-second {
+    border-bottom-left-radius: $trackThickness;
+    border-top-left-radius: $trackThickness;
+    transition: width .1s, height .1s;
+
+    background: yellow;
   }
 
   &.horizontal {
@@ -56,12 +71,20 @@ $trackThickness: 6px;
       }
 
       &:after {
+        top: 0;
         right: -$trackThickness;
         border: {
           top-right-radius: $trackThickness;
           bottom-right-radius: $trackThickness;
         }
       }
+    }
+
+    .range-first,
+    .range-second {
+      height: 100%;
+      border-bottom-left-radius: $trackThickness;
+      border-top-left-radius: $trackThickness;
     }
   }
 
@@ -83,6 +106,12 @@ $trackThickness: 6px;
           bottom-left-radius: $trackThickness;
         }
       }
+    }
+
+    .range-first,
+    .range-second {
+      border-bottom-right-radius: $trackThickness;
+      border-top-right-radius: $trackThickness;
     }
   }
 }
