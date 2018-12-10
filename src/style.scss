@@ -1,10 +1,10 @@
 $thumbDiameter: 40px;
-$trackThickness: 20px;
+$trackThickness: 40px;
 
 .main {
   width: 600px;
-  height: 400px;
-  margin: 0;
+  height: 600px;
+  margin: 40px;
   background: #b2eeb0;
 }
 
@@ -26,6 +26,7 @@ $trackThickness: 20px;
       width: $trackThickness;
       height: $trackThickness;
       position: absolute;
+      z-index: 0;
 
       background: blue;
     }
@@ -41,21 +42,19 @@ $trackThickness: 20px;
     z-index: 2;
     transition: left .1s, top .1s;
 
-    background: limegreen;
+    background: rgba(0, 200, 0, 0.5);
   }
 
-  .range-first {
-    border-bottom-left-radius: $trackThickness;
-    border-top-left-radius: $trackThickness;
+  .range-inner {
     transition: width .1s, height .1s;
 
     background: darkorange;
   }
 
-  .range-second {
-    border-bottom-left-radius: $trackThickness;
-    border-top-left-radius: $trackThickness;
+  .range-outer {
+    position: relative;
     transition: width .1s, height .1s;
+    z-index: 1;
 
     background: yellow;
   }
@@ -80,8 +79,8 @@ $trackThickness: 20px;
       }
     }
 
-    .range-first,
-    .range-second {
+    .range-inner,
+    .range-outer {
       height: 100%;
       border-bottom-left-radius: $trackThickness;
       border-top-left-radius: $trackThickness;
@@ -108,10 +107,10 @@ $trackThickness: 20px;
       }
     }
 
-    .range-first,
-    .range-second {
-      border-bottom-right-radius: $trackThickness;
+    .range-inner,
+    .range-outer {
       border-top-right-radius: $trackThickness;
+      border-top-left-radius: $trackThickness;
     }
   }
 }

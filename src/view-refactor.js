@@ -1,10 +1,11 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import $ from 'jquery';
 import throttle from 'lodash.throttle';
+import Model from './model';
 import AbstractView from './abstract-view';
 import './style.scss';
 
-const POSITION_CHECK_INTERVAL = 50;
+const POINTER_CHECK_INTERVAL = 50;
 
 export default class View extends AbstractView {
   constructor(model, root, initialState) {
@@ -19,22 +20,27 @@ export default class View extends AbstractView {
     );
 
     this._track = div('track');
-    this._rangeFirst = div('range-first');
-    this._rangeSecond = div('range-second');
 
-    this._rangeSecond.append(this._rangeFirst);
-    this._track.append(this._rangeSecond);
-
-    this._thumbs = {};
+    this._ranges = {};
     [
+      'inner',
+      'outer'
+    ].forEach((name) => {
+      this._ranges[name] = div(`range-${name}`);
+    });
+
+    this._ranges.outer.append(this._ranges.inner);
+    this._track.append(this._ranges.outer);
+
+    const thumbNames = [
       'single',
       'rangeFirst',
       'rangeSecond'
-    ].forEach((name) => {
+    ];
+    this._thumbs = {};
+    thumbNames.forEach((name) => {
       this._thumbs[name] = div('thumb');
     });
-
-    const thumbNames = Object.keys(this._thumbs);
 
     this._root.addClass('rangeSliderContainer');
     this._root.append(
@@ -46,6 +52,8 @@ export default class View extends AbstractView {
       'mousedown',
       this._onMouseDown.bind(this)
     );
+
+    this._marks = [];
 
     this._onUpdate(initialState);
   }
@@ -67,7 +75,7 @@ export default class View extends AbstractView {
     const body = $(document.body);
     const throttledCheck = throttle(
       this._checkPointerAndSendUpdate.bind(this),
-      POSITION_CHECK_INTERVAL
+      POINTER_CHECK_INTERVAL
     );
 
     body.on('mousemove', throttledCheck);
@@ -152,7 +160,7 @@ export default class View extends AbstractView {
 
     // eslint-disable-next-line no-shadow
     const computedThumbCss = (name, prop) => (
-      parseFloat(this._thumbs[name].css(prop)) // TODO: this._thumbs
+      parseFloat(this._thumbs[name].css(prop))
     );
 
     const calculatePortion = (o, portionName) => {
@@ -186,90 +194,95 @@ export default class View extends AbstractView {
   }
 
   _onUpdate(data) {
-    if (data.orientation !== this._state.orientation) {
-      this._updateOrientation(data.orientation);
-    }
-
-    const displayThumbs = (thumbNames) => {
-      Object.keys(thumbNames).forEach((name) => {
-        this._thumbs[name].css('display', thumbNames[name]);
-      });
-    };
-
     const {
       min,
       max,
       value,
-      values
+      values,
+      range,
+      orientation: o,
+      marks
     } = data;
 
-    const setIndentation = (item, val) => {
-      const portion = (val - min) / (max - min);
+    if (o !== this._state.orientation) {
+      this._changeOrientation(o);
+    }
 
-      let prop;
-      let indentProp;
+    if (!Model.isEqual(marks, this._state.marks)) {
+      this._changeMarks(marks, min, max, o);
+    }
 
-      if (data.orientation === 'h') {
-        prop = 'width';
-        indentProp = 'left';
-      }
-      if (data.orientation === 'v') {
-        prop = 'height';
-        indentProp = 'top';
-      }
-
-      item.css(
-        indentProp,
-        portion * this._track[prop]()
-      );
+    const display = (category, config) => {
+      Object.keys(config).forEach((name) => {
+        category[name].css('display', config[name]);
+      });
     };
 
-    if (data.range) {
-      displayThumbs({
+    const trackLength = {
+      h: this._track.width(),
+      v: this._track.height()
+    };
+    const thumbRadius = {
+      h: trackLength.v / 2,
+      v: trackLength.h / 2
+    };
+
+    let lengthProp;
+
+    if (o === 'h') {
+      lengthProp = 'width';
+    }
+    if (o === 'v') {
+      lengthProp = 'height';
+    }
+
+    if (range) {
+      const rangePortions = {
+        inner: (values[0] - min) / (max - min),
+        outer: (values[1] - min) / (max - min)
+      };
+
+      display(this._thumbs, {
         single: 'none',
         rangeFirst: 'block',
         rangeSecond: 'block'
       });
-      this._rangeFirst.css('display', 'block');
-      this._rangeSecond.css('display', 'block');
+      display(this._ranges, {
+        inner: 'block',
+        outer: 'block'
+      });
 
-      const thumbFirst = this._thumbs.rangeFirst;
-      const thumbSecond = this._thumbs.rangeSecond;
+      this._setThumbIndentation('rangeFirst', values[0], min, max, o);
+      this._setThumbIndentation('rangeSecond', values[1], min, max, o);
 
-      setIndentation(thumbFirst, values[0]);
-      setIndentation(thumbSecond, values[1]);
-
-      const portionFirst = (values[0] - min) / (max - min);
-      const portionSecond = (values[1] - min) / (max - min);
-
-      const thumbRadius = {
-        h: this._track.height() / 2,
-        v: this._track.width() / 2
-      };
-
-      if (data.orientation === 'h') {
-        this._rangeFirst.width(portionFirst * this._track.width() + thumbRadius.h);
-        this._rangeSecond.width(portionSecond * this._track.width() + thumbRadius.h);
-      }
-      if (data.orientation === 'v') {
-        this._rangeFirst.height(portionFirst * this._track.height() + thumbRadius.v);
-        this._rangeSecond.height(portionSecond * this._track.height() + thumbRadius.v);
-      }
+      ['inner', 'outer'].forEach((name) => {
+        this._ranges[name][lengthProp](
+          rangePortions[name] * trackLength[o] + thumbRadius[o]
+        );
+      });
     } else {
-      displayThumbs({
+      const rangePortion = (value - min) / (max - min);
+
+      display(this._thumbs, {
         single: 'block',
         rangeFirst: 'none',
         rangeSecond: 'none'
       });
-      this._range.css('display', 'none');
+      display(this._ranges, {
+        inner: 'none'
+      });
 
-      setIndentation('single', value);
+      this._setThumbIndentation('single', value, min, max, o);
+
+      this._ranges.outer[lengthProp](
+        rangePortion * trackLength[o] + thumbRadius[o]
+      );
     }
 
     this._state = data;
   }
 
-  _updateOrientation(o) {
+  _changeOrientation(o) {
     const root = this._root;
 
     root.removeClass('horizontal vertical');
@@ -279,6 +292,94 @@ export default class View extends AbstractView {
     if (o === 'v') {
       root.addClass('vertical');
     }
+  }
+
+  _changeMarks(marks, min, max, o) {
+    const trackLength = {
+      h: this._track.width(),
+      v: this._track.height()
+    };
+    const thumbRadius = {
+      h: trackLength.v / 2,
+      v: trackLength.h / 2
+    };
+
+    const removeAllMarks = () => {
+      this._marks.forEach((mark) => {
+        // dom handling
+      });
+    };
+
+    const getIndentation = value => (
+      (value - min) / (max - min) * trackLength[o]
+    );
+
+    const marksPositions = Object.keys(marks);
+    const spans = [];
+
+    if (!marksPositions.length) {
+      removeAllMarks();
+    }
+
+    marksPositions.forEach((position) => {
+      const indent = getIndentation(+position);
+      let newMark;
+
+      if (o === 'h') {
+        newMark = `
+          <span 
+            style="
+              display: inline-block;
+              left:${indent + thumbRadius[o]}px; 
+              position: absolute;
+              text-align: center;
+              transform: translate(-50%);
+            "
+          >
+            ${marks[position]}
+          </span>`;
+      }
+      if (o === 'v') {
+        newMark = `
+          <span 
+            style="
+              display: inline-block;
+              top:${indent + thumbRadius[o]}px; 
+              position: absolute;
+              left: ${thumbRadius.v * 2}px;
+              transform: translate(.5em, -50%);
+            "
+          >
+            ${marks[position]}
+          </span>`;
+      }
+
+      spans.push(newMark);
+    });
+
+    this._root.append(spans.join(''));
+  }
+
+  _setThumbIndentation(thumbName, val, min, max, orientation) {
+    const thumb = this._thumbs[thumbName];
+    const portion = (val - min) / (max - min);
+
+    let lengthProp;
+    let indentProp;
+
+    if (orientation === 'h') {
+      lengthProp = 'width';
+      indentProp = 'left';
+    }
+    if (orientation === 'v') {
+      lengthProp = 'height';
+      indentProp = 'top';
+    }
+
+    thumb.css(
+      indentProp,
+      portion * this._track[lengthProp]()
+    );
   }
 
   _publishUpdate(data) {

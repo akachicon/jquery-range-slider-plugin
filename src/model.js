@@ -65,4 +65,8 @@ export default class Model extends Publisher {
   getState() {
     return { ...this._state };
   }
+
+  static isEqual(a, b) {
+    return a === b;
+  }
 }
