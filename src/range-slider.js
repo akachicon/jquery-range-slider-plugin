@@ -1,7 +1,7 @@
 // eslint-disable-next-line
 import $ from 'jquery';
 import Model from './model';
-import View from './view-refactor';
+import View from './view-refactor2';
 import Controller from './controller';
 
 export default function (options, root) {

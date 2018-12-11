@@ -52,6 +52,10 @@ export default class View extends AbstractView {
       'mousedown',
       this._onMouseDown.bind(this)
     );
+    this._track.on(
+      'click',
+      this._onMouseClick.bind(this)
+    );
 
     this._marks = [];
 
@@ -63,7 +67,7 @@ export default class View extends AbstractView {
 
     const thumbNames = Object.keys(this._thumbs);
 
-    thumbNames.some((name) => {
+    const shouldCheck = thumbNames.some((name) => {
       if (this._thumbs[name][0] === e.target) {
         this._activeThumbName = name;
 
@@ -71,6 +75,8 @@ export default class View extends AbstractView {
       }
       return false;
     });
+
+    if (!shouldCheck) return;
 
     const body = $(document.body);
     const throttledCheck = throttle(
@@ -85,18 +91,21 @@ export default class View extends AbstractView {
     });
   }
 
+  _onMouseClick(e) {
+    e.preventDefault();
+
+
+  }
+
   _checkPointerAndSendUpdate(e) {
     e.preventDefault();
 
     const portionNames = ['pointer', 'rangeFirst', 'rangeSecond'];
-    let portions;
-
-    if (this._state.orientation === 'h') {
-      portions = this._calculatePortions(portionNames, 'h', e);
-    }
-    if (this._state.orientation === 'v') {
-      portions = this._calculatePortions(portionNames, 'v', e);
-    }
+    const portions = this._calculatePortions(
+      portionNames,
+      this._state.orientation,
+      e
+    );
 
     const {
       rangeFirst: rfPortion,
