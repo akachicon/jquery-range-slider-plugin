@@ -17,18 +17,20 @@ $('body').append(`
 $.fn.rangeSlider.defaults = {
   min: -10,
   max: 10,
-  step: 1,
+  step: 0.1,
   orientation: 'h',
   range: true,
   value: 0,
   values: [-5, 5],
   marks: {
+    '-10': { label: 'start', classList: 'custom-mark' },
     '-5': 'yes',
     0: `<svg width="16" height="16">
          <circle cx="8" cy="8" r="8" stroke="red" stroke-width="2" fill="yellow" />
          Sorry, your browser does not support inline SVG.
         </svg> `,
-    101: 'excluded'
+    10: 'enduuuuuuuuuuum',
+    11: 'excluded'
   }
 };
 

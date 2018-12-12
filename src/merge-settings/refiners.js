@@ -75,22 +75,39 @@ export const value = (
   { value: val }
 ) => {
   let checker = val;
-  const len = max - min;
 
   if (typeof newVal === 'number') {
     checker = newVal;
   }
 
+  let integers;
+  let multiplier = String(step).lastIndexOf('.');
+  let len = max - min;
+
+  const formatResult = result => (
+    +(result / (10 ** multiplier)).toFixed(multiplier)
+  );
+
+  if (multiplier === -1) {
+    multiplier = 0;
+  }
+  // eslint-disable-next-line prefer-const
+  integers = [min, max, step, checker, len]
+    .map(v => Math.round(v * (10 ** multiplier)));
+
+  // eslint-disable-next-line no-param-reassign
+  [min, max, step, checker, len] = integers;
+
   if (checker < min || step >= len) {
-    return min;
+    return formatResult(min);
   }
   if (checker > max) {
-    return max - (len % step);
+    return formatResult(max - (len % step));
   }
 
-  return min
+  return formatResult(min
     + step * Math.floor((checker - min) / step)
-    + step * ((checker - min) % step >= step / 2);
+    + step * ((checker - min) % step >= step / 2));
 };
 
 export const values = (

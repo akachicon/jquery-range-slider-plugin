@@ -1,11 +1,17 @@
 $thumbDiameter: 40px;
-$trackThickness: 40px;
+$trackThickness: 20px;
 
 .main {
   width: 600px;
   height: 600px;
   margin: 40px;
   background: #b2eeb0;
+}
+
+.custom-mark {
+  color: red;
+  font-weight: 600;
+  padding-left: .5em;
 }
 
 .rangeSliderContainer {
@@ -46,7 +52,7 @@ $trackThickness: 40px;
   }
 
   .range-inner {
-    transition: width .1s, height .1s;
+     transition: width .1s, height .1s;
 
     background: darkorange;
   }
@@ -57,6 +63,17 @@ $trackThickness: 40px;
     z-index: 1;
 
     background: yellow;
+  }
+
+  .marks-container {
+    display: inline-block;
+    position: relative;
+  }
+
+  .marks-entry {
+    display: inline-block;
+    position: absolute;
+    margin: 0;
   }
 
   &.horizontal {
@@ -85,12 +102,22 @@ $trackThickness: 40px;
       border-bottom-left-radius: $trackThickness;
       border-top-left-radius: $trackThickness;
     }
+
+    .marks-container {
+      margin-left: ($thumbDiameter - $trackThickness) / 2;
+      width: 100%;
+    }
+
+    .marks-entry {
+      transform: translate(-50%, ($thumbDiameter - $trackThickness) / 2);
+    }
   }
 
   &.vertical {
     padding-bottom: ($thumbDiameter + $trackThickness) / 2;
 
     .track {
+      display: inline-block;
       height: 100%;
       width: $trackThickness;
       border: {
@@ -111,6 +138,16 @@ $trackThickness: 40px;
     .range-outer {
       border-top-right-radius: $trackThickness;
       border-top-left-radius: $trackThickness;
+    }
+
+    .marks-container {
+      margin-top: ($thumbDiameter - $trackThickness) / 2;
+      height: 100%;
+      vertical-align: top;
+    }
+
+    .marks-entry {
+      transform: translate(($thumbDiameter - $trackThickness) / 2, -50%);
     }
   }
 }

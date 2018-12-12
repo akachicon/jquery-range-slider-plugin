@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import $ from 'jquery';
 import Thumb from './thumb';
+import MarkBar from './mark-bar';
 import './style.scss';
 
 const sswitch = state => possibilities => possibilities[state];
@@ -12,6 +13,7 @@ export default class Track {
     this.domElement = domElement;
     this.orientation = orientation;
     this.thumbs = [];
+    this.marks = {};
   }
 
   appendTo(parent) {
@@ -19,7 +21,8 @@ export default class Track {
       this.domElement,
       this.thumbs.map(thumb => (
         thumb.domElement
-      ))
+      )),
+      this.marks.domElement
     );
   }
 
@@ -38,6 +41,14 @@ export default class Track {
     this.thumbs.push(thumb);
 
     return thumb;
+  }
+
+  addMarks(config) {
+    const marks = new MarkBar({ track: this, ...config });
+
+    this.marks = marks;
+
+    return marks;
   }
 
   get length() {

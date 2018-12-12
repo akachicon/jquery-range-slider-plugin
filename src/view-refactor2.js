@@ -6,7 +6,7 @@ import AbstractView from './abstract-view';
 import Track from './track';
 import './style.scss';
 
-const POINTER_CHECK_INTERVAL = 50;
+const POINTER_CHECK_INTERVAL = 70;
 
 const sswitch = state => possibilities => possibilities[state];
 
@@ -48,6 +48,10 @@ export default class View extends AbstractView {
     ranges.outer.append(ranges.inner);
     track.domElement.append(ranges.outer);
 
+    const marks = track.addMarks({
+      className: 'marks-container'
+    });
+
     root.addClass('rangeSliderContainer');
     track.appendTo(root);
 
@@ -63,7 +67,7 @@ export default class View extends AbstractView {
     this._track = track;
     this._thumbs = thumbs;
     this._ranges = ranges;
-    this._marks = [];
+    this._marks = marks;
 
     this._onUpdate(initialState);
   }
@@ -190,7 +194,8 @@ export default class View extends AbstractView {
       values,
       range,
       orientation,
-      marks
+      marks,
+      hint
     } = data;
 
     const calcPortion = val => (
@@ -203,12 +208,14 @@ export default class View extends AbstractView {
     });
 
     if (orientation !== current.orientation) {
-      this._changeOrientation(orientation);
+      this._updateOrientation(orientation);
     }
-
-    // if (!Model.isEqual(marks, this._state.marks)) {
-    //   this._changeMarks(marks, min, max, o);
-    // }
+    if (hint !== current.hint) {
+      this._updateHint();
+    }
+    if (!Model.isEqual(marks, current.marks)) {
+      this._updateMarks({ marks, min, max });
+    }
 
     if (range) {
       thumbs.single.hide();
@@ -220,10 +227,10 @@ export default class View extends AbstractView {
       thumbs.second.setPortion(calcPortion(values[1]));
 
       ranges.inner[length](
-        calcPortion(values[0]) * track.length + thumbs.first.radius
+        calcPortion(values[0]) * track.length + track.thickness / 2
       );
       ranges.outer[length](
-        calcPortion(values[1]) * track.length + thumbs.second.radius
+        calcPortion(values[1]) * track.length + track.thickness / 2
       );
     } else {
       thumbs.single.show();
@@ -234,14 +241,14 @@ export default class View extends AbstractView {
       thumbs.single.setPortion(calcPortion(value));
 
       ranges.outer[length](
-        calcPortion(value) * track.length + thumbs.single.radius
+        calcPortion(value) * track.length + track.thickness / 2
       );
     }
 
     this._state = data;
   }
 
-  _changeOrientation(o) {
+  _updateOrientation(o) {
     const root = this._root;
     const track = this._track;
 
@@ -256,70 +263,12 @@ export default class View extends AbstractView {
     }
   }
 
-  _changeMarks(marks, min, max, o) {
-    const trackLength = {
-      h: this._track.width(),
-      v: this._track.height()
-    };
-    const thumbRadius = {
-      h: trackLength.v / 2,
-      v: trackLength.h / 2
-    };
+  _updateMarks({ marks, min, max }) {
+    this._marks.update({ marks, min, max });
+  }
 
-    const removeAllMarks = () => {
-      this._marks.forEach((mark) => {
-        // dom handling
-      });
-    };
+  _updateHint() {
 
-    const getIndentation = value => (
-      (value - min) / (max - min) * trackLength[o]
-    );
-
-    const marksPositions = Object.keys(marks);
-    const spans = [];
-
-    if (!marksPositions.length) {
-      removeAllMarks();
-    }
-
-    marksPositions.forEach((position) => {
-      const indent = getIndentation(+position);
-      let newMark;
-
-      if (o === 'h') {
-        newMark = `
-          <span 
-            style="
-              display: inline-block;
-              left:${indent + thumbRadius[o]}px; 
-              position: absolute;
-              text-align: center;
-              transform: translate(-50%);
-            "
-          >
-            ${marks[position]}
-          </span>`;
-      }
-      if (o === 'v') {
-        newMark = `
-          <span 
-            style="
-              display: inline-block;
-              top:${indent + thumbRadius[o]}px; 
-              position: absolute;
-              left: ${thumbRadius.v * 2}px;
-              transform: translate(.5em, -50%);
-            "
-          >
-            ${marks[position]}
-          </span>`;
-      }
-
-      spans.push(newMark);
-    });
-
-    this._root.append(spans.join(''));
   }
 
   _publishUpdate(data) {

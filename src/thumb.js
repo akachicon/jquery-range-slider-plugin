@@ -12,23 +12,17 @@ export default class Thumb {
 
   getPortion() {
     const track = this._track;
-    const axis = sswitch(track.orientation)({
-      h: 'left',
-      v: 'top',
-    });
+    const axis = this._indentDirection;
     const thumbLength = parseFloat(this.domElement.css(axis));
 
     return thumbLength / track.length;
   }
 
   setPortion(value) {
-    const track = this._track;
-    const axis = sswitch(track.orientation)({
-      h: 'left',
-      v: 'top',
-    });
-
-    this.domElement.css(axis, `${value * track.length}px`);
+    return this.domElement.css(
+      this._indentDirection,
+      `${value * this._track.length}px`
+    );
   }
 
   hide() {
@@ -39,7 +33,17 @@ export default class Thumb {
     this.domElement.css('display', 'block');
   }
 
+  get _indentDirection() {
+    return sswitch(this._track.orientation)({
+      h: 'left',
+      v: 'top',
+    });
+  }
+
   get radius() {
-    return this.domElement.width() / 2;
+    return sswitch(this._track.orientation)({
+      h: this.domElement.width() / 2,
+      v: this.domElement.height() / 2
+    });
   }
 }

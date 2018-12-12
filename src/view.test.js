@@ -1,4 +1,4 @@
-import View from './view-refactor';
+import View from './view-refactor2';
 
 describe('View', () => {
   describe('should create the dom structure on a passed jQeury element according to a supplied initial state', () => {
