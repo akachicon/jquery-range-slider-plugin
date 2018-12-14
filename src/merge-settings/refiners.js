@@ -80,8 +80,9 @@ export const value = (
     checker = newVal;
   }
 
-  let integers;
-  let multiplier = String(step).lastIndexOf('.');
+  const pointIndex = String(step).indexOf('.');
+
+  let multiplier = String(step).slice(pointIndex + 1).length;
   let len = max - min;
 
   const formatResult = result => (
@@ -92,7 +93,7 @@ export const value = (
     multiplier = 0;
   }
   // eslint-disable-next-line prefer-const
-  integers = [min, max, step, checker, len]
+  const integers = [min, max, step, checker, len]
     .map(v => Math.round(v * (10 ** multiplier)));
 
   // eslint-disable-next-line no-param-reassign
@@ -146,8 +147,7 @@ export const marks = (
     const filteredMks = {};
 
     Object.keys(mksHash).forEach((position) => {
-      // eslint-disable-next-line no-restricted-globals
-      if (isNaN(parseFloat(position))
+      if (Number.isNaN(parseFloat(position))
           || position > max
           || position < min) {
         return;

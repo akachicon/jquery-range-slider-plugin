@@ -33,7 +33,7 @@ export default (incoming, current, clone) => {
   );
 
   if (clone) {
-    // TODO: clone only those props that are not present in refined
+    // TODO: clone only those props that are not present in the refined
 
     return deepCopy({ ...current, ...refined });
   }

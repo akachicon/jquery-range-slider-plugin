@@ -33,23 +33,32 @@ export default class View extends AbstractView {
       'first',
       'second'
     ].forEach((name) => {
-      thumbs[name] = track.addThumb({
+      const thumb = track.addThumb({
         className: 'thumb'
       });
+
+      thumb.addHint({
+        className: 'hint'
+      });
+      thumb.onMouseOver = this._thumbOnMouseFactory('over', thumb);
+      thumb.onMouseOut = this._thumbOnMouseFactory('out', thumb);
+
+      thumbs[name] = thumb;
     });
 
     [
       'inner',
       'outer'
     ].forEach((name) => {
-      ranges[name] = div(`range-${name}`); // TODO
+      ranges[name] = div(`range-${name}`); // TODO: make it clear
     });
 
     ranges.outer.append(ranges.inner);
     track.domElement.append(ranges.outer);
 
     const marks = track.addMarks({
-      className: 'marks-container'
+      containerClassName: 'marks-container',
+      markClassName: 'marks-entry'
     });
 
     root.addClass('rangeSliderContainer');
@@ -75,15 +84,15 @@ export default class View extends AbstractView {
   _onMouseDown(e) {
     e.preventDefault();
 
-    const thumbs = this._thumbs;
-    const thumbsNames = Object.keys(thumbs);
+    const thumbs = Object.values(this._thumbs);
 
-    const shouldCheck = thumbsNames.some((name) => {
-      if (thumbs[name].domElement[0] === e.target) {
-        this._activeThumb = thumbs[name];
+    const shouldCheck = thumbs.some((thumb) => {
+      if (thumb.domElement[0] === e.target) {
+        this._activeThumb = thumb;
 
         return true;
       }
+
       return false;
     });
 
@@ -96,8 +105,10 @@ export default class View extends AbstractView {
     );
 
     body.on('mousemove', throttledCheck);
-    body.one('mouseup', () => {
+    body.one('mouseup', (evt) => {
       body.off('mousemove', throttledCheck);
+
+      this._attemptToHideHint(evt);
       this._activeThumb = null;
     });
   }
@@ -129,6 +140,8 @@ export default class View extends AbstractView {
     }
 
     this._checkPointerAndSendUpdate(e);
+    this._attemptToHideHint(e);
+    this._activeThumb = null;
   }
 
   _checkPointerAndSendUpdate(e) {
@@ -150,7 +163,7 @@ export default class View extends AbstractView {
     let valuesToSend = [];
 
     switch (this._activeThumb) {
-      case thumbs.first:
+      case thumbs.first: {
         if (portions.pointer > portions.second) {
           valuesToSend[0] = (values[1] - min) / (max - min);
           valuesToSend[1] = portions.pointer;
@@ -160,8 +173,8 @@ export default class View extends AbstractView {
           valuesToSend = [portions.pointer, null];
         }
         break;
-
-      case thumbs.second:
+      }
+      case thumbs.second: {
         if (portions.pointer < portions.first) {
           valuesToSend[0] = portions.pointer;
           valuesToSend[1] = (values[0] - min) / (max - min);
@@ -171,15 +184,30 @@ export default class View extends AbstractView {
           valuesToSend = [null, portions.pointer];
         }
         break;
-
-      default:
+      }
+      default: {
         valueToSend = portions.pointer;
+      }
     }
 
     this._publishUpdate({
       value: valueToSend,
       values: valuesToSend
     });
+  }
+
+  _thumbOnMouseFactory(event, thumb) {
+    const action = sswitch(event)({
+      over: 'show',
+      out: 'hide'
+    });
+
+    return (e) => {
+      if (!e.forced && this._activeThumb) {
+        return;
+      }
+      thumb.hint[action]();
+    };
   }
 
   _onUpdate(data) {
@@ -210,12 +238,10 @@ export default class View extends AbstractView {
     if (orientation !== current.orientation) {
       this._updateOrientation(orientation);
     }
-    if (hint !== current.hint) {
-      this._updateHint();
-    }
     if (!Model.isEqual(marks, current.marks)) {
       this._updateMarks({ marks, min, max });
     }
+    this._updateHint({ hint, value, values });
 
     if (range) {
       thumbs.single.hide();
@@ -267,12 +293,58 @@ export default class View extends AbstractView {
     this._marks.update({ marks, min, max });
   }
 
-  _updateHint() {
+  _updateHint({ hint, value, values }) {
+    const { single, first, second } = this._thumbs;
+    const thumbs = [single, first, second];
 
+    if (hint !== this._state.hint) {
+      if (hint) {
+        thumbs.forEach((thumb) => {
+          thumb.hint.enable();
+        });
+      } else {
+        thumbs.forEach((thumb) => {
+          thumb.hint.disable();
+        });
+      }
+    }
+
+    if (hint) {
+      single.hint.content = value;
+      [first.hint.content, second.hint.content] = values;
+    }
   }
 
   _publishUpdate(data) {
     this._publish('portionUpdate', data);
   }
-}
 
+  _attemptToHideHint(e) {
+    const { pageX, pageY } = e;
+    const thumb = this._activeThumb;
+
+    if (!thumb.contains({ pageX, pageY })) {
+      thumb.onMouseOut({ forced: true });
+    }
+  }
+
+  set _activeThumb(thumb) {
+    const obsoleteThumb = this._internalActiveThumb;
+
+    if (thumb === null) {
+      this._internalActiveThumb = null;
+
+      return;
+    }
+    this._internalActiveThumb = thumb;
+
+    if (!obsoleteThumb) return;
+
+    obsoleteThumb.onMouseOut({ forced: true });
+    thumb.onMouseOver({ forced: true });
+  }
+
+  get _activeThumb() {
+    return this._internalActiveThumb;
+  }
+}

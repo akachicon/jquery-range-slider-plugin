@@ -57,10 +57,9 @@ describe('merger', () => {
         const refinersExports = {};
         let buffer = [];
 
-        // eslint-disable-next-line no-return-assign
-        [1, 2, 3, 4, 5, 6].forEach(i => (
-          refinersExports[i] = () => buffer.push(`${i}`)
-        ));
+        [1, 2, 3, 4, 5, 6].forEach((i) => {
+          refinersExports[i] = () => buffer.push(`${i}`);
+        });
         // eslint-disable-next-line no-return-assign
         refinersExports.reset = () => (buffer = []);
         refinersExports.getCallData = () => buffer;

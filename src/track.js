@@ -7,23 +7,16 @@ import './style.scss';
 const sswitch = state => possibilities => possibilities[state];
 
 export default class Track {
-  constructor({ className, orientation = 'h' }) {
-    const domElement = $(`<div class="${className}"></div>`);
-
-    this.domElement = domElement;
+  constructor({ orientation = 'h', className = '' }) {
+    this.domElement = $(`<div class="${className}"></div>`);
     this.orientation = orientation;
+    this.pendingToAppend = [];
     this.thumbs = [];
-    this.marks = {};
+    this.marks = null;
   }
 
   appendTo(parent) {
-    parent.append(
-      this.domElement,
-      this.thumbs.map(thumb => (
-        thumb.domElement
-      )),
-      this.marks.domElement
-    );
+    parent.append(this.domElement, this.pendingToAppend);
   }
 
   getPointPortion({ pageX, pageY }) {
@@ -38,17 +31,35 @@ export default class Track {
   addThumb(config) {
     const thumb = new Thumb({ track: this, ...config });
 
+    this._appendToTrackParent(thumb.domElement);
     this.thumbs.push(thumb);
 
     return thumb;
   }
 
   addMarks(config) {
+    if (this.marks) {
+      return this.marks;
+    }
+
     const marks = new MarkBar({ track: this, ...config });
 
+    this._appendToTrackParent(marks.domElement);
     this.marks = marks;
 
     return marks;
+  }
+
+  _appendToTrackParent(domElement) {
+    const trackParent = this.domElement.parent();
+
+    if (!trackParent.length) {
+      this.pendingToAppend.push(domElement);
+
+      return;
+    }
+
+    trackParent.append(domElement);
   }
 
   get length() {

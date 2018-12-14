@@ -8,10 +8,16 @@ $trackThickness: 20px;
   background: #b2eeb0;
 }
 
+// comes from data
 .custom-mark {
   color: red;
   font-weight: 600;
   padding-left: .5em;
+}
+
+// comes from data
+.svg-container {
+  display: flex!important;
 }
 
 .rangeSliderContainer {
@@ -20,6 +26,7 @@ $trackThickness: 20px;
   position: relative;
 
   background: pink;
+
   .track {
     border-radius: $trackThickness;
     position: relative;
@@ -52,7 +59,7 @@ $trackThickness: 20px;
   }
 
   .range-inner {
-     transition: width .1s, height .1s;
+    transition: width .1s, height .1s;
 
     background: darkorange;
   }
@@ -63,6 +70,15 @@ $trackThickness: 20px;
     z-index: 1;
 
     background: yellow;
+  }
+
+  .hint {
+    position: absolute;
+    bottom: $thumbDiameter;
+    width: $thumbDiameter;
+    height: 2em;
+
+    background: fuchsia;
   }
 
   .marks-container {
@@ -104,7 +120,7 @@ $trackThickness: 20px;
     }
 
     .marks-container {
-      margin-left: ($thumbDiameter - $trackThickness) / 2;
+      margin-left: $trackThickness / 2;
       width: 100%;
     }
 
@@ -141,7 +157,7 @@ $trackThickness: 20px;
     }
 
     .marks-container {
-      margin-top: ($thumbDiameter - $trackThickness) / 2;
+      margin-top: $trackThickness / 2;
       height: 100%;
       vertical-align: top;
     }

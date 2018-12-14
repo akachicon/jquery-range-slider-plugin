@@ -5,13 +5,15 @@ import './style.scss';
 const sswitch = state => possibilities => possibilities[state];
 
 export default class MarkBar {
-  constructor({ track, className }) {
+  constructor({ track, containerClassName = '', markClassName = '' }) {
     this._track = track;
-    this.domElement = $(`<div class="${className}"></div>`);
+    this._markBaseClass = markClassName;
+    this.domElement = $(`<div class="${containerClassName}"></div>`);
   }
 
   update({ marks, min, max }) {
     const track = this._track;
+    const baseClass = this._markBaseClass;
     const marksPositions = Object.keys(marks);
     const markSpans = [];
 
@@ -36,7 +38,7 @@ export default class MarkBar {
 
       const indent = getPortion(+position);
       const indentDirection = this._indentDirection;
-      const markSpan = `<span class="marks-entry ${classList}" style="${indentDirection}:${indent}px;">${label}</span>`;
+      const markSpan = `<span class="${baseClass} ${classList}" style="${indentDirection}:${indent}px;">${label}</span>`;
 
       markSpans.push(markSpan);
     });
@@ -44,7 +46,7 @@ export default class MarkBar {
     let occupiedSpace = -1;
 
     this.domElement.html(markSpans.join(''));
-    this.domElement.children('span.marks-entry')
+    this.domElement.children(`span.${baseClass.split(' ').join('.')}`)
       // eslint-disable-next-line prefer-arrow-callback
       .each(function () {
         const spanSpace = sswitch(track.orientation)({
