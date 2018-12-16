@@ -47,10 +47,10 @@ export default class View extends AbstractView {
     });
 
     [
-      'inner',
-      'outer'
-    ].forEach((name) => {
-      ranges[name] = div(`range-${name}`); // TODO: make it clear
+      ['inner', 'range-inner'],
+      ['outer', 'range-outer']
+    ].forEach(([name, className]) => {
+      ranges[name] = div(className);
     });
 
     ranges.outer.append(ranges.inner);
