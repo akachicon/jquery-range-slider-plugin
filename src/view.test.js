@@ -120,51 +120,45 @@ describe('View', () => {
     // There should go tests for marks, maybe it would be possible to share them
     });
 
-    describe('when the hint update comes', () => {
-      describe('when { hint: on }', () => {
-        describe('the hint appears', () => {
-          test('on a thumb\'s mouseover when not dragging', () => {
+    describe('when { hint: on }', () => {
+      describe('the hint appears', () => {
+        test('on a thumb\'s mouseover when not dragging', () => {
 
-          });
-
-          test('on the active thumb change when dragging', () => {
-
-          });
         });
 
-        describe('the hint disappears', () => {
-          test('on a thumb\'s mouseout when not dragging', () => {
-
-          });
-
-          test('after dragging if the pointer is not in the thumb', () => {
-
-          });
-
-          test('when dragging if the active thumb changes', () => {
-
-          });
-        });
-
-        test('the hint doesn\'t disappear on a thumb\'s mouseout when dragging', () => {
+        test('on the active thumb change when dragging', () => {
 
         });
       });
 
-      describe('when { hint: off }', () => {
-        test('the hint doesn\'t appear in any cases', () => {
+      describe('the hint disappears', () => {
+        test('on a thumb\'s mouseout when not dragging', () => {
 
         });
+
+        test('after dragging if the pointer is not in the thumb', () => {
+
+        });
+
+        test('when dragging if the active thumb changes', () => {
+
+        });
+      });
+
+      test('the hint doesn\'t disappear on a thumb\'s mouseout when dragging', () => {
+
+      });
+    });
+
+    describe('when { hint: off }', () => {
+      test('the hint doesn\'t appear in any cases', () => {
+
       });
     });
   });
 
   describe('should check user input and publish an update event with the corresponding data', () => { // TODO: event mention
     describe('when track is clicked', () => {
-      test('when { range: false } the input data corresponds to \'value\' update', () => {
-
-      });
-
       describe('when { range: true }', () => {
         test('when the pointer is closer to the lesser thumb the input data corresponds to \'values[0]\' update', () => {
 
@@ -174,10 +168,14 @@ describe('View', () => {
 
         });
       });
+
+      test('when { range: false } the input data corresponds to \'value\' update', () => {
+
+      });
     });
 
     describe('when a thumb is dragged', () => {
-      test('when { range: false } the input data corresponds to \'value\' update', () => {
+      test('it should not go beyond the track length', () => {
 
       });
 
@@ -201,6 +199,10 @@ describe('View', () => {
 
           });
         });
+      });
+
+      test('when { range: false } the input data corresponds to \'value\' update', () => {
+
       });
     });
   });

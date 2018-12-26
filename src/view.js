@@ -30,7 +30,7 @@ export default class View extends AbstractView {
       )
     ));
 
-    this._root = root;
+    this._$root = root;
     this._state = initialState;
     this._onUpdate(initialState);
   }
@@ -118,13 +118,13 @@ export default class View extends AbstractView {
   }
 
   _onUpdate(data) {
-    this._root.removeClass('horizontal vertical');
+    this._$root.removeClass('horizontal vertical');
     if (data.orientation === 'h') {
-      this._root.addClass('horizontal');
+      this._$root.addClass('horizontal');
       this._thumbInnerRadius = this._track.height() / 2;
     }
     if (data.orientation === 'v') {
-      this._root.addClass('vertical');
+      this._$root.addClass('vertical');
       this._thumbInnerRadius = this._track.width() / 2;
     }
 

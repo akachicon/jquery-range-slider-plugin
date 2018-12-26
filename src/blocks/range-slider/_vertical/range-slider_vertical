@@ -1,0 +1,5 @@
+@import '../variables';
+
+.range-slider_vertical {
+  height: 100%;
+}

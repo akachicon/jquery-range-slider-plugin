@@ -1,0 +1,21 @@
+@import '../variables';
+
+.line_trimmed {
+  border: {
+    top-right-radius: 0;
+    bottom-right-radius: 0;
+  }
+}
+
+.line_vertical.line_trimmed {
+  border: {
+    top: {
+      left-radius: $line_thickness;
+      right-radius: $line_thickness;
+    }
+    bottom: {
+      left-radius: 0;
+      right-radius: 0;
+    }
+  }
+}

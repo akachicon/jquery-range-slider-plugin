@@ -1,13 +1,15 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import $ from 'jquery';
 import Model from './model';
-import View from './view-refactor2';
+import View from './view-refactor3';
 import Controller from './controller';
 
 export default function (options, root) {
   const model = new Model(options);
   const view = new View(model, root, options);
-  const controller = new Controller(model, view);
+  // const controller = new Controller(model, view);
+
+  // add block with view params
 
   // let value = 0.5;
   //

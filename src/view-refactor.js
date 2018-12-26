@@ -12,7 +12,7 @@ export default class View extends AbstractView {
     super(model);
 
     this._model = model;
-    this._root = root;
+    this._$root = root;
     this._state = {};
 
     const div = className => (
@@ -42,13 +42,13 @@ export default class View extends AbstractView {
       this._thumbs[name] = div('thumb');
     });
 
-    this._root.addClass('rangeSliderContainer');
-    this._root.append(
+    this._$root.addClass('rangeSliderContainer');
+    this._$root.append(
       this._track,
       thumbNames.map(name => this._thumbs[name])
     );
 
-    this._root.on(
+    this._$root.on(
       'mousedown',
       this._onMouseDown.bind(this)
     );
@@ -292,7 +292,7 @@ export default class View extends AbstractView {
   }
 
   _changeOrientation(o) {
-    const root = this._root;
+    const root = this._$root;
 
     root.removeClass('horizontal vertical');
     if (o === 'h') {
@@ -366,7 +366,7 @@ export default class View extends AbstractView {
       spans.push(newMark);
     });
 
-    this._root.append(spans.join(''));
+    this._$root.append(spans.join(''));
   }
 
   _setThumbIndentation(thumbName, val, min, max, orientation) {

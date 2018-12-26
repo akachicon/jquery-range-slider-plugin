@@ -15,7 +15,7 @@ export default class View extends AbstractView {
     super(model);
 
     this._model = model;
-    this._root = root;
+    this._$root = root;
     this._state = {};
 
     const div = className => (
@@ -275,7 +275,7 @@ export default class View extends AbstractView {
   }
 
   _updateOrientation(o) {
-    const root = this._root;
+    const root = this._$root;
     const track = this._track;
 
     root.removeClass('horizontal vertical');

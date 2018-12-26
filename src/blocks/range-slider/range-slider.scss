@@ -1,0 +1,9 @@
+@import 'variables';
+
+.range-slider {
+  box-sizing: border-box;
+  line-height: 0;
+  padding: $range-slider_padding;
+}
+
+@import '_vertical/range-slider_vertical';
