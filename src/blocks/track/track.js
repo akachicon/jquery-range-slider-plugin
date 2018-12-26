@@ -40,8 +40,6 @@ export default class Track extends Block {
     [this.fill, this.mask]
       .forEach((filler) => {
         Object.defineProperty(filler, 'portion', {
-          configurable: true,
-
           set(fraction) {
             // eslint-disable-next-line no-param-reassign
             filler.line.length = path.thickness / 2

@@ -2,6 +2,7 @@ export default {
   apply() {
     Object.defineProperties(this, {
       length: {
+        configurable: true,
         set(pixels) {
           this.$html.height(pixels);
         },
@@ -10,6 +11,7 @@ export default {
         }
       },
       thickness: {
+        configurable: true,
         get() {
           return this.$html.width();
         }

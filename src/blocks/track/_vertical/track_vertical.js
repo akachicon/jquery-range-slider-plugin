@@ -14,8 +14,6 @@ export default {
       this.fill.line,
       this.mask.line
     ].forEach((line) => {
-      debugger;
-
       line.removeMod('line_vertical');
     });
   }
