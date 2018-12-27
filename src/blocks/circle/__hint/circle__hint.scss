@@ -1,0 +1,6 @@
+@import '../variables';
+
+.circle__hint {
+  position: absolute;
+  right: $circle_diameter;
+}

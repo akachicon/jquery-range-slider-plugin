@@ -1,10 +1,10 @@
 import { Block } from '../../../bem';
 
-export default class TrackFiller extends Block {
+export default class CircleHint extends Block {
   constructor($blockHtml) {
     super();
 
-    $blockHtml.addClass('track__filler');
+    $blockHtml.addClass('circle__hint');
     this._$html = $blockHtml;
   }
 

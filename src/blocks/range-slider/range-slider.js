@@ -3,9 +3,8 @@ import $ from 'jquery';
 // import throttle from 'lodash.throttle';
 import { createBlock, Block } from '../../bem';
 import Track from '../track/track';
-// import WithHint from '../blocks/with-hint';
+import Circle from '../circle/circle';
 // import Marks from '../blocks/marks';
-// import RangeSliderThumb from './__thumb';
 import './range-slider.scss';
 
 export default class RangeSlider extends Block {
@@ -14,6 +13,7 @@ export default class RangeSlider extends Block {
 
     const $html = $('<div class="range-slider"></div>');
     const track = createBlock({ Block: Track, $parent: $html });
+    const circle = createBlock({ Block: Circle, $parent: $html });
 
     track.fill.line.$html.css('background', 'yellow');
     track.mask.line.$html.css('background', 'orange');
@@ -27,22 +27,24 @@ export default class RangeSlider extends Block {
     this.track.fill.portion = 0.6655555555555;
     this.track.mask.portion = 0.3333333333333;
 
-    setTimeout(() => {
-      this.track.applyMod('track_range');
-    }, 1500);
+    // setTimeout(() => {
+    //   this.track.applyMod('track_range');
+    // }, 1500);
+    //
+    // setTimeout(() => {
+    //   this.applyMod('range-slider_vertical');
+    //   this.track.applyMod('track_vertical');
+    //   this.track.fill.portion = 0.66666666666;
+    //   this.track.mask.portion = 0.33333333333;
+    // }, 3000);
+    //
+    // setTimeout(() => {
+    //   this.removeMod('range-slider_vertical');
+    //   this.track.removeMod('track_vertical');
+    //   this.track.fill.portion = 0.5;
+    //   this.track.mask.portion = 0.25;
+    // }, 4500);
 
-    setTimeout(() => {
-      this.applyMod('range-slider_vertical');
-      this.track.applyMod('track_vertical');
-      this.track.fill.portion = 0.66666666666;
-      this.track.mask.portion = 0.33333333333;
-    }, 3000);
 
-    setTimeout(() => {
-      this.removeMod('range-slider_vertical');
-      this.track.removeMod('track_vertical');
-      this.track.fill.portion = 0.5;
-      this.track.mask.portion = 0.25;
-    }, 4500);
   }
 }

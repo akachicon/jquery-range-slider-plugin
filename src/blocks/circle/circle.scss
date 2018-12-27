@@ -1,0 +1,13 @@
+@import 'variables';
+
+.circle {
+  position: absolute; // TODO: assign in slider element
+  top: 0; // TODO: assign in slider element
+  left: 0; // TODO: assign in slider element
+  width: $circle_diameter;
+  height: $circle_diameter;
+  border-radius: 50%;
+  background: palevioletred;
+}
+
+@import './__hint/circle__hint';
