@@ -91,6 +91,7 @@ export const createElementFromBlock = ({
 }) => {
   const element = new Element(block.$html, args);
 
+  element.$html = block.$html;
   didMountQueue.push(element);
 
   return element;

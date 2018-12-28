@@ -2,5 +2,11 @@
 
 .circle__hint {
   position: absolute;
-  right: $circle_diameter;
+  left: $circle_diameter / 2;
+  bottom: $circle_diameter;
+  transform: translate(-50%);
+  //visibility: hidden; // TODO
 }
+
+@import './_left/circle__hint_left';
+@import './_shown/circle__hint_shown';

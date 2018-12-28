@@ -1,5 +1,13 @@
 .hint {
-  width: 35px;
-  height: 20px;
-  background: limegreen;
+  position: relative;
+  line-height: normal;
+  padding: .5em;
+  border-radius: .3em;
+  background: deepskyblue;
 }
+
+.hint:after {
+
+}
+
+@import './_left/hint_left';

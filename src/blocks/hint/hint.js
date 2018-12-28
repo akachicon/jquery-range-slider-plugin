@@ -1,13 +1,21 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import $ from 'jquery';
-import { Block } from '../../bem';
+import { createBlock, Block } from '../../bem';
+import HintContent from './__content/hint__content';
+import HintArrow from './__arrow/hint__arrow';
 import './hint.scss';
 
 export default class Hint extends Block {
   constructor(setHtml) {
     super();
 
-    this.$container = $('<div class="hint">Hint</div>');
+    const $html = $('<div class="hint"></div>');
+    const hintContent = createBlock({ Block: HintContent, $parent: $html });
+    const hintArrow = createBlock({ Block: HintArrow, $parent: $html });
+
+    this.$container = $html;
+    this.content = hintContent;
+    this.arrow = hintArrow;
 
     setHtml(this.$container);
   }

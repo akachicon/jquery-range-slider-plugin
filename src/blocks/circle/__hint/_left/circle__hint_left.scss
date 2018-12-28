@@ -1,0 +1,8 @@
+@import '../../variables';
+
+.circle__hint_left {
+  left: auto;
+  right: $circle_diameter;
+  bottom: $circle_diameter / 2;
+  transform: translate(0, 50%);
+}

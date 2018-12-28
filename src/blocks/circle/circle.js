@@ -10,15 +10,15 @@ export default class Circle extends Block {
     super();
 
     const $html = $('<div class="circle"></div>');
-    const hintBlock = createBlock({ Block: Hint, $parent: $html });
-    const hintElement = createElementFromBlock({
-      block: hintBlock,
+    const hint = createBlock({ Block: Hint, $parent: $html });
+    const circleHint = createElementFromBlock({
+      block: hint,
       Element: TrackHint
     });
 
     this.hint = {
-      block: hintBlock,
-      element: hintElement
+      hint,
+      circleHint
     };
 
     setHtml($html);
