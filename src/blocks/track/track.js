@@ -1,63 +1,76 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import $ from 'jquery';
-import { createBlock, createElementFromBlock, Block } from '../../bem';
+import { createEntity, addMix, Modifiable } from '../../bem';
 import TrackFiller from './__filler/track__filler';
-import trackRange from './_range/track_range';
 import trackVertical from './_vertical/track_vertical';
 import Line from '../line/line';
 import './track.scss';
 
-export default class Track extends Block {
+export default class Track extends Modifiable {
   constructor(setHtml) {
     super();
 
-    const path = createBlock({ Block: Line });
-    const fill = createBlock({ Block: Line, $parent: path.$html });
-    const mask = createBlock({ Block: Line, $parent: path.$html });
+    const $html = ('<div class="track"></div>');
+    const path = createEntity({ Entity: Line, $parent: $html });
+    const fill = createEntity({ Entity: Line, $parent: path.$html });
 
-    path.$html.addClass('track');
+    path.applyMod('line_rounded');
 
     this.path = path;
     this.fill = {
       line: fill,
-      trackFiller: createElementFromBlock({
-        Element: TrackFiller,
-        block: fill
+      trackFiller: addMix({
+        Mix: TrackFiller,
+        entity: fill
       })
     };
-    this.mask = {
-      line: mask,
-      trackFiller: createElementFromBlock({
-        Element: TrackFiller,
-        block: mask
-      })
-    };
-
-    this.fill.line.applyMod('line_trimmed');
-    this.mask.line.applyMod('line_trimmed');
-    this.mask.trackFiller.hide();
-
-    [this.fill, this.mask]
-      .forEach((filler) => {
-        Object.defineProperty(filler, 'portion', {
-          set(fraction) {
-            // eslint-disable-next-line no-param-reassign
-            filler.line.length = path.thickness / 2
-              + (path.length - path.thickness) * fraction;
-          },
-
-          get() {
-            return (filler.line.length - path.thickness / 2)
-              / (path.length - path.thickness);
-          }
-        });
-      });
+    this._fillStartPortion = null;
+    this._fillEndPortion = null;
 
     setHtml(path.$html);
+  }
+
+  set fillStartPortion(fraction) {
+    let fillIndent = 0;
+
+    if (fraction !== null) {
+      const { path } = this;
+      const pLength = path.lengthPx;
+      const pThickness = path.thicknessPx;
+
+      fillIndent = (fraction * (pLength - pThickness)
+        + pThickness / 2) / pLength * 100;
+    }
+    this.fill.trackFiller.marginPct = fillIndent;
+    this._fillStartPortion = fraction;
+  }
+
+  get fillStartPortion() {
+    return this._fillStartPortion;
+  }
+
+  set fillEndPortion(fraction) {
+    const { path, _fillStartPortion } = this;
+    const pLength = path.lengthPx;
+    const pThickness = path.thicknessPx;
+
+    let fillLength;
+
+    if (_fillStartPortion === null) {
+      fillLength = (fraction * (pLength - pThickness)
+        + pThickness / 2) / pLength * 100;
+    } else {
+      fillLength = (fraction - _fillStartPortion)
+        * (pLength - pThickness) / pLength * 100;
+    }
+
+    this.fill.line.lengthPct = fillLength;
+    this._endPortion = fraction;
+  }
+
+  get endPortion() {
+    return this._fillEndPortion;
   }
 }
 
 Object.assign(Track.prototype, {
-  track_range: trackRange,
   track_vertical: trackVertical
 });

@@ -3,14 +3,14 @@ import $ from 'jquery';
 import './styles.scss';
 // import '../range-slider-plugin';
 
-import { createBlock } from '../bem';
+import { createEntity } from '../bem';
 import RangeSlider from '../blocks/range-slider/range-slider';
 
 $('body').append('<div class="test-slider-container"></div>');
 
-const rangeSlider = createBlock({
-  $parent: $('.test-slider-container'),
-  Block: RangeSlider
+const rangeSlider = createEntity({
+  Entity: RangeSlider,
+  $parent: $('.test-slider-container')
 });
 
 // $('body').append(`

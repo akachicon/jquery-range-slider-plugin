@@ -1,30 +1,45 @@
 let didMountQueue = [];
 
+didMountQueue.idle = true;
+
 const mount = ($html, $parent) => {
   $parent.append($html);
 };
 
-export class Block {
-  applyMod(modNames) {
-    const names = Block.extractNames(modNames);
+export class Modifiable {
+  constructor() {
+    this.appliedMods = [];
+  }
 
-    this.$html.first().addClass(names);
+  applyMod(modNames) {
+    const names = Modifiable.extractNames(modNames);
+
     names.split(' ').forEach((mod) => {
       if (this[mod]) {
         this[mod].apply.call(this);
       }
+      this.appliedMods.push(mod);
     });
+    this.$html.addClass(names);
   }
 
   removeMod(modNames) {
-    const names = Block.extractNames(modNames);
+    const names = Modifiable.extractNames(modNames);
+    const { appliedMods } = this;
 
-    this.$html.first().removeClass(names);
     names.split(' ').forEach((mod) => {
       if (this[mod]) {
         this[mod].remove.call(this);
       }
+      this.appliedMods = appliedMods
+        .filter(applied => applied !== mod);
     });
+    this.$html.removeClass(names);
+  }
+
+  hasMod(mod) {
+    return this.appliedMods
+      .some(applied => applied === mod);
   }
 
   static extractNames(modNames) {
@@ -38,61 +53,58 @@ export class Block {
   }
 }
 
-export const createBlock = ({
+export const createEntity = ({
   $parent,
-  // eslint-disable-next-line no-shadow
-  Block,
+  Entity,
   args
 }) => {
   // Mount after html initialization to ensure
   // that no nodes will accidentally be mounted
   // to the real DOM while others are not created.
 
-  // When use createBlock inside another block
+  // When use createEntity inside another entity
   // it's assumed that the parent (if exists) will
-  // be chosen from the block html.
+  // be chosen from the entity html.
 
-  let $blockHtml;
+  let $entityHtml;
   let willBeAppendedToRealDom = false;
 
-  if (!didMountQueue.length) {
+  if (didMountQueue.idle) {
     willBeAppendedToRealDom = true;
+    didMountQueue.idle = false;
   }
 
   const setHtml = ($html) => {
-    $blockHtml = $html;
+    $entityHtml = $html;
   };
-  const block = new Block(setHtml, args);
+  const entity = new Entity(setHtml, args);
 
-  if ($parent) {
-    mount($blockHtml, $parent);
-  }
-  block.$parent = $parent;
-  block.$html = $blockHtml;
-
-  didMountQueue.push(block);
+  mount($entityHtml, $parent);
+  entity.$html = $entityHtml;
+  didMountQueue.push(entity);
 
   if (willBeAppendedToRealDom) {
-    didMountQueue.forEach((entity) => {
-      if (entity.didMount) {
-        entity.didMount();
+    didMountQueue.forEach((ent) => {
+      if (ent.didMount) {
+        ent.didMount();
       }
     });
     didMountQueue = [];
+    didMountQueue.idle = true;
   }
 
-  return block;
+  return entity;
 };
 
-export const createElementFromBlock = ({
-  block,
-  Element,
+export const addMix = ({
+  entity,
+  Mix,
   args
 }) => {
-  const element = new Element(block.$html, args);
+  const mix = new Mix(entity.$html, args);
 
-  element.$html = block.$html;
-  didMountQueue.push(element);
+  mix.$html = entity.$html;
+  didMountQueue.push(mix);
 
-  return element;
+  return mix;
 };

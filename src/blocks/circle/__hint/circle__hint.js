@@ -1,6 +1,6 @@
-import { Block } from '../../../bem';
+import { Modifiable } from '../../../bem';
 
-export default class CircleHint extends Block {
+export default class CircleHint extends Modifiable {
   constructor($blockHtml) {
     super();
 

@@ -1,31 +1,30 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import $ from 'jquery';
 // import throttle from 'lodash.throttle';
-import { createBlock, Block } from '../../bem';
+import { createEntity, Modifiable } from '../../bem';
 import Track from '../track/track';
-import Circle from '../circle/circle';
+// import Circle from '../circle/circle';
 // import Marks from '../blocks/marks';
 import './range-slider.scss';
 
-export default class RangeSlider extends Block {
+export default class RangeSlider extends Modifiable {
   constructor(setHtml) {
     super();
 
     const $html = $('<div class="range-slider"></div>');
-    const track = createBlock({ Block: Track, $parent: $html });
-    const circle = createBlock({ Block: Circle, $parent: $html });
-
-    track.fill.line.$html.css('background', 'yellow');
-    track.mask.line.$html.css('background', 'orange');
-
+    const track = createEntity({ Entity: Track, $parent: $html });
+    // const circle = createEntity({ Block: Circle, $parent: $html });
+    //
+    track.fill.line.$html.css('background', 'cornflowerblue');
+    //
     this.track = track;
 
     setHtml($html);
   }
 
   didMount() {
-    this.track.fill.portion = 0.6655555555555;
-    this.track.mask.portion = 0.3333333333333;
+    this.track.fillStartPortion = 0.3333333333333;
+    this.track.fillEndPortion = 0.6666666666666;
 
     // setTimeout(() => {
     //   this.track.applyMod('track_range');
@@ -44,7 +43,5 @@ export default class RangeSlider extends Block {
     //   this.track.fill.portion = 0.5;
     //   this.track.mask.portion = 0.25;
     // }, 4500);
-
-
   }
 }

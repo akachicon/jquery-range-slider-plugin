@@ -1,27 +1,54 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import $ from 'jquery';
-import { Block } from '../../bem';
+import { Modifiable } from '../../bem';
 import lineVertical from './_vertical/line_vertical';
 import './line.scss';
 
-export default class Line extends Block {
+export default class Line extends Modifiable {
   constructor(setHtml) {
     super();
 
+    this._lengthPct = 100;
     setHtml($('<div class="line"></div>'));
   }
 
-  set length(pixels) {
-    this.$html.width(pixels);
+  set lengthPct(pct) {
+    const { $html } = this;
+
+    this._lengthPct = pct;
+    if (this.hasMod('line_vertical')) {
+      $html.height(`${pct}%`);
+
+      return;
+    }
+    $html.width(`${pct}%`);
   }
 
-  get length() {
-    return this.$html.width();
+  get lengthPct() {
+    return this._lengthPct;
   }
 
-  get thickness() {
-    return this.$html.height();
+  get lengthPx() {
+    const { $html } = this;
+
+    if (this.hasMod('line_vertical')) {
+      return $html.height();
+    }
+
+    return $html.width();
+  }
+
+  get thicknessPx() {
+    const { $html } = this;
+
+    if (this.hasMod('line_vertical')) {
+      return $html.width();
+    }
+
+    return $html.height();
   }
 }
 
-Line.prototype.line_vertical = lineVertical;
+Object.assign(Line.prototype, {
+  line_vertical: lineVertical
+});

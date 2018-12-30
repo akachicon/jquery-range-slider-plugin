@@ -1,13 +1,13 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import $ from 'jquery';
-import { createBlock, createMixin } from '../bem';
+import { createEntity, createMixin } from '../bem';
 
 export default class TestBlock {
   constructor(setHtml) {
     const $html = $('<div class="test-block">test block<div>test block inner html</div></div>');
     const childrenParent = $html.children().first();
 
-    this._anotherTestBlock = createBlock({
+    this._anotherTestBlock = createEntity({
       $parent: childrenParent,
       BlockName: AnotherTestBlock
     });

@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import $ from 'jquery';
 import AbstractView from './abstract-view';
-import { createBlock, createMixin, Block } from './bem';
+import { createEntity, createMixin, Modifiable } from './bem';
 import RangeSlider from './blocks/range-slider/range-slider';
 
 const POINTER_CHECK_INTERVAL = 70;
@@ -16,7 +16,7 @@ export default class View extends AbstractView {
     this._$root = $root;
     this._state = {};
 
-    this._rangeSlider = createBlock({ $parent: $root, Block: RangeSlider });
+    this._rangeSlider = createEntity({ $parent: $root, Block: RangeSlider });
 
     // const track = new Track({
     //   className: 'track'

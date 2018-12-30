@@ -1,30 +1,14 @@
 export default {
   apply() {
-    Object.defineProperties(this, {
-      length: {
-        configurable: true,
-        set(pixels) {
-          this.$html.height(pixels);
-        },
-        get() {
-          return this.$html.height();
-        }
-      },
-      thickness: {
-        configurable: true,
-        get() {
-          return this.$html.width();
-        }
-      }
-    });
+    const { $html, _lengthPct } = this;
 
-    this.$html.css('width', '');
+    $html.css('width', '');
+    $html.height(`${_lengthPct}%`);
   },
-
   remove() {
-    delete this.length;
-    delete this.thickness;
+    const { $html, _lengthPct } = this;
 
-    this.$html.css('height', '');
+    $html.css('height', '');
+    $html.width(`${_lengthPct}%`);
   }
 };

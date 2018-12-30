@@ -5,9 +5,8 @@
   box-sizing: border-box;
   width: 100%;
   height: $line_thickness;
-  border-radius: $line_thickness / 2;
   background: red;
 }
 
-@import '_trimmed/line_trimmed';
+@import '_rounded/line_rounded';
 @import '_vertical/line_vertical';

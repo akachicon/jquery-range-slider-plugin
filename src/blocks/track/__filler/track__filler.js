@@ -1,18 +1,27 @@
-import { Block } from '../../../bem';
+import { Modifiable } from '../../../bem';
 
-export default class TrackFiller extends Block {
-  constructor($blockHtml) {
+export default class TrackFiller extends Modifiable {
+  constructor($entityHtml) {
     super();
 
-    $blockHtml.addClass('track__filler');
-    this._$html = $blockHtml;
+    this._marginPct = 0;
+    $entityHtml.addClass('track__filler');
   }
 
-  show() { // TODO: should be modifier
-    this._$html.css('visibility', 'visible');
+  set marginPct(pct) {
+    const { $html } = this;
+
+    if (this.hasMod('track__filler_vertical')) {
+      $html.css('margin-top', pct);
+      $html.css('margin-left', 0);
+    } else {
+      $html.css('margin-top', 0);
+      $html.css('margin-left', pct);
+    }
+    this._marginPct = pct;
   }
 
-  hide() {
-    this._$html.css('visibility', 'hidden');
+  get marginPct() {
+    return this._marginPct;
   }
 }
