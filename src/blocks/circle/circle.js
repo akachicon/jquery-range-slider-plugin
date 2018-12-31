@@ -1,8 +1,8 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import $ from 'jquery';
 import { createEntity, addMix, Modifiable } from '../../bem';
-import TrackHint from './__hint/circle__hint';
-import Hint from '../hint/hint';
+// import TrackHint from './__hint/circle__hint';
+// import Hint from '../hint/hint';
 import './circle.scss';
 
 export default class Circle extends Modifiable {
@@ -10,16 +10,16 @@ export default class Circle extends Modifiable {
     super();
 
     const $html = $('<div class="circle"></div>');
-    const hint = createEntity({ Block: Hint, $parent: $html });
-    const circleHint = addMix({
-      block: hint,
-      Element: TrackHint
-    });
+    // const hint = createEntity({ Entity: Hint, $parent: $html });
+    // const circleHint = addMix({
+    //   block: hint,
+    //   Element: TrackHint
+    // });
 
-    this.hint = {
-      hint,
-      circleHint
-    };
+    // this.hint = {
+    //   hint,
+    //   circleHint
+    // };
 
     setHtml($html);
   }
