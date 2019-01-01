@@ -1,0 +1,11 @@
+@import '../../variables';
+
+.hint__content_left:after {
+  left: 100%;
+  top: 50%;
+  border: {
+    top-color: transparent;
+    left-color: deepskyblue;
+  }
+  transform: translate(-$hint_arrow-indent, -50%);
+}

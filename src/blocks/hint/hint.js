@@ -2,7 +2,7 @@
 import $ from 'jquery';
 import { createEntity, Modifiable } from '../../bem';
 import HintContent from './__content/hint__content';
-import HintArrow from './__arrow/hint__arrow';
+import HintLeft from './_left/hint_left';
 import './hint.scss';
 
 export default class Hint extends Modifiable {
@@ -10,21 +10,20 @@ export default class Hint extends Modifiable {
     super();
 
     const $html = $('<div class="hint"></div>');
-    const hintContent = createEntity({ Block: HintContent, $parent: $html });
-    const hintArrow = createEntity({ Block: HintArrow, $parent: $html });
 
-    this.$container = $html;
-    this.content = hintContent;
-    this.arrow = hintArrow;
-
-    setHtml(this.$container);
+    this.content = createEntity({ Entity: HintContent, $parent: $html });
+    setHtml($html);
   }
 
-  set content(data) {
-    this.$container.text(data);
+  set text(data) {
+    this.content.text = data;
   }
 
-  get content() {
-    return this.$container.text();
+  get text() {
+    return this.content.text;
   }
 }
+
+Object.assign(Hint.prototype, {
+  hint_left: HintLeft
+});

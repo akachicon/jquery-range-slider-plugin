@@ -14,19 +14,20 @@ export class Modifiable {
   applyMod(modNames) {
     const names = Modifiable.extractNames(modNames);
 
+    this.$html.addClass(names);
     names.split(' ').forEach((mod) => {
       if (this[mod]) {
         this[mod].apply.call(this);
       }
       this.appliedMods.push(mod);
     });
-    this.$html.addClass(names);
   }
 
   removeMod(modNames) {
     const names = Modifiable.extractNames(modNames);
     const { appliedMods } = this;
 
+    this.$html.removeClass(names);
     names.split(' ').forEach((mod) => {
       if (this[mod]) {
         this[mod].remove.call(this);
@@ -34,7 +35,6 @@ export class Modifiable {
       this.appliedMods = appliedMods
         .filter(applied => applied !== mod);
     });
-    this.$html.removeClass(names);
   }
 
   hasMod(mod) {

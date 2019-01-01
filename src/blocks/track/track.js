@@ -1,6 +1,9 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import $ from 'jquery';
 import { createEntity, addMix, Modifiable } from '../../bem';
+import TrackPath from './__path/track__path';
 import TrackFiller from './__filler/track__filler';
-import trackVertical from './_vertical/track_vertical';
+import TrackVertical from './_vertical/track_vertical';
 import Line from '../line/line';
 import './track.scss';
 
@@ -8,13 +11,19 @@ export default class Track extends Modifiable {
   constructor(setHtml) {
     super();
 
-    const $html = ('<div class="track"></div>');
+    const $html = $('<div class="track"></div>');
     const path = createEntity({ Entity: Line, $parent: $html });
     const fill = createEntity({ Entity: Line, $parent: path.$html });
 
     path.applyMod('line_rounded');
 
-    this.path = path;
+    this.path = {
+      line: path,
+      trackPath: addMix({
+        Mix: TrackPath,
+        entity: path
+      })
+    };
     this.fill = {
       line: fill,
       trackFiller: addMix({
@@ -23,24 +32,30 @@ export default class Track extends Modifiable {
       })
     };
     this._fillStartPortion = null;
-    this._fillEndPortion = null;
+    this._fillEndPortion = 0;
 
-    setHtml(path.$html);
+    setHtml($html);
   }
 
   set fillStartPortion(fraction) {
+    const { _fillEndPortion } = this;
     let fillIndent = 0;
 
     if (fraction !== null) {
-      const { path } = this;
-      const pLength = path.lengthPx;
-      const pThickness = path.thicknessPx;
+      const {
+        lengthPx: pLength,
+        thicknessPx: pThickness
+      } = this.path.line;
 
-      fillIndent = (fraction * (pLength - pThickness)
-        + pThickness / 2) / pLength * 100;
+      fillIndent = pThickness / 2 + fraction * (pLength - pThickness);
     }
-    this.fill.trackFiller.marginPct = fillIndent;
+
+    this.fill.trackFiller.marginPx = fillIndent;
     this._fillStartPortion = fraction;
+
+    if (_fillEndPortion !== null) {
+      this.fillEndPortion = _fillEndPortion;
+    }
   }
 
   get fillStartPortion() {
@@ -49,8 +64,10 @@ export default class Track extends Modifiable {
 
   set fillEndPortion(fraction) {
     const { path, _fillStartPortion } = this;
-    const pLength = path.lengthPx;
-    const pThickness = path.thicknessPx;
+    const {
+      lengthPx: pLength,
+      thicknessPx: pThickness
+    } = path.line;
 
     let fillLength;
 
@@ -63,14 +80,14 @@ export default class Track extends Modifiable {
     }
 
     this.fill.line.lengthPct = fillLength;
-    this._endPortion = fraction;
+    this._fillEndPortion = fraction;
   }
 
-  get endPortion() {
+  get fillEndPortion() {
     return this._fillEndPortion;
   }
 }
 
 Object.assign(Track.prototype, {
-  track_vertical: trackVertical
+  track_vertical: TrackVertical
 });

@@ -1,0 +1,7 @@
+@import '../variables';
+
+.track_vertical {
+  display: inline-block;
+  width: $track_thickness;
+  height: 100%;
+}

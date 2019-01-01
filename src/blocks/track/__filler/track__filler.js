@@ -1,27 +1,30 @@
 import { Modifiable } from '../../../bem';
+import TrackFillerVertical from './_vertical/track__filler_vertical';
 
 export default class TrackFiller extends Modifiable {
   constructor($entityHtml) {
     super();
 
-    this._marginPct = 0;
+    this._marginPx = 0;
     $entityHtml.addClass('track__filler');
   }
 
-  set marginPct(pct) {
+  set marginPx(px) {
     const { $html } = this;
 
     if (this.hasMod('track__filler_vertical')) {
-      $html.css('margin-top', pct);
-      $html.css('margin-left', 0);
+      $html.css('margin-top', `${px}px`);
     } else {
-      $html.css('margin-top', 0);
-      $html.css('margin-left', pct);
+      $html.css('margin-left', `${px}px`);
     }
-    this._marginPct = pct;
+    this._marginPx = px;
   }
 
   get marginPct() {
-    return this._marginPct;
+    return this._marginPx;
   }
 }
+
+Object.assign(TrackFiller.prototype, {
+  track__filler_vertical: TrackFillerVertical
+});

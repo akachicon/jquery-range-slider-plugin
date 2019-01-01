@@ -1,12 +1,8 @@
+@import '../variables';
+
 .hint_left {
-
-}
-
-.hint_left:after {
-  content: '';
-  box-sizing: border-box;
-  position: absolute;
-  border: .5em solid transparent;
-  border-left: .5em solid deepskyblue;
-  right: -1em;
+  padding: {
+    bottom: 0;
+    right: $hint_arrow-indent;
+  }
 }

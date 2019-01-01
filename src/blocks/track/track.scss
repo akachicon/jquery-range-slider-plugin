@@ -1,6 +1,11 @@
+@import '../variables';
+
 .track {
   display: inline-block;
-  overflow: hidden;
+  width: 100%;
+  height: $track_thickness;
 }
 
+@import '_vertical/track_vertical';
+@import '__path/track__path';
 @import '__filler/track__filler';

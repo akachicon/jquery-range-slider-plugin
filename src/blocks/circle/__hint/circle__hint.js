@@ -5,6 +5,5 @@ export default class CircleHint extends Modifiable {
     super();
 
     $blockHtml.addClass('circle__hint');
-    this.$html = $blockHtml;
   }
 }

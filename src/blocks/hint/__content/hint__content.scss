@@ -1,0 +1,23 @@
+@import '../variables';
+
+.hint__content {
+  line-height: normal;
+  padding: .4em;
+  border-radius: .3em;
+  z-index: 1;
+  background: deepskyblue;
+}
+
+.hint__content:after {
+  position: absolute;
+  content: '';
+  left: 50%;
+  top: 100%;
+  border: $hint_arrow-indent * 0.8 solid transparent;
+  border-top-color: deepskyblue;
+  height: 0;
+  width: 0;
+  transform: translate(-50%, -$hint_arrow-indent);
+}
+
+@import '_left/hint__content_left';

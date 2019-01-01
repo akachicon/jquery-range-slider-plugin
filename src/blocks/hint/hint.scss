@@ -1,13 +1,8 @@
+@import 'variables';
+
 .hint {
-  position: relative;
-  line-height: normal;
-  padding: .5em;
-  border-radius: .3em;
-  background: deepskyblue;
-}
-
-.hint:after {
-
+  padding-bottom: $hint_arrow-indent;
 }
 
 @import './_left/hint_left';
+@import './__content/hint__content';
