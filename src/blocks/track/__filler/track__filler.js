@@ -2,11 +2,11 @@ import { Modifiable } from '../../../bem';
 import TrackFillerVertical from './_vertical/track__filler_vertical';
 
 export default class TrackFiller extends Modifiable {
-  constructor($entityHtml) {
+  constructor($blockHtml) {
     super();
 
     this._marginPx = 0;
-    $entityHtml.addClass('track__filler');
+    $blockHtml.addClass('track__filler');
   }
 
   set marginPx(px) {
@@ -20,7 +20,7 @@ export default class TrackFiller extends Modifiable {
     this._marginPx = px;
   }
 
-  get marginPct() {
+  get marginPx() {
     return this._marginPx;
   }
 }

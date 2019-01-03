@@ -37,6 +37,15 @@ export default class Track extends Modifiable {
     setHtml($html);
   }
 
+  get distancePx() {
+    const {
+      lengthPx: pLength,
+      thicknessPx: pThickness
+    } = this.path.line;
+
+    return pLength - pThickness;
+  }
+
   set fillStartPortion(fraction) {
     const { _fillEndPortion } = this;
     let fillIndent = 0;
