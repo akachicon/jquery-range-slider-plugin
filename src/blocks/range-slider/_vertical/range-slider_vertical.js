@@ -17,7 +17,7 @@ export default {
     track.removeMod('track_vertical');
     Object.values(thumbs)
       .forEach((thumb) => {
-        thumb.circle.applyMod('circle_hint-position_left');
+        thumb.circle.removeMod('circle_hint-position_left');
         thumb.rangeSliderThumb.removeMod('range-slider__thumb_vertical');
         // eslint-disable-next-line no-param-reassign
         thumb.portion = thumb._portion;
