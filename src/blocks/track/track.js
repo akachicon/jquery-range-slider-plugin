@@ -4,6 +4,7 @@ import { createEntity, addMix, Modifiable } from '../../bem';
 import TrackPath from './__path/track__path';
 import TrackFiller from './__filler/track__filler';
 import TrackVertical from './_vertical/track_vertical';
+import TrackEmpty from './_empty/track_empty';
 import Line from '../line/line';
 import './track.scss';
 
@@ -98,5 +99,6 @@ export default class Track extends Modifiable {
 }
 
 Object.assign(Track.prototype, {
-  track_vertical: TrackVertical
+  track_vertical: TrackVertical,
+  track_empty: TrackEmpty
 });

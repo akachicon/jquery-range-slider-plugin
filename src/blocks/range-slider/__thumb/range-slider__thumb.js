@@ -1,5 +1,6 @@
 import { Modifiable } from '../../../bem';
 import RangeSliderThumbVertical from './_vertical/range-slider__thumb_vertical';
+import RangeSliderThumbHidden from './_hidden/range-slider__thumb_hidden';
 
 export default class RangeSliderThumb extends Modifiable {
   constructor($blockHtml) {
@@ -25,5 +26,6 @@ export default class RangeSliderThumb extends Modifiable {
 }
 
 Object.assign(RangeSliderThumb.prototype, {
-  'range-slider__thumb_vertical': RangeSliderThumbVertical
+  'range-slider__thumb_vertical': RangeSliderThumbVertical,
+  'range-slider__thumb_hidden': RangeSliderThumbHidden
 });

@@ -81,6 +81,7 @@ export const createEntity = ({
 
   mount($entityHtml, $parent);
   entity.$html = $entityHtml;
+  entity.$parent = $parent;
   didMountQueue.push(entity);
 
   if (willBeAppendedToRealDom) {
@@ -104,6 +105,7 @@ export const addMix = ({
   const mix = new Mix(entity.$html, args);
 
   mix.$html = entity.$html;
+  mix.$parent = entity.$parent;
   didMountQueue.push(mix);
 
   return mix;

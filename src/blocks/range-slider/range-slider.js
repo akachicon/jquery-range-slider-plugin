@@ -3,6 +3,8 @@ import $ from 'jquery';
 import { createEntity, addMix, Modifiable } from '../../bem';
 import RangeSliderThumb from './__thumb/range-slider__thumb';
 import RangeSliderVertical from './_vertical/range-slider_vertical';
+import RangeSliderRangeSingle from './_range/_single/range-slider_range_single';
+import RangeSliderRangeMultiple from './_range/_multiple/range-slider_range_multiple';
 import Track from '../track/track';
 import Circle from '../circle/circle';
 // import Marks from '../blocks/marks';
@@ -14,40 +16,65 @@ export default class RangeSlider extends Modifiable {
 
     const $html = $('<div class="range-slider"></div>');
     const track = createEntity({ Entity: Track, $parent: $html });
-
-    this.track = track;
-    this.thumbs = {};
+    const thumbs = [];
 
     [
       'single',
       'rangeFirst',
       'rangeSecond'
     ].forEach((name) => {
-      this.addThumb({ name, track, $parent: $html });
+      thumbs[name] = this.genThumb({
+        name,
+        track,
+        $parent: $html
+      });
     });
+    track.applyMod('track_empty');
+    thumbs.rangeFirst.rangeSliderThumb.applyMod('range-slider__thumb_hidden');
+    thumbs.rangeSecond.rangeSliderThumb.applyMod('range-slider__thumb_hidden');
+
+    this.track = track;
+    this.thumbs = thumbs;
+
+    track.fill.trackFiller.$html.css('background', 'brown');
 
     setHtml($html);
   }
 
-  addThumb({ name, track, $parent }) {
+  genThumb({ name, track, $parent }) {
     const circle = createEntity({ Entity: Circle, $parent });
+    const that = this;
 
-    this.thumbs[name] = {
+    return {
       circle,
       rangeSliderThumb: addMix({
         Mix: RangeSliderThumb,
         entity: circle
       }),
-      _portion: 0,
+      _portion: null,
 
       set portion(fraction) {
-        if (name === 'rangeFirst') {
-          // eslint-disable-next-line no-param-reassign
-          track.fillStartPortion = fraction;
-        } else {
-          // eslint-disable-next-line no-param-reassign
-          track.fillEndPortion = fraction;
+        let singleMode = true;
+
+        if (that.hasMod('range-slider_range_multiple')) {
+          singleMode = false;
         }
+
+        /* eslint-disable no-param-reassign */
+        if (singleMode) {
+          if (name === 'single') {
+            track.fillEndPortion = fraction;
+          }
+        } else {
+          if (name === 'rangeFirst') {
+            track.fillStartPortion = fraction;
+          }
+          if (name === 'rangeSecond') {
+            track.fillEndPortion = fraction;
+          }
+        }
+        /* eslint-enable no-param-reassign */
+
         this.rangeSliderThumb.marginPx = track.distancePx * fraction;
         this._portion = fraction;
       },
@@ -57,30 +84,10 @@ export default class RangeSlider extends Modifiable {
       }
     };
   }
-
-  didMount() {
-    const { track, thumbs } = this;
-    const { single, rangeFirst, rangeSecond } = thumbs;
-
-    single.portion = 0.25;
-    rangeFirst.portion = 0.5;
-    rangeSecond.portion = 1;
-
-    setTimeout(() => {
-      this.applyMod('range-slider_vertical');
-    }, 1000);
-
-    setTimeout(() => {
-      rangeFirst.portion = 0.35;
-      rangeSecond.portion = 0.65;
-    }, 2000);
-
-    setTimeout(() => {
-      this.removeMod('range-slider_vertical');
-    }, 3000);
-  }
 }
 
 Object.assign(RangeSlider.prototype, {
-  'range-slider_vertical': RangeSliderVertical
+  'range-slider_vertical': RangeSliderVertical,
+  'range-slider_range_single': RangeSliderRangeSingle, // TODO: make export logic to import in rangeSliderRange.single fashion
+  'range-slider_range_multiple': RangeSliderRangeMultiple
 });
