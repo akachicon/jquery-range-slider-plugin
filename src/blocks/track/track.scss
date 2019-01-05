@@ -6,6 +6,6 @@
   height: $track_thickness;
 }
 
-@import '_vertical/track_vertical';
 @import '__path/track__path';
 @import '__filler/track__filler';
+@import '_vertical/track_vertical';

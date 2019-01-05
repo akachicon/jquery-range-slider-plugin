@@ -2,7 +2,7 @@
 import $ from 'jquery';
 import { createEntity, Modifiable } from '../../bem';
 import HintContent from './__content/hint__content';
-import HintLeft from './_left/hint_left';
+import hintLeft from './_left/hint_left';
 import './hint.scss';
 
 export default class Hint extends Modifiable {
@@ -25,5 +25,5 @@ export default class Hint extends Modifiable {
 }
 
 Object.assign(Hint.prototype, {
-  hint_left: HintLeft
+  hint_left: hintLeft
 });

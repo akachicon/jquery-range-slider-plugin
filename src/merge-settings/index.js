@@ -2,7 +2,7 @@ import deepCopy from 'deep-copy';
 import * as refiners from './refiners';
 import resolveDeps from './resolve-dependencies';
 
-// TODO: consider turning into a Model static method
+// TODO: consider turning into the Model static method
 
 export default (incoming, current, clone) => {
   if (typeof incoming !== 'object'

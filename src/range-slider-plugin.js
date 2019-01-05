@@ -23,13 +23,13 @@ let defaults = {
 
 (($) => {
   // eslint-disable-next-line no-param-reassign
-  $.fn.rangeSlider = function rangeSliderPlugin(options) {
+  $.fn.rangeSlider = function rangeSliderPlugin(options = {}) {
     return rangeSlider(mergeSettings(options, defaults, true), this);
   };
 
   Object.defineProperty($.fn.rangeSlider, 'defaults', {
     set(userDefaults) {
-      defaults = mergeSettings(userDefaults, defaults);
+      mergeSettings(userDefaults, defaults);
     },
 
     get() {

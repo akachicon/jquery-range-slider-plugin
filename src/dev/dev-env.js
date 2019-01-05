@@ -1,16 +1,19 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import $ from 'jquery';
 import './styles.scss';
-// import '../range-slider-plugin';
+import '../range-slider-plugin';
 
 import { createEntity } from '../bem';
 import RangeSlider from '../blocks/range-slider/range-slider';
 
 $('body').append('<div class="test-slider-container"></div>');
 
-const rangeSlider = createEntity({
-  Entity: RangeSlider,
-  $parent: $('.test-slider-container')
+$('.test-slider-container').rangeSlider({
+  min: -1,
+  max: 1,
+  step: 0.001,
+  value: 0,
+  values: [-0.5, 0.5]
 });
 
 // $('body').append(`

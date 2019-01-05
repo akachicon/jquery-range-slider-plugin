@@ -1,1 +1,5 @@
+.track__filler {
+  transition: margin .1s, width .1s, height .1s;
+}
+
 @import '_hidden/track__filler_hidden';

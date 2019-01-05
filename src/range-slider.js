@@ -4,12 +4,12 @@ import Model from './model';
 import View from './view-refactor3';
 import Controller from './controller';
 
-export default function (options, root) {
+export default function (options = {}, root) {
   const model = new Model(options);
   const view = new View(model, root, options);
-  // const controller = new Controller(model, view);
+  const controller = new Controller(model, view);
 
-  // add block with view params
+  window.controller = controller;
 
   // let value = 0.5;
   //

@@ -5,6 +5,7 @@
   left: $circle_diameter / 2;
   bottom: $circle_diameter;
   transform: translate(-50%);
+  pointer-events: none;
 }
 
 @import './_left/circle__hint_left';

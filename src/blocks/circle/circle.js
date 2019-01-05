@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import $ from 'jquery';
 import { createEntity, addMix, Modifiable } from '../../bem';
-import CircleHintPositionLeft from './_hint-position_left/circle_hint-position_left';
+import circleHintPositionLeft from './_hint-position_left/circle_hint-position_left';
 import CircleHint from './__hint/circle__hint';
 import Hint from '../hint/hint';
 import './circle.scss';
@@ -24,8 +24,18 @@ export default class Circle extends Modifiable {
 
     setHtml($html);
   }
+
+  set hintText(data) {
+    this.hint.hint.text = data;
+
+    this._hintText = data;
+  }
+
+  get hintText() {
+    return this._hintText;
+  }
 }
 
 Object.assign(Circle.prototype, {
-  'circle_hint-position_left': CircleHintPositionLeft
+  'circle_hint-position_left': circleHintPositionLeft
 });

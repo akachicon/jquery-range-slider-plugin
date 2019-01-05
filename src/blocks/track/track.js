@@ -3,8 +3,8 @@ import $ from 'jquery';
 import { createEntity, addMix, Modifiable } from '../../bem';
 import TrackPath from './__path/track__path';
 import TrackFiller from './__filler/track__filler';
-import TrackVertical from './_vertical/track_vertical';
-import TrackEmpty from './_empty/track_empty';
+import trackVertical from './_vertical/track_vertical';
+import trackEmpty from './_empty/track_empty';
 import Line from '../line/line';
 import './track.scss';
 
@@ -38,13 +38,35 @@ export default class Track extends Modifiable {
     setHtml($html);
   }
 
-  get distancePx() {
+  getPointPortion({ pageX, pageY }) {
+    let pathStart;
+    let pointPosition;
+
     const {
-      lengthPx: pLength,
-      thicknessPx: pThickness
+      lengthPx: pathLength,
+      thicknessPx: pathThickness,
+      $html: $pathHtml
     } = this.path.line;
 
-    return pLength - pThickness;
+    if (this.hasMod('track_vertical')) {
+      pointPosition = pageY;
+      pathStart = $pathHtml.offset().top;
+    } else {
+      pointPosition = pageX;
+      pathStart = $pathHtml.offset().left;
+    }
+
+    return (pointPosition - pathStart - pathThickness / 2)
+      / (pathLength - pathThickness);
+  }
+
+  get distancePx() {
+    const {
+      lengthPx: pathLength,
+      thicknessPx: pathThickness
+    } = this.path.line;
+
+    return pathLength - pathThickness;
   }
 
   set fillStartPortion(fraction) {
@@ -53,11 +75,12 @@ export default class Track extends Modifiable {
 
     if (fraction !== null) {
       const {
-        lengthPx: pLength,
-        thicknessPx: pThickness
+        lengthPx: pathLength,
+        thicknessPx: pathThickness
       } = this.path.line;
 
-      fillIndent = pThickness / 2 + fraction * (pLength - pThickness);
+      fillIndent = pathThickness / 2
+        + fraction * (pathLength - pathThickness);
     }
 
     this.fill.trackFiller.marginPx = fillIndent;
@@ -75,18 +98,18 @@ export default class Track extends Modifiable {
   set fillEndPortion(fraction) {
     const { path, _fillStartPortion } = this;
     const {
-      lengthPx: pLength,
-      thicknessPx: pThickness
+      lengthPx: pathLength,
+      thicknessPx: pathThickness
     } = path.line;
 
     let fillLength;
 
     if (_fillStartPortion === null) {
-      fillLength = (fraction * (pLength - pThickness)
-        + pThickness / 2) / pLength * 100;
+      fillLength = (fraction * (pathLength - pathThickness)
+        + pathThickness / 2) / pathLength * 100;
     } else {
       fillLength = (fraction - _fillStartPortion)
-        * (pLength - pThickness) / pLength * 100;
+        * (pathLength - pathThickness) / pathLength * 100;
     }
 
     this.fill.line.lengthPct = fillLength;
@@ -99,6 +122,6 @@ export default class Track extends Modifiable {
 }
 
 Object.assign(Track.prototype, {
-  track_vertical: TrackVertical,
-  track_empty: TrackEmpty
+  track_vertical: trackVertical,
+  track_empty: trackEmpty
 });

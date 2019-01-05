@@ -2,9 +2,8 @@
 import $ from 'jquery';
 import { createEntity, addMix, Modifiable } from '../../bem';
 import RangeSliderThumb from './__thumb/range-slider__thumb';
-import RangeSliderVertical from './_vertical/range-slider_vertical';
-import RangeSliderRangeSingle from './_range/_single/range-slider_range_single';
-import RangeSliderRangeMultiple from './_range/_multiple/range-slider_range_multiple';
+import rangeSliderVertical from './_vertical/range-slider_vertical';
+import rangeSliderRange from './_range/range-slider_range';
 import Track from '../track/track';
 import Circle from '../circle/circle';
 // import Marks from '../blocks/marks';
@@ -16,7 +15,7 @@ export default class RangeSlider extends Modifiable {
 
     const $html = $('<div class="range-slider"></div>');
     const track = createEntity({ Entity: Track, $parent: $html });
-    const thumbs = [];
+    const thumbs = {};
 
     [
       'single',
@@ -87,7 +86,7 @@ export default class RangeSlider extends Modifiable {
 }
 
 Object.assign(RangeSlider.prototype, {
-  'range-slider_vertical': RangeSliderVertical,
-  'range-slider_range_single': RangeSliderRangeSingle, // TODO: make export logic to import in rangeSliderRange.single fashion
-  'range-slider_range_multiple': RangeSliderRangeMultiple
+  'range-slider_vertical': rangeSliderVertical,
+  'range-slider_range_single': rangeSliderRange.single,
+  'range-slider_range_multiple': rangeSliderRange.multiple
 });

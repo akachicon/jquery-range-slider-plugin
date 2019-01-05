@@ -16,6 +16,8 @@ export class Modifiable {
 
     this.$html.addClass(names);
     names.split(' ').forEach((mod) => {
+      if (this.hasMod(mod)) return;
+
       if (this[mod]) {
         this[mod].apply.call(this);
       }
@@ -29,6 +31,8 @@ export class Modifiable {
 
     this.$html.removeClass(names);
     names.split(' ').forEach((mod) => {
+      if (!this.hasMod(mod)) return;
+
       if (this[mod]) {
         this[mod].remove.call(this);
       }

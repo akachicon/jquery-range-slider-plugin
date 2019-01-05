@@ -1,5 +1,5 @@
 import { Modifiable } from '../../../bem';
-import TrackFillerVertical from './_vertical/track__filler_vertical';
+import trackFillerVertical from './_vertical/track__filler_vertical';
 
 export default class TrackFiller extends Modifiable {
   constructor($blockHtml) {
@@ -26,5 +26,5 @@ export default class TrackFiller extends Modifiable {
 }
 
 Object.assign(TrackFiller.prototype, {
-  track__filler_vertical: TrackFillerVertical
+  track__filler_vertical: trackFillerVertical
 });
