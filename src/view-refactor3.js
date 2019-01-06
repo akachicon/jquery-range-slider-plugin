@@ -25,6 +25,16 @@ export default class View extends AbstractView {
           'mousedown',
           this._thumbOnMouseDown.bind(this)
         );
+        thumb.circle.$html.on(
+          'mouseover',
+          this._thumbOnMouseOver.bind(this, thumb)
+        );
+        thumb.circle.$html.on(
+          'mouseout',
+          this._thumbOnMouseOut.bind(this, thumb)
+        );
+
+        thumb.circle.applyMod('circle_hint-hidden');
       });
 
     rangeSlider.track.$html.on(
@@ -56,9 +66,28 @@ export default class View extends AbstractView {
     body.one('mouseup', (evt) => {
       body.off('mousemove', throttledCheck);
 
-      this._attemptToHideHint(evt);
+      this._onMouseUpData = evt;
       this._activeThumb = null;
     });
+  }
+
+  _thumbOnMouseOver(thumb, e) {
+    e.preventDefault();
+
+    if (!this._state.hint
+        || this._activeThumb !== null) {
+      return;
+    }
+
+    thumb.circle.removeMod('circle_hint-hidden');
+  }
+
+  _thumbOnMouseOut(thumb, e) {
+    e.preventDefault();
+
+    if (this._activeThumb !== null) return;
+
+    thumb.circle.applyMod('circle_hint-hidden');
   }
 
   _trackOnMouseClick(e) {
@@ -89,7 +118,6 @@ export default class View extends AbstractView {
     }
 
     this._checkPointerAndSendUpdate(e);
-    this._attemptToHideHint(e);
     this._activeThumb = null;
   }
 
@@ -141,10 +169,6 @@ export default class View extends AbstractView {
     });
   }
 
-  _attemptToHideHint(e) {
-    console.log('attempt to hide hint');
-  }
-
   _onUpdate(data) {
     const {
       _state: current,
@@ -163,7 +187,6 @@ export default class View extends AbstractView {
       range,
       orientation,
       // marks,
-      // hint
     } = data;
 
     const calcPortion = (val) => {
@@ -176,7 +199,7 @@ export default class View extends AbstractView {
       this._updateOrientation(orientation);
     }
     if (range !== current.range) {
-      this._updateRange(range, calcPortion);
+      this._updateRange(range);
     }
 
     single.portion = calcPortion(value);
@@ -213,5 +236,44 @@ export default class View extends AbstractView {
 
   _publishUpdate(data) {
     this._publish('portionUpdate', data);
+  }
+
+  set _activeThumb(next) {
+    const { _state: state, __activeThumb: current } = this;
+
+    if (current !== null && current !== undefined) {
+      current.rangeSliderThumb.removeMod('range-slider__thumb_z-top');
+
+      if (next !== null) {
+        current.circle.applyMod('circle_hint-hidden');
+        if (state.hint) {
+          next.circle.removeMod('circle_hint-hidden');
+        }
+      } else {
+        const contains = ($html, { pageX, pageY }) => {
+          const pointerOffsetX = pageX - $html.offset().left;
+          const pointerOffsetY = pageY - $html.offset().top;
+
+          return pointerOffsetX >= 0
+            && pointerOffsetY >= 0
+            && pointerOffsetX <= $html.width()
+            && pointerOffsetY <= $html.height();
+        };
+
+        if (!contains(current.circle.$html, this._onMouseUpData)) {
+          current.circle.applyMod('circle_hint-hidden');
+        }
+      }
+    }
+
+    if (next) {
+      next.rangeSliderThumb.applyMod('range-slider__thumb_z-top');
+    }
+
+    this.__activeThumb = next;
+  }
+
+  get _activeThumb() {
+    return this.__activeThumb;
   }
 }

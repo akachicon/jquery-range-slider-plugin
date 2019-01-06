@@ -9,7 +9,7 @@ export default function (options = {}, root) {
   const view = new View(model, root, options);
   const controller = new Controller(model, view);
 
-  window.controller = controller;
+  window.controller = controller; // TODO: remove
 
   // let value = 0.5;
   //

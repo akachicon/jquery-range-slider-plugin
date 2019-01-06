@@ -3,9 +3,6 @@ import $ from 'jquery';
 import './styles.scss';
 import '../range-slider-plugin';
 
-import { createEntity } from '../bem';
-import RangeSlider from '../blocks/range-slider/range-slider';
-
 $('body').append('<div class="test-slider-container"></div>');
 
 $('.test-slider-container').rangeSlider({
@@ -13,7 +10,8 @@ $('.test-slider-container').rangeSlider({
   max: 1,
   step: 0.001,
   value: 0,
-  values: [-0.5, 0.5]
+  values: [-0.5, 0.5],
+  hint: true
 });
 
 // $('body').append(`
