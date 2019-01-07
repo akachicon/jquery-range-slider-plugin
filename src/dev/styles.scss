@@ -1,6 +1,19 @@
-.test-slider-container {
-  background: lightgoldenrodyellow;
+$testSliderContainerSelector: 'test-slider-container';
+
+.#{$testSliderContainerSelector} {
   width: 500px;
-  height: 300px;
-  margin: 50px;
+  height: 500px;
+  padding: 50px;
+  margin: auto;
+}
+
+@each $color in (
+        lightgoldenrodyellow
+        lightgreen
+        lightyellow
+        lightpink
+) {
+  .#{$testSliderContainerSelector}_#{$color} {
+    background: $color;
+  }
 }

@@ -1,22 +1,41 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import $ from 'jquery';
 import Model from './model';
 import View from './view-refactor3';
 import Controller from './controller';
 
-export default function (options = {}, root) {
-  const model = new Model(options);
-  const view = new View(model, root, options);
-  const controller = new Controller(model, view);
+export default class RangeSlider {
+  constructor(options = {}, root) {
+    const model = new Model(options);
+    const view = new View(model, root, options);
+    const controller = new Controller(model, view);
 
-  window.controller = controller; // TODO: remove
+    model.subscribe('update', this._onChange.bind(this));
 
-  // let value = 0.5;
-  //
-  // setInterval(() => {
-  //   value += 0.01;
-  //   view._update({ value });
-  // }, 500);
+    Object.assign(this, {
+      _model: model,
+      _view: view,
+      _controller: controller
+    });
+  }
 
-  return this;
+  _onChange(data) {
+    if (typeof this.onChange === 'function') {
+      this.onChange(data);
+    }
+  }
+
+  configure(data) {
+    this._controller.update(data);
+  }
+
+  enable() {
+    this._controller.enable();
+  }
+
+  disable() {
+    this._controller.disable();
+  }
+
+  getState() {
+    return this._controller.getState();
+  }
 }

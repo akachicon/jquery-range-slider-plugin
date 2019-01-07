@@ -1,10 +1,6 @@
 export default class Controller {
   constructor(model, view) {
     view.subscribe(
-      'update',
-      this.update.bind(this)
-    );
-    view.subscribe(
       'portionUpdate',
       this.updateWithValueAsPortion.bind(this)
     );
@@ -45,6 +41,10 @@ export default class Controller {
       ...data,
       value: calculateValue(value)
     });
+  }
+
+  getState() {
+    return this._model.getState();
   }
 
   destroy() {

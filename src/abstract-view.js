@@ -19,10 +19,6 @@ export default class AbstractView extends Publisher {
         [event]: model.subscribe(event, bindings[event].bind(this))
       };
     });
-
-    this.getModelState = () => ( // readonly
-      model.getState()
-    );
   }
 
   /*

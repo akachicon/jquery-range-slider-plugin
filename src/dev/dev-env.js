@@ -3,55 +3,58 @@ import $ from 'jquery';
 import './styles.scss';
 import '../range-slider-plugin';
 
-$('body').append('<div class="test-slider-container"></div>');
+const colors = [
+  'lightgoldenrodyellow',
+  'lightgreen',
+  'lightyellow',
+  'lightpink'
+];
 
-$('.test-slider-container').rangeSlider({
+const settings = {
+  0: {
+    value: 0,
+    values: [30, 70]
+  },
+  1: {
+    step: 5,
+    orientation: 'v'
+  },
+  2: {
+    range: true
+  },
+  3: {
+    values: [-1, 1],
+    hint: false
+  }
+};
+
+const testContainer = index => (
+  $(`<div class="test-slider-container test-slider-container_${colors[index]}"></div>`)
+);
+
+const createSliders = (indicies) => {
+  indicies.forEach((index) => {
+    const container = testContainer(index);
+
+    $('body').append(container);
+    container.rangeSlider(settings[index]);
+  });
+};
+
+$.fn.rangeSlider.defaults = {
+  min: 0,
+  max: 100
+};
+
+createSliders([0, 1]);
+
+$.fn.rangeSlider.defaults = {
   min: -1,
   max: 1,
   step: 0.001,
   value: 0,
   values: [-0.5, 0.5],
   hint: true
-});
+};
 
-// $('body').append(`
-//     <div class="main">
-//         <div style="background: palegoldenrod">some space</div>
-//         <div id='rsh'></div>
-//         <div style="background: palegoldenrod">some space</div>
-//         <div id="rsh01"></div>
-//         <div style="background: palegoldenrod">some space</div>
-//         <div id="rsv" style="display: inline-block; height: 400px;"></div>
-//         <div id="rsv01" style="display: inline-block; height: 400px; margin-left: 30px"></div>
-//     </div>
-// `);
-//
-// $.fn.rangeSlider.defaults = {
-//   min: -10,
-//   max: 10,
-//   step: 0.1,
-//   orientation: 'h',
-//   range: true,
-//   value: 0,
-//   values: [-5, 5],
-//   hint: true,
-//   marks: {
-//     '-10': { label: 'start', classList: 'custom-mark' },
-//     '-5': 'yes',
-//     0: {
-//       label:
-//         `<svg width="16" height="16">
-//          <circle cx="8" cy="8" r="8" stroke="red" stroke-width="2" fill="yellow" />
-//          Sorry, your browser does not support inline SVG.
-//         </svg> `,
-//       classList: 'svg-container'
-//     },
-//     10: 'enduuuuuuuuuuum',
-//     11: 'excluded'
-//   }
-// };
-//
-// $('#rsh').rangeSlider({ range: false });
-// $('#rsh01').rangeSlider({});
-// $('#rsv').rangeSlider({ orientation: 'v', range: false });
-// $('#rsv01').rangeSlider({ orientation: 'v' });
+createSliders([2, 3]);

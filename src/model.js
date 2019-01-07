@@ -1,3 +1,4 @@
+import deepCopy from 'deep-copy';
 import Publisher from './publisher';
 import mergeSettings from './merge-settings';
 
@@ -17,8 +18,8 @@ export default class Model extends Publisher {
     super();
 
     // We can reckon on fully correct options object to form initial state but we don't.
-    // This way the state remains persistent for those who want to use it in readonly mode,
-    // e.g. view as its initial state.
+    // This way we ensure correctness of the state so it can be used by others as an initial
+    // data.
 
     this._state = mergeSettings(options, {
       min: 0,
@@ -63,7 +64,7 @@ export default class Model extends Publisher {
   }
 
   getState() {
-    return { ...this._state };
+    return deepCopy(this._state);
   }
 
   static isEqual(a, b) {

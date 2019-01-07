@@ -1,10 +1,10 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import jQuery from 'jquery';
 import deepCopy from 'deep-copy';
-import rangeSlider from './range-slider';
+import RangeSlider from './range-slider';
 import mergeSettings from './merge-settings';
 
-let defaults = {
+const defaults = {
   min: 0,
   max: 100,
   step: 3,
@@ -24,7 +24,7 @@ let defaults = {
 (($) => {
   // eslint-disable-next-line no-param-reassign
   $.fn.rangeSlider = function rangeSliderPlugin(options = {}) {
-    return rangeSlider(mergeSettings(options, defaults, true), this);
+    return new RangeSlider(mergeSettings(options, defaults, true), this);
   };
 
   Object.defineProperty($.fn.rangeSlider, 'defaults', {
