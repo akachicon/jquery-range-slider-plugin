@@ -23,8 +23,22 @@ const defaults = {
 
 (($) => {
   // eslint-disable-next-line no-param-reassign
-  $.fn.rangeSlider = function rangeSliderPlugin(options = {}) {
-    return new RangeSlider(mergeSettings(options, defaults, true), this);
+  $.fn.rangeSlider = function rangeSliderPlugin(...args) {
+    return this.each(function callPlugin() {
+      const $this = $(this);
+      let plugin = $this.data('rangeSliderPlugin');
+
+      if (!plugin) {
+        const options = args[0] || {};
+
+        plugin = new RangeSlider(mergeSettings(options, defaults, true), $this);
+        $this.data('rangeSliderPlugin', plugin);
+      } else {
+        const [command, options] = args;
+
+        plugin[command](options);
+      }
+    });
   };
 
   Object.defineProperty($.fn.rangeSlider, 'defaults', {

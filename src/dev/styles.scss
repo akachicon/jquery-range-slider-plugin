@@ -1,19 +1,60 @@
-$testSliderContainerSelector: 'test-slider-container';
+$rs-container_content-width: 300px;
+$rs-container_border-width: 4px;
+$rs-container_width: $rs-container_content-width + 2 * $rs-container_border-width;
+$rs-controller_width: 300px;
 
-.#{$testSliderContainerSelector} {
-  width: 500px;
-  height: 500px;
+body {
+  margin: 0;
+}
+
+.range-slider-preview {
+  display: flex;
+  flex-wrap: wrap;
+  min-width: max($rs-container_width, $rs-controller_width);
+  max-width: $rs-container_width + $rs-controller_width;
   padding: 50px;
   margin: auto;
 }
 
+.range-slider-preview__range-slider-container {
+  min-width: $rs-container_width;
+  max-width: $rs-container_width;
+  width: $rs-container_width;
+  height: $rs-container_width;
+  border: 4px solid purple;
+}
+
+.range-slider-preview__range-slider-controller {
+  box-sizing: border-box;
+  min-width: $rs-controller_width;
+  max-width: $rs-controller_width;
+  position: relative;
+  flex-grow: 1;
+  padding: {
+    top: 20px;
+    left: 20px
+  };
+}
+
+.input-container {
+
+}
+
+.input-container__label {
+  width: 100%;
+}
+
+.input-container__input {
+  float: right;
+}
+
 @each $color in (
         lightgoldenrodyellow
-        lightgreen
+        whitesmoke
         lightyellow
         lightpink
 ) {
-  .#{$testSliderContainerSelector}_#{$color} {
+  .range-slider-preview_#{$color} {
     background: $color;
   }
 }

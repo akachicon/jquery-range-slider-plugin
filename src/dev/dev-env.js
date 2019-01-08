@@ -5,7 +5,7 @@ import '../range-slider-plugin';
 
 const colors = [
   'lightgoldenrodyellow',
-  'lightgreen',
+  'whitesmoke',
   'lightyellow',
   'lightpink'
 ];
@@ -16,7 +16,7 @@ const settings = {
     values: [30, 70]
   },
   1: {
-    step: 5,
+    step: 15,
     orientation: 'v'
   },
   2: {
@@ -28,17 +28,31 @@ const settings = {
   }
 };
 
-const testContainer = index => (
-  $(`<div class="test-slider-container test-slider-container_${colors[index]}"></div>`)
+const genPreviewHtml = index => (
+  $(`<div class="range-slider-preview range-slider-preview_${colors[index]}"></div>`)
+    .append('<div class="range-slider-preview__range-slider-container"></div>')
+    .append('<div class="range-slider-preview__range-slider-controller"></div>')
 );
 
-const createSliders = (indicies) => {
-  indicies.forEach((index) => {
-    const container = testContainer(index);
+const genPreviewController = ($containerSection, $controllerSection) => {
+  const input = label => (
+    $('<div class="input-container">')
+      .append(`<label class="input-container__label">${label}:</label>`)
+      .append('<input type="number" class="input-container__input"/>')
+  );
 
-    $('body').append(container);
-    container.rangeSlider(settings[index]);
-  });
+  $controllerSection.append(input('min'));
+};
+
+const createPreview = (index) => {
+  const $previewHtml = genPreviewHtml(index);
+  const $containerSection = $previewHtml.find('.range-slider-preview__range-slider-container');
+  const $controllerSection = $previewHtml.find('.range-slider-preview__range-slider-controller');
+
+  $('body').append($previewHtml);
+  $containerSection.rangeSlider(settings[index]);
+
+  genPreviewController($containerSection, $controllerSection);
 };
 
 $.fn.rangeSlider.defaults = {
@@ -46,7 +60,8 @@ $.fn.rangeSlider.defaults = {
   max: 100
 };
 
-createSliders([0, 1]);
+createPreview(0);
+createPreview(1);
 
 $.fn.rangeSlider.defaults = {
   min: -1,
@@ -57,4 +72,5 @@ $.fn.rangeSlider.defaults = {
   hint: true
 };
 
-createSliders([2, 3]);
+createPreview(2);
+createPreview(3);

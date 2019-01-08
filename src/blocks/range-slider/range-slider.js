@@ -9,6 +9,8 @@ import Circle from '../circle/circle';
 // import Marks from '../blocks/marks';
 import './range-slider.scss';
 
+const RESIZE_CHECK_INTERVAL = 500;
+
 export default class RangeSlider extends Modifiable {
   constructor(setHtml) {
     super();
@@ -52,6 +54,10 @@ export default class RangeSlider extends Modifiable {
       }),
       _portion: null,
 
+      syncPortion() {
+        this.portion = this._portion;
+      },
+
       set portion(fraction) {
         let singleMode = true;
 
@@ -82,6 +88,32 @@ export default class RangeSlider extends Modifiable {
         return this._portion;
       }
     };
+  }
+
+  didMount() {
+    this._width = this.$html.width();
+    this._heighgt = this.$html.height();
+
+    this._onResizeInterval = setInterval(this._onResize.bind(this), RESIZE_CHECK_INTERVAL);
+  }
+
+  destroy() {
+    clearInterval(this._onResizeInterval);
+  }
+
+  _onResize() {
+    const currentWidth = this.$html.width();
+    const currentHeight = this.$html.height();
+
+    if (this._width !== currentWidth
+        || this._height !== currentHeight) {
+      Object.values(this.thumbs)
+        .forEach((thumb) => {
+          thumb.syncPortion();
+        });
+      this._width = currentWidth;
+      this._height = currentHeight;
+    }
   }
 }
 
