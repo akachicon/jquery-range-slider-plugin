@@ -227,6 +227,16 @@ describe('refiners', () => {
       },
       { value: 5.4 }
     )).toBe(5.4);
+
+    expect(value(
+      {
+        value: 98,
+        min: 0,
+        max: 100,
+        step: 15
+      },
+      { value: 90 }
+    )).toBe(90);
   });
 
   test('values', () => {

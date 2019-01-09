@@ -82,19 +82,19 @@ export const value = (
 
   const pointIndex = String(step).indexOf('.');
 
-  let multiplier = String(step).slice(pointIndex + 1).length;
+  let power = String(step).slice(pointIndex + 1).length;
   let len = max - min;
 
   const formatResult = result => (
-    +(result / (10 ** multiplier)).toFixed(multiplier)
+    +(result / (10 ** power)).toFixed(power)
   );
 
-  if (multiplier === -1) {
-    multiplier = 0;
+  if (pointIndex === -1) {
+    power = 0;
   }
   // eslint-disable-next-line prefer-const
   const integers = [min, max, step, checker, len]
-    .map(v => Math.round(v * (10 ** multiplier)));
+    .map(v => Math.round(v * (10 ** power)));
 
   // eslint-disable-next-line no-param-reassign
   [min, max, step, checker, len] = integers;
@@ -102,7 +102,7 @@ export const value = (
   if (checker < min || step >= len) {
     return formatResult(min);
   }
-  if (checker > max) {
+  if (checker > max - (len % step)) {
     return formatResult(max - (len % step));
   }
 

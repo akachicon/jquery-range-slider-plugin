@@ -13,7 +13,7 @@ const colors = [
 const settings = {
   0: {
     value: 0,
-    values: [30, 70]
+    values: [30, 70],
   },
   1: {
     step: 15,
@@ -30,29 +30,29 @@ const settings = {
 
 const genPreviewHtml = index => (
   $(`<div class="range-slider-preview range-slider-preview_${colors[index]}"></div>`)
-    .append('<div class="range-slider-preview__range-slider-container"></div>')
-    .append('<div class="range-slider-preview__range-slider-controller"></div>')
+    .append('<div class="range-slider-container"></div>')
+    .append('<div class="range-slider-controller"></div>')
 );
 
-const genPreviewController = ($containerSection, $controllerSection) => {
+const genPreviewController = ($rsContainer, $rsController) => {
   const input = label => (
-    $('<div class="input-container">')
+    $('<div class="range-slider-controller__input-container input-container">')
       .append(`<label class="input-container__label">${label}:</label>`)
       .append('<input type="number" class="input-container__input"/>')
   );
 
-  $controllerSection.append(input('min'));
+  $rsController.append(input('min'));
 };
 
 const createPreview = (index) => {
   const $previewHtml = genPreviewHtml(index);
-  const $containerSection = $previewHtml.find('.range-slider-preview__range-slider-container');
-  const $controllerSection = $previewHtml.find('.range-slider-preview__range-slider-controller');
+  const $rsContainer = $previewHtml.find('.range-slider-container');
+  const $rsController = $previewHtml.find('.range-slider-controller');
 
   $('body').append($previewHtml);
-  $containerSection.rangeSlider(settings[index]);
+  $rsContainer.rangeSlider(settings[index]);
 
-  genPreviewController($containerSection, $controllerSection);
+  genPreviewController($rsContainer, $rsController);
 };
 
 $.fn.rangeSlider.defaults = {

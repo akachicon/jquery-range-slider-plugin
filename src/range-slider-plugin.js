@@ -7,7 +7,7 @@ import mergeSettings from './merge-settings';
 const defaults = {
   min: 0,
   max: 100,
-  step: 3,
+  step: 5,
   range: false,
   hint: false,
   orientation: 'h',
