@@ -10,35 +10,62 @@
     <% if (htmlWebpackPlugin.options.mobile) { %>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <% } %>
-
 </head>
 <body>
-
-<% if (htmlWebpackPlugin.options.appMountId) { %>
-<div id="<%= htmlWebpackPlugin.options.appMountId%>"></div>
-<% } %>
-
-<% if (htmlWebpackPlugin.options.window) { %>
-<script>
-  <% for (var varName in htmlWebpackPlugin.options.window) { %>
-    window['<%=varName%>'] = <%= JSON.stringify(htmlWebpackPlugin.options.window[varName]) %>;
-  <% } %>
-</script>
-<% } %>
-
-<% if (htmlWebpackPlugin.options.googleAnalytics) { %>
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-  <% if (htmlWebpackPlugin.options.googleAnalytics.trackingId) { %>
-    ga('create', '<%= htmlWebpackPlugin.options.googleAnalytics.trackingId%>', 'auto');
-  <% } else { throw new Error("html-webpack-template requires googleAnalytics.trackingId config"); }%>
-  <% if (htmlWebpackPlugin.options.googleAnalytics.pageViewOnLoad) { %>
-    ga('send', 'pageview');
-  <% } %>
-</script>
-<% } %>
+    <% [
+    'lightgoldenrodyellow',
+    'whitesmoke',
+    'lightyellow',
+    'lightpink'
+    ].forEach((color) => { %>
+    <div class="range-slider-preview range-slider-preview_<%- color %>">
+        <div class="range-slider-container-wrapper">
+            <div class="range-slider-container"></div>
+        </div>
+        <div class="range-slider-controller">
+            <%
+                [
+                    ['min', 'number'],
+                    ['max', 'number'],
+                    ['step', 'number'],
+                    ['value', 'number'],
+                    ['range-value1', 'number'],
+                    ['range-value2', 'number'],
+                    ['hint', 'checkbox'],
+                    ['range', 'checkbox']
+                ].forEach(([label, type]) => {
+            %>
+            <div class="input-container range-slider-controller__input-container">
+                <label class="input-container__label"><%- label %>
+                    <input type="<%- type %>" name="<%- label %>" class="input-container__input"/>
+                </label>
+            </div>
+            <% }); %>
+            <div class="input-container range-slider-controller__input-container">
+                <span class="input-container__label">orientation</span>
+                <label class="input-container__input">
+                    <input type="radio" name="orientation" value="h">
+                    horizontal
+                </label>
+                <label class="input-container__input">
+                    <input type="radio" name="orientation" value="v">
+                    vertical
+                </label>
+            </div>
+            <%
+                [
+                    ['element-width', 'number'],
+                    ['element-height', 'number']
+                ].forEach(([label, type]) => {
+            %>
+            <div class="input-container range-slider-controller__input-container">
+                <label class="input-container__label"><%- label %>
+                    <input type="<%- type %>" name="<%- label %>" class="input-container__input"/>
+                </label>
+            </div>
+            <% }); %>
+        </div>
+    </div>
+    <% }); %>
 </body>
 </html>

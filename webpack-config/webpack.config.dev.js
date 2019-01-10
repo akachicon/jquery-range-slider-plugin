@@ -10,7 +10,7 @@ module.exports = merge(baseConfig, {
   mode: 'development',
   devtool: 'cheap-eval-source-map',
   output: {
-    filename: 'dev-env.js',
+    filename: 'index.js',
   },
   devServer: {
     port: project.dev.port,

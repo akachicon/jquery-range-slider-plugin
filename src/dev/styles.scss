@@ -16,9 +16,12 @@ body {
   margin: auto;
 }
 
-.range-slider-container {
+.range-slider-container-wrapper {
   min-width: $rs-container_content-width;
   max-width: $rs-container_content-width;
+}
+
+.range-slider-container {
   width: $rs-container_content-width;
   height: $rs-container_content-width;
   border: $rs-container_border-width solid purple;

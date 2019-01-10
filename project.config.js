@@ -11,7 +11,7 @@ module.exports = {
   srcDir: 'src',
   /** The file name of the application's entry point */
   main: {
-    development: path.join('dev', 'dev-env'),
+    development: 'dev',
     production: 'range-slider-plugin'
   },
   /** The file name of the application's bootstrap */
@@ -28,7 +28,7 @@ module.exports = {
   globals: {},
   /** An html related data (basically supposed for WebpackHtmlPlugin) */
   html: {
-    title: 'jQuery slider',
+    title: 'jQuery range slider',
     template: path.join('dev', 'index.html'), // relative to srcDir
     // templateParameters: {}
   },
