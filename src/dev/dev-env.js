@@ -35,13 +35,26 @@ const genPreviewHtml = index => (
 );
 
 const genPreviewController = ($rsContainer, $rsController) => {
-  const input = label => (
+  const input = (label, type) => (
     $('<div class="range-slider-controller__input-container input-container">')
       .append(`<label class="input-container__label">${label}:</label>`)
-      .append('<input type="number" class="input-container__input"/>')
+      .append(`<input type="${type}" class="input-container__input"/>`)
   );
 
-  $rsController.append(input('min'));
+  const controller = {
+    min: input('min', 'number'),
+    max: input('max', 'number'),
+    step: input('step', 'number'),
+    value: input('value', 'number'),
+    rangeValue1: input('range-value1', 'number'),
+    rangeValue2: input('range-value2', 'number'),
+    hint: input('hint', 'checkbox'),
+    range: input('range', 'checkbox'),
+  };
+
+  Object.values(controller).forEach((input) => {
+    $rsController.append(input);
+  });
 };
 
 const createPreview = (index) => {
