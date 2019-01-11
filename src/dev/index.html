@@ -23,47 +23,49 @@
             <div class="range-slider-container"></div>
         </div>
         <div class="range-slider-controller">
-            <%
-                [
-                    ['min', 'number'],
-                    ['max', 'number'],
-                    ['step', 'number'],
-                    ['value', 'number'],
-                    ['range-value1', 'number'],
-                    ['range-value2', 'number'],
-                    ['hint', 'checkbox'],
-                    ['range', 'checkbox']
-                ].forEach(([label, type]) => {
-            %>
-            <div class="input-container range-slider-controller__input-container">
-                <label class="input-container__label"><%- label %>
-                    <input type="<%- type %>" name="<%- label %>" class="input-container__input"/>
-                </label>
-            </div>
-            <% }); %>
-            <div class="input-container range-slider-controller__input-container">
-                <span class="input-container__label">orientation</span>
-                <label class="input-container__input">
-                    <input type="radio" name="orientation" value="h">
-                    horizontal
-                </label>
-                <label class="input-container__input">
-                    <input type="radio" name="orientation" value="v">
-                    vertical
-                </label>
-            </div>
-            <%
-                [
-                    ['element-width', 'number'],
-                    ['element-height', 'number']
-                ].forEach(([label, type]) => {
-            %>
-            <div class="input-container range-slider-controller__input-container">
-                <label class="input-container__label"><%- label %>
-                    <input type="<%- type %>" name="<%- label %>" class="input-container__input"/>
-                </label>
-            </div>
-            <% }); %>
+            <form>
+                <%
+                    [
+                        ['min', 'number'],
+                        ['max', 'number'],
+                        ['step', 'number'],
+                        ['value', 'number'],
+                        ['range-value1', 'number'],
+                        ['range-value2', 'number'],
+                        ['hint', 'checkbox'],
+                        ['range', 'checkbox']
+                    ].forEach(([label, type]) => {
+                %>
+                <div class="input-container range-slider-controller__input-container">
+                    <label class="input-container__label"><%- label %>
+                        <input type="<%- type %>" name="<%- label %>" class="input-container__input"/>
+                    </label>
+                </div>
+                <% }); %>
+                <div class="input-container range-slider-controller__input-container">
+                    <span class="input-container__label">orientation</span>
+                    <label class="input-container__input">
+                        <input type="radio" name="orientation" value="h">
+                        horizontal
+                    </label>
+                    <label class="input-container__input">
+                        <input type="radio" name="orientation" value="v">
+                        vertical
+                    </label>
+                </div>
+                <%
+                    [
+                        ['element-width', 'number'],
+                        ['element-height', 'number']
+                    ].forEach(([label, type]) => {
+                %>
+                <div class="input-container range-slider-controller__input-container">
+                    <label class="input-container__label"><%- label %>
+                        <input type="<%- type %>" name="<%- label %>" class="input-container__input"/>
+                    </label>
+                </div>
+                <% }); %>
+            </form>
         </div>
     </div>
     <% }); %>
