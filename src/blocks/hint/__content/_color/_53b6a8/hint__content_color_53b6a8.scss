@@ -1,0 +1,14 @@
+.hint__content_color_53b6a8 {
+  background: #53b6a8;
+}
+
+.hint__content_color_53b6a8:after {
+  border-top-color: #53b6a8;
+}
+
+.hint__content_left.hint__content_color_53b6a8:after {
+  border: {
+    top-color: transparent;
+    left-color: #53b6a8;
+  }
+}

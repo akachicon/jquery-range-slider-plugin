@@ -17,6 +17,8 @@ export default class Track extends Modifiable {
     const fill = createEntity({ Entity: Line, $parent: path.$html });
 
     path.applyMod('line_rounded');
+    path.applyMod('line_color_e5e5e5');
+    fill.applyMod('line_color_53b6a8');
 
     this.path = {
       line: path,

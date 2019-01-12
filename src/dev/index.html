@@ -38,7 +38,11 @@
                 %>
                 <div class="input-container range-slider-controller__input-container">
                     <label class="input-container__label"><%- label %>
-                        <input type="<%- type %>" name="<%- label %>" class="input-container__input"/>
+                        <input type="<%- type %>" name="<%- label %>"
+                            <% if (type === 'number') { %>
+                                step="any"
+                            <% } %>
+                        class="input-container__input"/>
                     </label>
                 </div>
                 <% }); %>

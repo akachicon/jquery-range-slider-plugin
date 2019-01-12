@@ -72,6 +72,24 @@ const bindRadioInput = ($rsContainer, rsDataField, $input) => {
   });
 };
 
+const bindContainerWidthInput = ($rsContainer, $input) => {
+  $input.on('change', () => {
+    if ($input.val() > 300 || $input.val() < 0) {
+      return;
+    }
+    $rsContainer.width($input.val());
+  });
+};
+
+const bindContainerHeightInput = ($rsContainer, $input) => {
+  $input.on('change', () => {
+    if ($input.val() > 300 || $input.val() < 0) {
+      return;
+    }
+    $rsContainer.height($input.val());
+  });
+};
+
 const bindController = ($rsContainer, $rsController) => {
   const state = $rsContainer.rangeSlider('state')[0];
 
@@ -111,6 +129,23 @@ const bindController = ($rsContainer, $rsController) => {
       $input.prop('checked', state.orientation === $input.val());
       bindRadioInput($rsContainer, 'orientation', $input);
     }
+  );
+
+  const $containerWidthInput = $rsController
+    .find('input[name=element-width]');
+  const $containerHeightInput = $rsController
+    .find('input[name=element-height]');
+
+  $containerWidthInput.val($rsContainer.width());
+  $containerHeightInput.val($rsContainer.height());
+
+  bindContainerWidthInput(
+    $rsContainer,
+    $containerWidthInput
+  );
+  bindContainerHeightInput(
+    $rsContainer,
+    $containerHeightInput
   );
 
   $rsContainer.rangeSlider('configure', {}); // trigger empty update to obtain initial values

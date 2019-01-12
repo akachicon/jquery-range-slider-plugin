@@ -1,11 +1,18 @@
 @import '../variables';
 
 .hint__content {
+  font-family: "Arial Black", sans-serif;
+  color: white;
   text-align: center;
   min-width: 1em;
   line-height: normal;
-  padding: .4em;
-  border-radius: .3em;
+  padding: {
+    bottom: .3em;
+    top: .2em;
+    left: .7em;
+    right: .7em;
+  }
+  border-radius: .4em;
   z-index: 1;
   background: deepskyblue;
 }
@@ -15,11 +22,12 @@
   content: '';
   left: 50%;
   top: 100%;
-  border: $hint_arrow-indent * 0.8 solid transparent;
+  border: $hint_indent * 0.5 solid transparent;
   border-top-color: deepskyblue;
   height: 0;
   width: 0;
-  transform: translate(-50%, -$hint_arrow-indent);
+  transform: translate(-50%, -$hint_indent);
 }
 
 @import '_left/hint__content_left';
+@import '_color/hint__content_color';

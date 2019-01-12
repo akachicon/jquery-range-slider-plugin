@@ -37,14 +37,15 @@ export default class RangeSlider extends Modifiable {
     this.track = track;
     this.thumbs = thumbs;
 
-    track.fill.trackFiller.$html.css('background', 'brown');
-
     setHtml($html);
   }
 
   genThumb({ name, track, $parent }) {
     const circle = createEntity({ Entity: Circle, $parent });
     const that = this;
+
+    circle.applyMod('circle_color_53b6a8');
+    circle.hint.hint.applyMod('hint_color_53b6a8');
 
     return {
       circle,

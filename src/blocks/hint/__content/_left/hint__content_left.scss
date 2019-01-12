@@ -7,5 +7,5 @@
     top-color: transparent;
     left-color: deepskyblue;
   }
-  transform: translate(-$hint_arrow-indent, -50%);
+  transform: translate(-$hint_indent - .1em, -50%); // .1em to prevent gap
 }
