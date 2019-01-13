@@ -37,7 +37,7 @@ export default class View extends AbstractView {
         thumb.circle.applyMod('circle_hint-hidden');
       });
 
-    rangeSlider.track.$html.on(
+    rangeSlider.$html.on(
       'click',
       this._trackOnMouseClick.bind(this)
     );

@@ -2,7 +2,7 @@
 import jQuery from 'jquery';
 import deepCopy from 'deep-copy';
 import RangeSlider from './range-slider';
-import mergeSettings from './merge-settings';
+import Model from './model';
 
 const defaults = {
   min: 0,
@@ -33,7 +33,7 @@ const defaults = {
       if (!plugin) {
         const options = args[0] || {};
 
-        plugin = new RangeSlider(mergeSettings(options, defaults, true), $this);
+        plugin = new RangeSlider(Model.mergeSettings(options, defaults, true), $this);
         $this.data('rangeSliderPlugin', plugin);
         results.push($this);
       } else {
@@ -56,7 +56,7 @@ const defaults = {
 
   Object.defineProperty($.fn.rangeSlider, 'defaults', {
     set(userDefaults) {
-      mergeSettings(userDefaults, defaults);
+      Model.mergeSettings(userDefaults, defaults);
     },
 
     get() {

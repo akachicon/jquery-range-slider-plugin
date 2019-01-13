@@ -24,32 +24,90 @@ const settings = {
   }
 };
 
-const bindNumberInput = ($rsContainer, rsDataField, $input) => {
-  $rsContainer.on('change.range-slider', (e, data) => {
-    $input.val(data[rsDataField]);
+const bindMinMaxInputs = ($rsContainer, $rsController, rsDataField, $input) => {
+  const dependantInputs = [];
+
+  [
+    'value',
+    'range-value1',
+    'range-value2'
+  ].forEach((inputName) => {
+    dependantInputs.push(
+      $rsController.find(`input[name=${inputName}]`)
+    );
   });
 
+  const syncMin = (val) => {
+    dependantInputs.forEach(($depInput) => {
+      $depInput.prop('min', val);
+    });
+  };
+
   $input.on('change', () => {
+    const inputVal = +$input.val();
+
+    if (rsDataField === 'min') {
+      syncMin(inputVal);
+    }
+
     $rsContainer.rangeSlider('configure', {
-      [rsDataField]: +$input.val()
+      [rsDataField]: inputVal
     });
   });
 };
 
-const bindValuesInputs = ($rsContainer, $input1, $input2) => {
-  $rsContainer.on('change.range-slider', (e, data) => {
-    $input1.val(data.values[0]);
-    $input2.val(data.values[1]);
+const bindStepInput = ($rsContainer, $rsController, $input) => {
+  const dependantInputs = [];
+
+  [
+    'value',
+    'range-value1',
+    'range-value2'
+  ].forEach((inputName) => {
+    dependantInputs.push(
+      $rsController.find(`input[name=${inputName}]`)
+    );
   });
 
-  $input1.on('change', () => {
+  const syncStep = (val) => {
+    dependantInputs.forEach(($depInput) => {
+      $depInput.prop('step', val);
+    });
+  };
+
+  $input.on('change', () => {
     $rsContainer.rangeSlider('configure', {
-      values: [+$input1.val(), null]
+      step: +$input.val()
+    });
+    syncStep(+$input.val());
+  });
+};
+
+const bindValuesInputs = (
+  $rsContainer,
+  $valueInput,
+  $rangeInput1,
+  $rangeInput2
+) => {
+  $rsContainer.on('change.range-slider', (e, data) => {
+    $valueInput.val(data.value);
+    $rangeInput1.val(data.values[0]);
+    $rangeInput2.val(data.values[1]);
+  });
+
+  $valueInput.on('change', () => {
+    $rsContainer.rangeSlider('configure', {
+      value: +$valueInput.val()
     });
   });
-  $input2.on('change', () => {
+  $rangeInput1.on('change', () => {
     $rsContainer.rangeSlider('configure', {
-      values: [null, +$input2.val()]
+      values: [+$rangeInput1.val(), null]
+    });
+  });
+  $rangeInput2.on('change', () => {
+    $rsContainer.rangeSlider('configure', {
+      values: [null, +$rangeInput2.val()]
     });
   });
 };
@@ -92,22 +150,36 @@ const bindContainerHeightInput = ($rsContainer, $input) => {
 
 const bindController = ($rsContainer, $rsController) => {
   const state = $rsContainer.rangeSlider('state')[0];
+  const $minInput = $rsController.find('input[name=min]');
+  const $maxInput = $rsController.find('input[name=max]');
 
   [
-    'min',
-    'max',
-    'step',
-    'value'
-  ].forEach((inputName) => {
-    bindNumberInput(
+    ['min', $minInput],
+    ['max', $maxInput]
+  ].forEach(([inputName, $input]) => {
+    bindMinMaxInputs(
       $rsContainer,
+      $rsController,
       inputName,
-      $rsController.find(`input[name=${inputName}]`)
+      $input
     );
   });
+  $minInput.val(state.min);
+  $maxInput.val(state.max);
+
+  const $stepInput = $rsController.find('input[name=step]');
+
+  bindStepInput(
+    $rsContainer,
+    $rsController,
+    $stepInput
+  );
+  $stepInput.val(state.step);
+  $stepInput.triggerHandler('change');
 
   bindValuesInputs(
     $rsContainer,
+    $rsController.find('input[name=value]'),
     $rsController.find('input[name=range-value1]'),
     $rsController.find('input[name=range-value2]')
   );

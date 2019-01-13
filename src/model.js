@@ -21,7 +21,7 @@ export default class Model extends Publisher {
     // This way we ensure correctness of the state so it can be used by others as an initial
     // data.
 
-    this._state = mergeSettings(options, {
+    this._state = Model.mergeSettings(options, {
       min: 0,
       max: 10,
       step: 1,
@@ -41,7 +41,7 @@ export default class Model extends Publisher {
       return;
     }
 
-    this._state = mergeSettings(options, this._state);
+    this._state = Model.mergeSettings(options, this._state);
     this._publish('update', { ...this._state });
   }
 
@@ -71,3 +71,5 @@ export default class Model extends Publisher {
     return a === b;
   }
 }
+
+Model.mergeSettings = mergeSettings;

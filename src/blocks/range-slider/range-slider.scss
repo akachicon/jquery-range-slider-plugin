@@ -5,6 +5,7 @@
   position: relative;
   line-height: 0;
   padding: $range-slider_padding;
+  cursor: pointer;
 }
 
 @import '__thumb/range-slider__thumb';
