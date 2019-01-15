@@ -8,7 +8,7 @@ const mount = ($html, $parent) => {
 
 export class Modifiable {
   constructor() {
-    this.appliedMods = [];
+    this._appliedMods = [];
   }
 
   applyMod(modNames) {
@@ -21,13 +21,13 @@ export class Modifiable {
       if (this[mod]) {
         this[mod].apply.call(this);
       }
-      this.appliedMods.push(mod);
+      this._appliedMods.push(mod);
     });
   }
 
   removeMod(modNames) {
     const names = Modifiable.extractNames(modNames);
-    const { appliedMods } = this;
+    const { _appliedMods } = this;
 
     this.$html.removeClass(names);
     names.split(' ').forEach((mod) => {
@@ -36,13 +36,13 @@ export class Modifiable {
       if (this[mod]) {
         this[mod].remove.call(this);
       }
-      this.appliedMods = appliedMods
+      this._appliedMods = _appliedMods
         .filter(applied => applied !== mod);
     });
   }
 
   hasMod(mod) {
-    return this.appliedMods
+    return this._appliedMods
       .some(applied => applied === mod);
   }
 
