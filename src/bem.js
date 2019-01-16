@@ -110,7 +110,6 @@ export const addMix = ({
 
   mix.$html = entity.$html;
   mix.$parent = entity.$parent;
-  didMountQueue.push(mix);
 
   return mix;
 };

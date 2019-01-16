@@ -74,7 +74,7 @@ describe('bem', () => {
             expect(modSpy1.mock.instances[1]).toBe(extendedModifiable);
           });
 
-          test('only after the modifier css class corresponding to the prop was added to "$html"', () => {
+          test('only after the modifier css class corresponding to the prop was added to the "$html"', () => {
             Extended.prototype.mod4 = {
               apply() {
                 expect(extendedModifiable.$html.hasClass('mod4'))
@@ -159,7 +159,7 @@ describe('bem', () => {
             expect(modSpy1.mock.instances[1]).toBe(extendedModifiable);
           });
 
-          test('only after the modifier css class corresponding to the prop was removed from "$html"', () => {
+          test('only after the modifier css class corresponding to the prop was removed from the "$html"', () => {
             Extended.prototype.mod4 = {
               apply() {},
               remove() {
@@ -176,7 +176,7 @@ describe('bem', () => {
         test('returns true if the modifier was applied but not removed', () => {
           const modifiable = new Modifiable();
 
-          modifiable.$html = $('<div></div>');;
+          modifiable.$html = $('<div></div>');
           modifiable.applyMod('mod1');
 
           expect(modifiable.hasMod('mod1')).toBeTruthy();
@@ -213,8 +213,210 @@ describe('bem', () => {
     });
   });
 
-  describe('createEntity', () => {
+  describe('createEntity function', () => {
+    test('should call a passed entity constructor with a "setHtml" function as a first arg', () => {
+      const Entity = class {
+        constructor(setHtml) {
+          expect(setHtml).toBeFunction();
+        }
+      };
 
+      createEntity({
+        Entity,
+        $parent: $('<div></div>')
+      });
+    });
+
+    test('should assign an html passed to the "setHtml" function to the "$html" instance prop', () => {
+      const $html = $('<div></div>');
+      const Entity = class {
+        constructor(setHtml) {
+          setHtml($html);
+        }
+      };
+      const entity = createEntity({
+        Entity,
+        $parent: $('<div></div>')
+      });
+
+      expect(entity.$html).toBe($html);
+    });
+
+    test('should assign an html passed to the "$parent" arg prop to the "$parent" instance prop', () => {
+      const $parent = $('<div></div>');
+      const entity = createEntity({
+        Entity: class {},
+        $parent
+      });
+
+      expect(entity.$parent).toBe($parent);
+    });
+
+    test('should mount an html passed to the "setHtml" function to the $parent', () => {
+      const $html = $('<div></div>');
+      const $parent = $('<div></div>');
+      const Entity = class {
+        constructor(setHtml) {
+          setHtml($html);
+        }
+      };
+      const entity = createEntity({
+        Entity,
+        $parent
+      });
+
+      expect(entity.$html.parent().get(0)).toBe($parent.get(0));
+    });
+
+    describe('should call mounted entities\' "didMount" methods', () => {
+      const BasicEntity = class {
+        constructor(setHtml) {
+          const $html = $('<div></div>');
+
+          setHtml($html);
+        }
+      };
+      const RegularEntity = class {
+        constructor(setHtml) {
+          const $html = $('<div></div>');
+
+          this.child = createEntity({
+            Entity: BasicEntity,
+            $parent: $html
+          });
+          setHtml($html);
+        }
+
+        // eslint-disable-next-line class-methods-use-this
+        didMount() {
+          this.didMountCalled = true;
+        }
+      };
+
+      test('for each entity which has the method', () => {
+        const RootEntity = class {
+          constructor(setHtml) {
+            const $html = $('<div></div>');
+
+            this.child = createEntity({
+              Entity: RegularEntity,
+              $parent: $html
+            });
+            setHtml($html);
+          }
+
+          // eslint-disable-next-line class-methods-use-this
+          didMount() {
+            this.didMountCalled = true;
+          }
+        };
+
+        const $parent = $('<div></div>');
+        const rootEntity = createEntity({
+          Entity: RootEntity,
+          $parent
+        });
+
+        expect(rootEntity.didMountCalled).toBeTruthy();
+        expect(rootEntity.child.didMountCalled).toBeTruthy();
+      });
+
+      test('only after root entity was mounted', () => {
+        const RootEntity = class {
+          constructor(setHtml) {
+            const $html = $('<div></div>');
+
+            this.child = createEntity({
+              Entity: RegularEntity,
+              $parent: $html
+            });
+
+            expect(this.child.didMountCalled).toBeFalsy();
+
+            setHtml($html);
+          }
+
+          // eslint-disable-next-line class-methods-use-this
+          didMount() {
+            this.didMountCalled = true;
+          }
+        };
+
+        const $parent = $('<div></div>');
+        const rootEntity = createEntity({
+          Entity: RootEntity,
+          $parent
+        });
+
+        expect(rootEntity.didMountCalled).toBeTruthy();
+        expect(rootEntity.child.didMountCalled).toBeTruthy();
+      });
+    });
+
+    test('should return created entity instance', () => {
+      const Entity = class {
+        constructor(setHtml) {
+          const $html = $('<div></div>');
+
+          this.created = true;
+          setHtml($html);
+        }
+      };
+      const entity = createEntity({
+        Entity,
+        $parent: $('<div></div>')
+      });
+
+      expect(entity.created).toBeTruthy();
+    });
+  });
+
+  describe('addMix function', () => {
+    const entity = {
+      $html: $('<div></div>'),
+      $parent: $('<div></div>')
+    };
+    const Mix = class {
+      constructor($html) {
+        this.created = true;
+
+        expect($html).toBe(entity.$html);
+      }
+    };
+
+    test('should call a passed mix constructor with a passed entity\'s "$html" prop as a first arg', () => {
+      addMix({
+        entity,
+        Mix,
+      });
+    });
+
+    test('should assign the passed entity\'s "$html" prop to the mix instance "$html" prop', () => {
+      const mix = addMix({
+        entity,
+        Mix,
+      });
+
+      expect(mix.$html).toBe(entity.$html);
+    });
+
+    test('should assign the passed entity\'s "$parent" prop to the mix instance "$parent" prop', () => {
+      const mix = addMix({
+        entity,
+        Mix,
+      });
+
+      expect(mix.$parent).toBe(entity.$parent);
+    });
+
+    test('should return created mix instance', () => {
+      const mix = addMix({
+        entity,
+        Mix,
+      });
+
+      expect(mix.created).toBeTruthy();
+    });
   });
 });
 
