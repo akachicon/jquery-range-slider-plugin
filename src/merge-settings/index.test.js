@@ -1,21 +1,27 @@
 /* eslint-disable global-require */
 let resolveDeps;
-let refiners;
 let mergeSettings;
+
+const reRequireModules = () => {
+  jest.resetModules();
+  resolveDeps = require('./resolve-dependencies');
+  mergeSettings = require('./index').default;
+};
+
+const resolveDepsMockImplementation = (fn) => {
+  jest.doMock('./resolve-dependencies', () => jest.fn(fn));
+  reRequireModules();
+};
+
+const refinersMockImplementation = (impl) => {
+  jest.setMock('./refiners', impl);
+  reRequireModules();
+};
 
 describe('merger', () => {
   beforeEach(() => {
-    jest.resetModules();
-
-    jest.mock('./resolve-dependencies', () => jest.fn());
-    resolveDeps = require('./resolve-dependencies');
-    // resolveDeps should return an array
-    resolveDeps.mockImplementation(() => []);
-
-    jest.mock('./refiners', () => ({}));
-    refiners = require('./refiners');
-
-    mergeSettings = require('./index').default;
+    resolveDepsMockImplementation(() => []);
+    refinersMockImplementation({});
   });
 
   describe('should call', () => {
@@ -49,11 +55,6 @@ describe('merger', () => {
 
     describe('all refiners returned by the dependency resolver', () => {
       test('in an appropriate order', () => {
-        jest.resetModules();
-
-        jest.mock('./resolve-dependencies', () => jest.fn());
-        resolveDeps = require('./resolve-dependencies');
-
         const refinersExports = {};
         let buffer = [];
 
@@ -64,31 +65,25 @@ describe('merger', () => {
         refinersExports.reset = () => (buffer = []);
         refinersExports.getCallData = () => buffer;
 
-        jest.setMock('./refiners', refinersExports);
-        refiners = require('./refiners');
-        mergeSettings = require('./index').default;
+        refinersMockImplementation(refinersExports);
 
         [
           ['1', '2'],
           ['2', '1', '3'],
           ['4', '6', '1', '5']
         ].forEach((resolveArr) => {
-          resolveDeps.mockImplementation(() => resolveArr);
-
+          resolveDepsMockImplementation(() => resolveArr);
           mergeSettings({}, {});
-          expect(refiners.getCallData()).toEqual(resolveArr);
 
-          refiners.reset();
+          expect(refinersExports.getCallData()).toEqual(resolveArr);
+
+          refinersExports.reset();
         });
       });
 
       test('with refiners results (or corresponding second arg fields if null) merged into first argument and '
           + 'second argument or their clones', () => {
-        jest.resetModules();
-
-        jest.mock('./resolve-dependencies', () => jest.fn());
-        resolveDeps = require('./resolve-dependencies');
-        resolveDeps.mockImplementation(() => ['1', '2', '3']);
+        resolveDepsMockImplementation(() => ['1', '2', '3']);
 
         const refinersExports = {
           1: jest.fn(() => ({ test: true })),
@@ -96,9 +91,7 @@ describe('merger', () => {
           3: jest.fn(() => 3)
         };
 
-        jest.setMock('./refiners', refinersExports);
-        refiners = require('./refiners');
-        mergeSettings = require('./index').default;
+        refinersMockImplementation(refinersExports);
 
         const arg1 = {
           some: 'data',
@@ -117,7 +110,7 @@ describe('merger', () => {
 
         [1, 2, 3].forEach((i) => {
           if (i === 2) expectedArg1['1'] = { test: true };
-          if (i === 3) expectedArg1[2] = { second: true };
+          if (i === 3) expectedArg1['2'] = { second: true };
 
           expect(refinersExports[`${i}`].mock.calls[0][0]).toEqual(expectedArg1);
           expect(refinersExports[`${i}`].mock.calls[0][1]).toEqual(arg2);
@@ -163,12 +156,6 @@ describe('merger', () => {
           }
         }];
 
-        jest.resetModules();
-
-        jest.mock('./resolve-dependencies', () => jest.fn());
-        resolveDeps = require('./resolve-dependencies');
-        resolveDeps.mockImplementation(() => ['second', 'third', 'fourth', 'fifth']);
-
         const refinersExports = {
           second() {
             return [1, '2'];
@@ -184,8 +171,8 @@ describe('merger', () => {
           }
         };
 
-        jest.setMock('./refiners', refinersExports);
-        mergeSettings = require('./index').default;
+        resolveDepsMockImplementation(() => ['second', 'third', 'fourth', 'fifth']);
+        refinersMockImplementation(refinersExports);
 
         expectations = [
           {
