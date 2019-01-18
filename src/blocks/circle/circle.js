@@ -29,7 +29,7 @@ export default class Circle extends Modifiable {
   set hintText(data) {
     this.hint.hint.text = data;
 
-    this._hintText = data;
+    this._hintText = data; // TODO: do it in the same manner as in the hint
   }
 
   get hintText() {

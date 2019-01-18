@@ -1,14 +1,14 @@
 export default {
   apply() {
-    const { $html, _lengthPct } = this;
+    const { $html, lengthPct } = this;
 
     $html.css('width', '');
-    $html.height(`${_lengthPct}%`);
+    $html.height(`${lengthPct}%`);
   },
   remove() {
-    const { $html, _lengthPct } = this;
+    const { $html, lengthPct } = this;
 
     $html.css('height', '');
-    $html.width(`${_lengthPct}%`);
+    $html.width(`${lengthPct}%`);
   }
 };

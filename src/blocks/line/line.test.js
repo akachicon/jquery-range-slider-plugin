@@ -6,14 +6,13 @@ const {
   test: testLine
 } = require('../../../test/bem/entity')({
   Entity: Line,
-  tagName: 'DIV',
-  className: 'line'
+  expected: {
+    tagName: 'DIV',
+    className: 'line'
+  }
 });
 
 const $body = $('body');
-
-$body.width(400);
-$body.height(200);
 
 describe('Line class', () => {
   beforeEach(() => {
@@ -35,42 +34,138 @@ describe('Line class', () => {
   });
 
   describe('should expose lengthPct getter/setter for the instance', () => {
-    test('which gets/sets the instance "$html" width in pct if "line_vertical" modifier is not applied', () => {
-      const testVal = 25.5;
-      const line = instantiateLine($body);
+    describe('in case "line_vertical" modifier is not applied', () => {
+      test('the setter calls "$html.width" with a received argument concatenated with "%"', () => {
+        const line = instantiateLine($body);
+        const widthSpy = jest.spyOn(line.$html, 'width');
 
-      line.lengthPct = testVal;
+        line.lengthPct = 15;
+        expect(widthSpy).toHaveBeenCalledWith('15%');
+        expect(widthSpy).toHaveBeenCalledTimes(1);
 
-      expect(line.$html.css('width')).toBe(`${testVal}%`);
-      expect(line.lengthPct).toBe(testVal);
+        widthSpy.mockClear();
+        line.lengthPct = 110;
+        expect(widthSpy).toHaveBeenCalledWith('110%');
+        expect(widthSpy).toHaveBeenCalledTimes(1);
+
+        widthSpy.mockClear();
+        line.lengthPct = 0;
+        expect(widthSpy).toHaveBeenCalledWith('0%');
+        expect(widthSpy).toHaveBeenCalledTimes(1);
+      });
+
+      test('the getter returns previously set value or the default value of 100', () => {
+        const line = instantiateLine($body);
+
+        expect(line.lengthPct).toBe(100);
+
+        line.lengthPct = 20;
+        expect(line.lengthPct).toBe(20);
+
+        line.applyMod('line_vertical');
+        line.lengthPct = 101;
+        line.removeMod('line_vertical');
+        expect(line.lengthPct).toBe(101);
+      });
     });
 
-    test('which gets/sets the instance "$html" height in pct if "line_vertical" modifier is applied', () => {
-      const testVal = 25.5;
-      const line = instantiateLine($body);
+    describe('in case "line_vertical" modifier is applied', () => {
+      test('the setter calls "$html.height" with a received argument concatenated with "%"', () => {
+        const line = instantiateLine($body);
+        const heightSpy = jest.spyOn(line.$html, 'height');
 
-      line.applyMod('line_vertical');
-      line.lengthPct = testVal;
+        line.applyMod('line_vertical');
 
-      expect(line.$html.css('height')).toBe(`${testVal}%`);
-      expect(line.lengthPct).toBe(testVal);
-    });
+        heightSpy.mockClear();
+        line.lengthPct = 15;
+        expect(heightSpy).toHaveBeenCalledWith('15%');
+        expect(heightSpy).toHaveBeenCalledTimes(1);
 
-    test('which has a default value of 100', () => {
-      const line = instantiateLine($body);
+        heightSpy.mockClear();
+        line.lengthPct = 110;
+        expect(heightSpy).toHaveBeenCalledWith('110%');
+        expect(heightSpy).toHaveBeenCalledTimes(1);
 
-      expect(line.lengthPct).toBe(100);
-      // jsdom does not support layout so there is no check for default styles
+        heightSpy.mockClear();
+        line.lengthPct = 0;
+        expect(heightSpy).toHaveBeenCalledWith('0%');
+        expect(heightSpy).toHaveBeenCalledTimes(1);
+      });
+
+      test('the getter returns previously set value or the default value of 100', () => {
+        const line = instantiateLine($body);
+
+        line.applyMod('line_vertical');
+        expect(line.lengthPct).toBe(100);
+
+        line.lengthPct = 20;
+        expect(line.lengthPct).toBe(20);
+
+        line.removeMod('line_vertical');
+        line.lengthPct = 101;
+        line.applyMod('line_vertical');
+        expect(line.lengthPct).toBe(101);
+      });
     });
   });
 
   describe('should expose lengthPx getter for the instance', () => {
-    test('which gets the instance "$html" width in px if "line_vertical" modifier is not applied', () => {
+    describe('in case "line_vertical" modifier is not applied', () => {
+      test('the getter returns the result of the "$html.width" call', () => {
+        const line = instantiateLine($body);
+        const widthSpy = jest.spyOn(line.$html, 'width');
 
+        // eslint-disable-next-line no-unused-expressions
+        line.lengthPx;
+
+        expect(widthSpy).toHaveBeenCalledWith();
+        expect(widthSpy).toHaveBeenCalledTimes(1);
+      });
     });
 
-    test('which gets the instance "$html" height in px if "line_vertical" modifier is applied', () => {
+    describe('in case "line_vertical" modifier is applied', () => {
+      test('the getter returns the result of the "$html.height" call', () => {
+        const line = instantiateLine($body);
+        const heightSpy = jest.spyOn(line.$html, 'height');
 
+        line.applyMod('line_vertical');
+        heightSpy.mockClear();
+        // eslint-disable-next-line no-unused-expressions
+        line.lengthPx;
+
+        expect(heightSpy).toHaveBeenCalledWith();
+        expect(heightSpy).toHaveBeenCalledTimes(1);
+      });
+    });
+  });
+
+  describe('should expose thicknessPx getter for the instance', () => {
+    describe('in case "line_vertical" modifier is not applied', () => {
+      test('the getter returns the result of the "$html.height" call', () => {
+        const line = instantiateLine($body);
+        const heightSpy = jest.spyOn(line.$html, 'height');
+
+        line.applyMod('line_vertical');
+        heightSpy.mockClear();
+        // eslint-disable-next-line no-unused-expressions
+        line.lengthPx;
+
+        expect(heightSpy).toHaveBeenCalledWith();
+        expect(heightSpy).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('in case "line_vertical" modifier is applied', () => {
+      test('the getter returns the result of the "$html.width" call', () => {
+        const line = instantiateLine($body);
+        const widthSpy = jest.spyOn(line.$html, 'width');
+
+        // eslint-disable-next-line no-unused-expressions
+        line.lengthPx;
+
+        expect(widthSpy).toHaveBeenCalledWith();
+        expect(widthSpy).toHaveBeenCalledTimes(1);
+      });
     });
   });
 });

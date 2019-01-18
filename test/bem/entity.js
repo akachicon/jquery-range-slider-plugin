@@ -7,8 +7,9 @@ let mountedEntities = [];
 /**
  * @param {Object} config
  * @param {function} config.Entity
- * @param {string} config.tagName
- * @param {string} config.className
+ * @param {Object} config.expected
+ * @param {string} config.expected.tagName
+ * @param {string} config.expected.className
  */
 
 module.exports = (config) => {
@@ -58,12 +59,14 @@ const test = {
   doesConformToTagName() {
     const setHtml = instantiateEntity($('<div></div>'), true);
 
-    expect(setHtml.mock.calls[0][0].get(0).tagName).toBe(entityConfig.tagName);
+    expect(setHtml.mock.calls[0][0].get(0).tagName)
+      .toBe(entityConfig.expected.tagName);
   },
 
   doesConformToClassName() {
     const setHtml = instantiateEntity($('<div></div>'), true);
 
-    expect(setHtml.mock.calls[0][0].hasClass(entityConfig.className)).toBeTruthy();
+    expect(setHtml.mock.calls[0][0].hasClass(entityConfig.expected.className))
+      .toBeTruthy();
   }
 };
