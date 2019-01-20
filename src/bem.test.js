@@ -6,7 +6,7 @@ describe('bem', () => {
   describe('Modifiable class', () => {
     describe('should provide instance methods', () => {
       describe('applyMod', () => {
-        test('adds specified css classes to a jquery dom element stored in the "$html" instance property field', () => {
+        test('adds specified css classes to a jquery dom element stored in the instance "$html" field', () => {
           const modifiable = new Modifiable();
           const $html = $('<div></div>');
 
@@ -88,7 +88,7 @@ describe('bem', () => {
       });
 
       describe('removeMod', () => {
-        test('removes specified css classes from a jquery dom element stored in the "$html" instance property field', () => {
+        test('removes specified css classes from a jquery dom element stored in the instance "$html" field', () => {
           const modifiable = new Modifiable();
           const $html = $('<div class="mod1 mod2 mod3"></div>');
 
@@ -227,7 +227,7 @@ describe('bem', () => {
       });
     });
 
-    test('should assign an html passed to the "setHtml" function to the "$html" instance prop', () => {
+    test('should assign an html passed to the "setHtml" function to the instance "$html" field', () => {
       const $html = $('<div></div>');
       const Entity = class {
         constructor(setHtml) {
@@ -242,7 +242,7 @@ describe('bem', () => {
       expect(entity.$html).toBe($html);
     });
 
-    test('should assign an html passed to the "$parent" arg prop to the "$parent" instance prop', () => {
+    test('should assign an html passed to the "$parent" arg prop to the instance "$parent" field', () => {
       const $parent = $('<div></div>');
       const entity = createEntity({
         Entity: class {},
@@ -321,7 +321,7 @@ describe('bem', () => {
         expect(rootEntity.child.didMountCalled).toBeTruthy();
       });
 
-      test('only after root entity was mounted', () => {
+      test('only after the root entity was mounted', () => {
         const RootEntity = class {
           constructor(setHtml) {
             const $html = $('<div></div>');
@@ -391,7 +391,7 @@ describe('bem', () => {
       });
     });
 
-    test('should assign the passed entity\'s "$html" prop to the mix instance "$html" prop', () => {
+    test('should assign the passed entity\'s "$html" prop to the mix instance "$html" field', () => {
       const mix = addMix({
         entity,
         Mix,
@@ -400,7 +400,7 @@ describe('bem', () => {
       expect(mix.$html).toBe(entity.$html);
     });
 
-    test('should assign the passed entity\'s "$parent" prop to the mix instance "$parent" prop', () => {
+    test('should assign the passed entity\'s "$parent" prop to the mix instance "$parent" field', () => {
       const mix = addMix({
         entity,
         Mix,

@@ -1,5 +1,5 @@
 const $ = require('jquery');
-const { Modifiable } = require('../../src/bem');
+const bem = require('../../src/bem');
 
 let entityConfig;
 let mountedEntities = [];
@@ -19,11 +19,20 @@ module.exports = (config) => {
   entityConfig = config;
 
   return {
+    jestifyConstructor,
     instantiateEntity,
     removeEntities,
+    applyMod,
+    removeMod,
     test
   };
 };
+
+const jestifyConstructor = Constructor => (
+  function JestifiedConstructor(...args) {
+    return new Constructor(...args);
+  }
+);
 
 const instantiateEntity = ($parent, returnHtmlSetterMock) => {
   const setHtml = jest.fn();
@@ -49,11 +58,19 @@ const removeEntities = () => {
   mountedEntities = [];
 };
 
+const applyMod = (entity, modifier) => {
+  modifier.apply.call(entity);
+};
+
+const removeMod = (entity, modifier) => {
+  modifier.remove.call(entity);
+};
+
 const test = {
   doesExtendModifiable() {
     const entity = instantiateEntity($('<div></div>'));
 
-    expect(entity instanceof Modifiable).toBeTruthy();
+    expect(entity instanceof bem.Modifiable).toBeTruthy();
   },
 
   doesConformToTagName() {
@@ -68,5 +85,32 @@ const test = {
 
     expect(setHtml.mock.calls[0][0].hasClass(entityConfig.expected.className))
       .toBeTruthy();
+  },
+
+  doesContainChildren(childModule, amount, $entityParent) {
+    const childConstructor = childModule.default;
+    const childConstructorMock = jestifyConstructor(
+      childConstructor
+    );
+    const childConstructorSpy = jest.spyOn(childModule, 'default');
+    const createEntitySpy = jest.spyOn(bem, 'createEntity');
+
+    childConstructorSpy.mockImplementation(childConstructorMock);
+
+    const entitySetHtmlMock = instantiateEntity($entityParent, true);
+    const $entityHtml = entitySetHtmlMock.mock.calls[0][0];
+
+    let createEntityChildCallCount = 0;
+
+    createEntitySpy.mock.calls.forEach(([arg]) => {
+      if (arg.Entity === childConstructorSpy
+          && arg.$parent.get(0) === $entityHtml.get(0)) {
+        createEntityChildCallCount += 1;
+      }
+    });
+
+    expect(createEntityChildCallCount).toBe(amount);
+
+    childConstructorSpy.mockRestore();
   }
 };

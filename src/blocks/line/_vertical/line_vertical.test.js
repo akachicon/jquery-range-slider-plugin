@@ -4,6 +4,8 @@ const lineVertical = require('./line_vertical').default;
 const {
   instantiateEntity: instantiateLine,
   removeEntities: removeLines,
+  applyMod,
+  removeMod
 } = require('../../../../test/bem/entity')({
   Entity: Line
 });
@@ -20,7 +22,7 @@ describe('line_vertical modifier', () => {
       const line = instantiateLine($body);
       const cssSpy = jest.spyOn(line.$html, 'css');
 
-      lineVertical.apply.call(line);
+      applyMod(line, lineVertical);
 
       expect(cssSpy).toHaveBeenCalledWith('width', '');
       expect(cssSpy).toHaveBeenCalledTimes(1);
@@ -31,7 +33,7 @@ describe('line_vertical modifier', () => {
       const heightSpy = jest.spyOn(line.$html, 'height');
 
       line.lengthPct = 9.01;
-      lineVertical.apply.call(line);
+      applyMod(line, lineVertical);
 
       expect(heightSpy).toHaveBeenCalledWith(`${line.lengthPct}%`);
       expect(heightSpy).toHaveBeenCalledTimes(1);
@@ -43,9 +45,9 @@ describe('line_vertical modifier', () => {
       const line = instantiateLine($body);
       const cssSpy = jest.spyOn(line.$html, 'css');
 
-      lineVertical.apply.call(line);
+      applyMod(line, lineVertical);
       cssSpy.mockClear();
-      lineVertical.remove.call(line);
+      removeMod(line, lineVertical);
 
       expect(cssSpy).toHaveBeenCalledWith('height', '');
       expect(cssSpy).toHaveBeenCalledTimes(1);
