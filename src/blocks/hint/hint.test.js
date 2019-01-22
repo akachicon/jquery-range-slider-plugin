@@ -55,18 +55,21 @@ describe('Hint class', () => {
   test('should expose "text" setter which assigns an arg to the instance "content.text" field', () => {
     const hint = instantiateHint($body);
     const hintContentTextSpy = jest.spyOn(hint.content, 'text', 'set');
+    const testData = 'test-data';
 
-    hint.text = 'test-data';
+    hint.text = testData;
 
-    expect(hintContentTextSpy.mock.calls[0][0]).toBe('test-data');
+    expect(hintContentTextSpy).toHaveBeenCalledWith(testData);
   });
 
   test('should expose "text" getter which returns the instance "content.text" prop', () => {
     const hint = instantiateHint($body);
     const hintContentTextSpy = jest.spyOn(hint.content, 'text', 'get');
+    const testData = 'test-data';
 
-    hintContentTextSpy.mockImplementation(() => 'test-data');
+    hintContentTextSpy.mockImplementation(() => testData);
 
-    expect(hint.text).toBe('test-data');
+    expect(hint.text).toBe(testData);
+    expect(hintContentTextSpy).toHaveBeenCalled();
   });
 });

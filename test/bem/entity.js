@@ -70,7 +70,7 @@ const test = {
   doesExtendModifiable() {
     const entity = instantiateEntity($('<div></div>'));
 
-    expect(entity instanceof bem.Modifiable).toBeTruthy();
+    expect(entity).toBeInstanceOf(bem.Modifiable);
   },
 
   doesConformToTagName() {
@@ -87,30 +87,25 @@ const test = {
       .toBeTruthy();
   },
 
-  doesContainChildren(childModule, amount, $entityParent) {
-    const childConstructor = childModule.default;
-    const childConstructorMock = jestifyConstructor(
-      childConstructor
-    );
-    const childConstructorSpy = jest.spyOn(childModule, 'default');
+  doesContainChildren(childEntityModule, amount) {
+    const $testEntityParent = $('<div></div>');
     const createEntitySpy = jest.spyOn(bem, 'createEntity');
-
-    childConstructorSpy.mockImplementation(childConstructorMock);
-
-    const entitySetHtmlMock = instantiateEntity($entityParent, true);
-    const $entityHtml = entitySetHtmlMock.mock.calls[0][0];
+    const entitySetHtmlMock = instantiateEntity($testEntityParent, true);
+    const [[$entityHtml]] = entitySetHtmlMock.mock.calls;
 
     let createEntityChildCallCount = 0;
 
     createEntitySpy.mock.calls.forEach(([arg]) => {
-      if (arg.Entity === childConstructorSpy
+      if (arg.Entity === childEntityModule.default
           && arg.$parent.get(0) === $entityHtml.get(0)) {
         createEntityChildCallCount += 1;
       }
     });
 
     expect(createEntityChildCallCount).toBe(amount);
+  },
 
-    childConstructorSpy.mockRestore();
+  doesContainMix(baseEntityModule, mixEntityModule, amount) {
+
   }
 };

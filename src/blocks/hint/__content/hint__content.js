@@ -10,11 +10,10 @@ export default class HintContent extends Modifiable {
   }
 
   set text(data) {
-    this._text = data;
     this.$html.text(data);
   }
 
   get text() {
-    return this._text;
+    return this.$html.text();
   }
 }
