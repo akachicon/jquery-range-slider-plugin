@@ -1,12 +1,11 @@
 const $ = require('jquery');
-const bem = require('../../bem');
 const Circle = require('./circle').default;
 const Hint = require('../hint/hint').default;
 const CircleHint = require('./__hint/circle__hint').default;
 const {
   instantiateEntity: instantiateCircle,
   removeEntities: removeCircles,
-  test: testCircle
+  testEntity: testCircle
 } = require('../../../test/bem/entity')({
   Entity: Circle,
   expected: {
@@ -40,26 +39,10 @@ describe('Circle class', () => {
     describe('of type Hint', () => {
       describe('#1', () => {
         test('should be accessible using the instance "hint.hint" field', () => {
-          // When retrieve mock.calls and mock.results they both contain
-          // data in chronological order (which might be not the same).
-          // So we need a way to match call args with corresponding results.
-
-          const createEntityCalls = [];
-          const { createEntity } = bem;
-          const createEntitySpy = jest.spyOn(bem, 'createEntity');
-
-          createEntitySpy.mockImplementation((...args) => {
-            const result = createEntity(...args);
-
-            createEntityCalls.push({
-              args,
-              result
-            });
-
-            return result;
-          });
-
-          const circle = instantiateCircle($body);
+          const {
+            entity: circle,
+            createEntityCalls
+          } = instantiateCircle($body);
 
           expect(createEntityCalls.map(call => call.result))
             .toContain(circle.hint.hint);
@@ -69,29 +52,15 @@ describe('Circle class', () => {
 
           expect(testedCall.args[0].Entity).toBe(Hint);
           expect(testedCall.args[0].$parent).toBe(circle.$html);
-
-          createEntitySpy.mockRestore();
         });
 
         describe('should have a mix created via addMix', () => {
           describe('of type CircleHint', () => {
             test('accessible using the instance "hint.circleHint" field', () => {
-              const addMixCalls = [];
-              const { addMix } = bem;
-              const addMixSpy = jest.spyOn(bem, 'addMix');
-
-              addMixSpy.mockImplementation((...args) => {
-                const result = addMix(...args);
-
-                addMixCalls.push({
-                  args,
-                  result
-                });
-
-                return result;
-              });
-
-              const circle = instantiateCircle($body);
+              const {
+                entity: circle,
+                addMixCalls
+              } = instantiateCircle($body);
 
               expect(addMixCalls.map(call => call.result))
                 .toContain(circle.hint.circleHint);
@@ -101,8 +70,6 @@ describe('Circle class', () => {
 
               expect(testedCall.args[0].Mix).toBe(CircleHint);
               expect(testedCall.args[0].entity).toBe(circle.hint.hint);
-
-              addMixSpy.mockRestore();
             });
           });
         });
@@ -111,23 +78,23 @@ describe('Circle class', () => {
   });
 
   test('should expose "hintText" setter which assigns an arg to the instance "hint.hint.text" field', () => {
-    const circle = instantiateCircle($body);
-    const circleHintHintTextSpy = jest.spyOn(circle.hint.hint, 'text', 'set');
+    const circle = instantiateCircle($body).entity;
+    const hintTextSpy = jest.spyOn(circle.hint.hint, 'text', 'set');
     const testData = 'test-data';
 
     circle.hintText = testData;
 
-    expect(circleHintHintTextSpy).toHaveBeenCalledWith(testData);
+    expect(hintTextSpy).toHaveBeenCalledWith(testData);
   });
 
   test('should expose "hintText" getter which returns the instance "hint.hint.text" prop', () => {
-    const circle = instantiateCircle($body);
-    const circleHintHintTextSpy = jest.spyOn(circle.hint.hint, 'text', 'get');
+    const circle = instantiateCircle($body).entity;
+    const hintTextSpy = jest.spyOn(circle.hint.hint, 'text', 'get');
     const testData = 'test-data';
 
-    circleHintHintTextSpy.mockImplementation(() => testData);
+    hintTextSpy.mockImplementation(() => testData);
 
     expect(circle.hintText).toBe(testData);
-    expect(circleHintHintTextSpy).toHaveBeenCalled();
+    expect(hintTextSpy).toHaveBeenCalled();
   });
 });

@@ -1,3 +1,5 @@
+// It's expected that <rootDir>/test/bem will be executed before this module called
+
 const $ = require('jquery');
 const bem = require('../../src/bem');
 
@@ -19,36 +21,58 @@ module.exports = (config) => {
   entityConfig = config;
 
   return {
-    jestifyConstructor,
     instantiateEntity,
     removeEntities,
     applyMod,
     removeMod,
-    test
+    testEntity
   };
 };
 
-const jestifyConstructor = Constructor => (
-  function JestifiedConstructor(...args) {
-    return new Constructor(...args);
-  }
-);
-
-const instantiateEntity = ($parent, returnHtmlSetterMock) => {
-  const setHtml = jest.fn();
+const instantiateEntity = ($parent) => {
   const { Entity } = entityConfig;
+  const setHtml = jest.fn();
+
+  // When retrieve mock.calls and mock.results they both contain
+  // data in chronological order (which might not be the same).
+  // So we need a way to match call args with their corresponding results.
+
+  const upgradeBemMethodToTrackCalls = (method) => {
+    const callStore = [];
+
+    bem[method].mockImplementation((...args) => {
+      // Cause jest.requireActual does not work here the origin is used
+      const result = bem.__test__.origin[method](...args);
+
+      callStore.push({
+        args,
+        result
+      });
+
+      return result;
+    });
+
+    return callStore;
+  };
+
+  const createEntityCalls = upgradeBemMethodToTrackCalls('createEntity');
+  const addMixCalls = upgradeBemMethodToTrackCalls('addMix');
   const entity = new Entity(setHtml);
+
+  // It executes some part of the bem contract
+  // but does not test the bem behaviour
 
   [[entity.$html]] = setHtml.mock.calls;
   entity.$html.appendTo($parent);
   entity.$parent = $parent;
   mountedEntities.push(entity);
 
-  if (returnHtmlSetterMock) {
-    return setHtml;
-  }
-
-  return entity;
+  return {
+    entity,
+    setHtml,
+    createEntityCalls,
+    addMixCalls
+  };
 };
 
 const removeEntities = () => {
@@ -66,46 +90,24 @@ const removeMod = (entity, modifier) => {
   modifier.remove.call(entity);
 };
 
-const test = {
+const testEntity = {
   doesExtendModifiable() {
-    const entity = instantiateEntity($('<div></div>'));
+    const { entity } = instantiateEntity($('<div></div>'));
 
     expect(entity).toBeInstanceOf(bem.Modifiable);
   },
 
   doesConformToTagName() {
-    const setHtml = instantiateEntity($('<div></div>'), true);
+    const { setHtml } = instantiateEntity($('<div></div>'));
 
     expect(setHtml.mock.calls[0][0].get(0).tagName)
       .toBe(entityConfig.expected.tagName);
   },
 
   doesConformToClassName() {
-    const setHtml = instantiateEntity($('<div></div>'), true);
+    const { setHtml } = instantiateEntity($('<div></div>'));
 
     expect(setHtml.mock.calls[0][0].hasClass(entityConfig.expected.className))
       .toBeTruthy();
-  },
-
-  doesContainChildren(childEntityModule, amount) {
-    const $testEntityParent = $('<div></div>');
-    const createEntitySpy = jest.spyOn(bem, 'createEntity');
-    const entitySetHtmlMock = instantiateEntity($testEntityParent, true);
-    const [[$entityHtml]] = entitySetHtmlMock.mock.calls;
-
-    let createEntityChildCallCount = 0;
-
-    createEntitySpy.mock.calls.forEach(([arg]) => {
-      if (arg.Entity === childEntityModule.default
-          && arg.$parent.get(0) === $entityHtml.get(0)) {
-        createEntityChildCallCount += 1;
-      }
-    });
-
-    expect(createEntityChildCallCount).toBe(amount);
-  },
-
-  doesContainMix(baseEntityModule, mixEntityModule, amount) {
-
   }
 };

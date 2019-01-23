@@ -19,24 +19,24 @@ describe('hint_color_53b6a8 modifier', () => {
 
   describe('when is being applied', () => {
     test('should apply hint__content_color_53b6a8 modifier on the instance "content" field value', () => {
-      const hint = instantiateHint($body);
-      const hintContentApplyModSpy = jest.spyOn(hint.content, 'applyMod');
+      const hint = instantiateHint($body).entity;
+      const contentApplyModSpy = jest.spyOn(hint.content, 'applyMod');
 
       applyMod(hint, hintLeft);
 
-      expect(hintContentApplyModSpy.mock.calls[0][0])
+      expect(contentApplyModSpy.mock.calls[0][0])
         .toBe('hint__content_color_53b6a8');
     });
   });
 
   describe('when is being removed', () => {
     test('should remove hint__content_color_53b6a8 modifier from the instance "content" field value', () => {
-      const hint = instantiateHint($body);
-      const hintContentRemoveModSpy = jest.spyOn(hint.content, 'removeMod');
+      const hint = instantiateHint($body).entity;
+      const contentRemoveModSpy = jest.spyOn(hint.content, 'removeMod');
 
       removeMod(hint, hintLeft);
 
-      expect(hintContentRemoveModSpy.mock.calls[0][0])
+      expect(contentRemoveModSpy.mock.calls[0][0])
         .toBe('hint__content_color_53b6a8');
     });
   });

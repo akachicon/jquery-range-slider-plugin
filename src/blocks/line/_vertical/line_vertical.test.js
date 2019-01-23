@@ -19,51 +19,51 @@ describe('line_vertical modifier', () => {
 
   describe('when is being applied', () => {
     test('should call the instance "$html.css" prop with ("width", "") args', () => {
-      const line = instantiateLine($body);
-      const cssSpy = jest.spyOn(line.$html, 'css');
+      const line = instantiateLine($body).entity;
+      const htmlCssSpy = jest.spyOn(line.$html, 'css');
 
       applyMod(line, lineVertical);
 
-      expect(cssSpy).toHaveBeenCalledWith('width', '');
-      expect(cssSpy).toHaveBeenCalledTimes(1);
+      expect(htmlCssSpy).toHaveBeenCalledWith('width', '');
+      expect(htmlCssSpy).toHaveBeenCalledTimes(1);
     });
 
     test('should call the instance "$html.height" prop with the "lengthPct" value concatenated with "%" as an arg', () => {
-      const line = instantiateLine($body);
-      const heightSpy = jest.spyOn(line.$html, 'height');
+      const line = instantiateLine($body).entity;
+      const htmlHeightSpy = jest.spyOn(line.$html, 'height');
 
       line.lengthPct = 9.01;
       applyMod(line, lineVertical);
 
-      expect(heightSpy).toHaveBeenCalledWith(`${line.lengthPct}%`);
-      expect(heightSpy).toHaveBeenCalledTimes(1);
+      expect(htmlHeightSpy).toHaveBeenCalledWith(`${line.lengthPct}%`);
+      expect(htmlHeightSpy).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('when is being removed', () => {
     test('should call the instance "$html.css" prop with ("height", "") args', () => {
-      const line = instantiateLine($body);
-      const cssSpy = jest.spyOn(line.$html, 'css');
+      const line = instantiateLine($body).entity;
+      const htmlCssSpy = jest.spyOn(line.$html, 'css');
 
       applyMod(line, lineVertical);
-      cssSpy.mockClear();
+      htmlCssSpy.mockClear();
       removeMod(line, lineVertical);
 
-      expect(cssSpy).toHaveBeenCalledWith('height', '');
-      expect(cssSpy).toHaveBeenCalledTimes(1);
+      expect(htmlCssSpy).toHaveBeenCalledWith('height', '');
+      expect(htmlCssSpy).toHaveBeenCalledTimes(1);
     });
 
     test('should call the instance "$html.width" prop with the "lengthPct" value concatenated with "%" as an arg', () => {
-      const line = instantiateLine($body);
-      const widthSpy = jest.spyOn(line.$html, 'width');
+      const line = instantiateLine($body).entity;
+      const htmlWidthSpy = jest.spyOn(line.$html, 'width');
 
-      lineVertical.apply.call(line);
+      applyMod(line, lineVertical);
       line.lengthPct = 9.01;
-      widthSpy.mockClear();
-      lineVertical.remove.call(line);
+      htmlWidthSpy.mockClear();
+      removeMod(line, lineVertical);
 
-      expect(widthSpy).toHaveBeenCalledWith(`${line.lengthPct}%`);
-      expect(widthSpy).toHaveBeenCalledTimes(1);
+      expect(htmlWidthSpy).toHaveBeenCalledWith(`${line.lengthPct}%`);
+      expect(htmlWidthSpy).toHaveBeenCalledTimes(1);
     });
   });
 });

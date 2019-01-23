@@ -1,11 +1,10 @@
 const $ = require('jquery');
-const bem = require('../../bem');
 const Hint = require('./hint').default;
-const hintContentModule = require('./__content/hint__content');
+const HintContent = require('./__content/hint__content').default;
 const {
   instantiateEntity: instantiateHint,
   removeEntities: removeHints,
-  test: testHint
+  testEntity: testHint
 } = require('../../../test/bem/entity')({
   Entity: Hint,
   expected: {
@@ -37,39 +36,44 @@ describe('Hint class', () => {
 
   describe('should instantiate children entities via createEntity', () => {
     describe('of type HintContent', () => {
-      test('in the amount of 1', () => {
-        testHint.doesContainChildren(hintContentModule, 1, $body);
-      });
+      describe('#1', () => {
+        test('should be accessible using the instance "content" field', () => {
+          const {
+            entity: hint,
+            createEntityCalls
+          } = instantiateHint($body);
 
-      test('accessible using the instance "content" field', () => {
-        const createEntitySpy = jest.spyOn(bem, 'createEntity');
-        const hint = instantiateHint($body);
-        const createdEntities = createEntitySpy.mock.results
-          .map(result => result.value);
+          expect(createEntityCalls.map(call => call.result))
+            .toContain(hint.content);
 
-        expect(createdEntities).toContain(hint.content);
+          const [testedCall] = createEntityCalls
+            .filter(call => call.result === hint.content);
+
+          expect(testedCall.args[0].Entity).toBe(HintContent);
+          expect(testedCall.args[0].$parent).toBe(hint.$html);
+        });
       });
     });
   });
 
   test('should expose "text" setter which assigns an arg to the instance "content.text" field', () => {
-    const hint = instantiateHint($body);
-    const hintContentTextSpy = jest.spyOn(hint.content, 'text', 'set');
+    const hint = instantiateHint($body).entity;
+    const contentTextSpy = jest.spyOn(hint.content, 'text', 'set');
     const testData = 'test-data';
 
     hint.text = testData;
 
-    expect(hintContentTextSpy).toHaveBeenCalledWith(testData);
+    expect(contentTextSpy).toHaveBeenCalledWith(testData);
   });
 
   test('should expose "text" getter which returns the instance "content.text" prop', () => {
-    const hint = instantiateHint($body);
-    const hintContentTextSpy = jest.spyOn(hint.content, 'text', 'get');
+    const hint = instantiateHint($body).entity;
+    const contentTextSpy = jest.spyOn(hint.content, 'text', 'get');
     const testData = 'test-data';
 
-    hintContentTextSpy.mockImplementation(() => testData);
+    contentTextSpy.mockImplementation(() => testData);
 
     expect(hint.text).toBe(testData);
-    expect(hintContentTextSpy).toHaveBeenCalled();
+    expect(contentTextSpy).toHaveBeenCalled();
   });
 });

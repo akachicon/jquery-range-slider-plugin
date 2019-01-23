@@ -3,7 +3,7 @@ const Hint = require('./hint__content').default;
 const {
   instantiateEntity: instantiateHintContent,
   removeEntities: removeHintContents,
-  test: testHintContent
+  testEntity: testHintContent
 } = require('../../../../test/bem/entity')({
   Entity: Hint,
   expected: {
@@ -34,23 +34,23 @@ describe('HintContent class', () => {
   });
 
   test('should expose "text" setter which calls the instance "$html.text" function with its arg', () => {
-    const hintContent = instantiateHintContent($body);
-    const hintContentHtmlTextSpy = jest.spyOn(hintContent.$html, 'text');
+    const hintContent = instantiateHintContent($body).entity;
+    const htmlTextSpy = jest.spyOn(hintContent.$html, 'text');
     const testData = 'test-data';
 
     hintContent.text = testData;
 
-    expect(hintContentHtmlTextSpy).toHaveBeenCalledWith(testData);
+    expect(htmlTextSpy).toHaveBeenCalledWith(testData);
   });
 
   test('should expose "text" getter which returns a call result of the instance "$html.text" function', () => {
-    const hintContent = instantiateHintContent($body);
-    const hintContentHtmlTextSpy = jest.spyOn(hintContent.$html, 'text');
+    const hintContent = instantiateHintContent($body).entity;
+    const htmlTextSpy = jest.spyOn(hintContent.$html, 'text');
     const testData = 'test-data';
 
-    hintContentHtmlTextSpy.mockImplementation(() => testData);
+    htmlTextSpy.mockImplementation(() => testData);
 
     expect(hintContent.text).toBe(testData);
-    expect(hintContentHtmlTextSpy).toHaveBeenCalled();
+    expect(htmlTextSpy).toHaveBeenCalled();
   });
 });
