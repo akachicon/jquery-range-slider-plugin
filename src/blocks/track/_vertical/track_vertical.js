@@ -6,7 +6,7 @@ export default {
     fill.line.applyMod('line_vertical');
     fill.trackFiller.applyMod('track__filler_vertical');
 
-    this.fillStartPortion = this._fillStartPortion;
+    this.fillStartPortion = this._fillStartPortion; // TODO: syncFillStartPortion()
   },
   remove() {
     const { path, fill } = this;

@@ -62,7 +62,7 @@ describe('Line class', () => {
         line.lengthPct = 20;
         expect(line.lengthPct).toBe(20);
 
-        line.applyMod('line_vertical');
+        line.applyMod('line_vertical'); // TODO: consider mock of the 'hasMod' method
         line.lengthPct = 101;
         line.removeMod('line_vertical');
         expect(line.lengthPct).toBe(101);

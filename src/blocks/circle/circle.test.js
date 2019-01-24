@@ -30,7 +30,7 @@ describe('Circle class', () => {
       testCircle.doesConformToTagName();
     });
 
-    test('with a jquery element that has class "hint"', () => {
+    test('with a jquery element that has class "circle"', () => {
       testCircle.doesConformToClassName();
     });
   });

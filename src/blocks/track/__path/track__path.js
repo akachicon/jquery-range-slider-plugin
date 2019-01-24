@@ -1,9 +1,9 @@
 import { Modifiable } from '../../../bem';
 
 export default class TrackFiller extends Modifiable {
-  constructor($entityHtml) {
+  constructor($blockHtml) {
     super();
 
-    $entityHtml.addClass('track__path');
+    $blockHtml.addClass('track__path');
   }
 }

@@ -75,6 +75,10 @@ const instantiateEntity = ($parent) => {
   };
 };
 
+const instantiateMixEntity = baseEntity => ({
+  entity: new entityConfig.Entity(baseEntity.$html)
+});
+
 const removeEntities = () => {
   mountedEntities.forEach((entity) => {
     entity.$html.remove();
@@ -97,11 +101,10 @@ const testEntity = {
     expect(entity).toBeInstanceOf(bem.Modifiable);
   },
 
-  doesConformToTagName() {
-    const { setHtml } = instantiateEntity($('<div></div>'));
+  doesMixExtendModifiable() {
+    const { entity } = instantiateMixEntity({ $html: $('<div></div>') });
 
-    expect(setHtml.mock.calls[0][0].get(0).tagName)
-      .toBe(entityConfig.expected.tagName);
+    expect(entity).toBeInstanceOf(bem.Modifiable);
   },
 
   doesConformToClassName() {
@@ -109,5 +112,41 @@ const testEntity = {
 
     expect(setHtml.mock.calls[0][0].hasClass(entityConfig.expected.className))
       .toBeTruthy();
+  },
+
+  doesMixConformToClassName() {
+    const $html = $('<div></div>');
+
+    instantiateMixEntity({ $html });
+
+    expect($html.hasClass(entityConfig.expected.className))
+      .toBeTruthy();
+  },
+
+  doesConformToTagName() {
+    const { setHtml } = instantiateEntity($('<div></div>'));
+
+    expect(setHtml.mock.calls[0][0].get(0).tagName)
+      .toBe(entityConfig.expected.tagName);
+  },
+
+  hasModBeenApplied({ mod, to }) {
+    const { applyMod: apply } = bem.Modifiable.prototype;
+    const contexts = apply.mock.instances;
+
+    expect(contexts).toContain(to);
+
+    let satisfied = false;
+
+    for (let idx = 0; idx < contexts.length; idx += 1) {
+      if (contexts[idx] === to
+          && apply.mock.calls[idx][0] === mod) {
+        satisfied = true;
+
+        break;
+      }
+    }
+
+    expect(satisfied).toBeTruthy();
   }
 };
