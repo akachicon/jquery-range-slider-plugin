@@ -130,6 +130,54 @@ const testEntity = {
       .toBe(entityConfig.expected.tagName);
   },
 
+  doesSpawnEntity({
+    Entity,
+    accessor,
+    parentAccessor
+  }) {
+    const {
+      entity,
+      createEntityCalls
+    } = instantiateEntity($('<div></div>'));
+    const descendant = getObjectWithAccessor(entity, accessor);
+
+    expect(createEntityCalls.map(call => call.result))
+      .toContain(descendant);
+
+    const [testedCall] = createEntityCalls
+      .filter(call => call.result === descendant);
+
+    expect(testedCall.args[0].Entity).toBe(Entity);
+
+    if (parentAccessor === undefined) return;
+
+    expect(descendant.$parent).toBe(
+      getObjectWithAccessor(entity, parentAccessor).$html
+    );
+  },
+
+  doesMixEntities({
+    Mix,
+    baseAccessor,
+    mixAccessor
+  }) {
+    const {
+      entity,
+      addMixCalls
+    } = instantiateEntity($('<div></div>'));
+    const base = getObjectWithAccessor(entity, baseAccessor);
+    const mix = getObjectWithAccessor(entity, mixAccessor);
+
+    expect(addMixCalls.map(call => call.result))
+      .toContain(mix);
+
+    const [testedCall] = addMixCalls
+      .filter(call => call.result === mix);
+
+    expect(testedCall.args[0].Mix).toBe(Mix);
+    expect(testedCall.args[0].entity).toBe(base);
+  },
+
   hasModBeenApplied({ mod, to }) {
     const { applyMod: apply } = bem.Modifiable.prototype;
     const contexts = apply.mock.instances;
@@ -149,4 +197,13 @@ const testEntity = {
 
     expect(satisfied).toBeTruthy();
   }
+};
+
+const getObjectWithAccessor = (origin, acc) => {
+  if (acc === '') return origin;
+
+  return acc.split('.').reduce(
+    (obj, accEntry) => obj[accEntry],
+    origin
+  );
 };

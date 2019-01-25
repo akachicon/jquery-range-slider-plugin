@@ -34,23 +34,15 @@ describe('Hint class', () => {
     });
   });
 
-  describe('should instantiate children entities via createEntity', () => {
+  describe('should instantiate child entities via createEntity', () => {
     describe('of type HintContent', () => {
       describe('#1', () => {
         test('should be accessible using the instance "content" field', () => {
-          const {
-            entity: hint,
-            createEntityCalls
-          } = instantiateHint($body);
-
-          expect(createEntityCalls.map(call => call.result))
-            .toContain(hint.content);
-
-          const [testedCall] = createEntityCalls
-            .filter(call => call.result === hint.content);
-
-          expect(testedCall.args[0].Entity).toBe(HintContent);
-          expect(testedCall.args[0].$parent).toBe(hint.$html);
+          testHint.doesSpawnEntity({
+            Entity: HintContent,
+            accessor: 'content',
+            parentAccessor: ''
+          });
         });
       });
     });

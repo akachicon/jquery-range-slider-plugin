@@ -28,6 +28,8 @@ describe('circle_hint-position_left modifier', () => {
 
       expect(hintApplyModSpy.mock.calls[0][0])
         .toBe('hint_left');
+
+      hintApplyModSpy.mockRestore();
     });
 
     test('should apply circle__hint_left modifier on the instance "hint.circleHint" field value', () => {
@@ -54,6 +56,8 @@ describe('circle_hint-position_left modifier', () => {
 
       expect(hintRemoveModSpy.mock.calls[0][0])
         .toBe('hint_left');
+
+      hintRemoveModSpy.mockRestore();
     });
 
     test('should remove circle__hint_left modifier from the instance "hint.circleHint" field value', () => {

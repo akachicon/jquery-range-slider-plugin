@@ -39,37 +39,21 @@ describe('Circle class', () => {
     describe('of type Hint', () => {
       describe('#1', () => {
         test('should be accessible using the instance "hint.hint" field', () => {
-          const {
-            entity: circle,
-            createEntityCalls
-          } = instantiateCircle($body);
-
-          expect(createEntityCalls.map(call => call.result))
-            .toContain(circle.hint.hint);
-
-          const [testedCall] = createEntityCalls
-            .filter(call => call.result === circle.hint.hint);
-
-          expect(testedCall.args[0].Entity).toBe(Hint);
-          expect(testedCall.args[0].$parent).toBe(circle.$html);
+          testCircle.doesSpawnEntity({
+            Entity: Hint,
+            accessor: 'hint.hint',
+            parentAccessor: ''
+          });
         });
 
         describe('should have a mix created via addMix', () => {
           describe('of type CircleHint', () => {
             test('accessible using the instance "hint.circleHint" field', () => {
-              const {
-                entity: circle,
-                addMixCalls
-              } = instantiateCircle($body);
-
-              expect(addMixCalls.map(call => call.result))
-                .toContain(circle.hint.circleHint);
-
-              const [testedCall] = addMixCalls
-                .filter(call => call.result === circle.hint.circleHint);
-
-              expect(testedCall.args[0].Mix).toBe(CircleHint);
-              expect(testedCall.args[0].entity).toBe(circle.hint.hint);
+              testCircle.doesMixEntities({
+                Mix: CircleHint,
+                baseAccessor: 'hint.hint',
+                mixAccessor: 'hint.circleHint'
+              });
             });
           });
         });

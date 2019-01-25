@@ -1,5 +1,4 @@
 const $ = require('jquery');
-const { Modifiable } = require('../../bem');
 const Track = require('./track').default;
 const TrackPath = require('./__path/track__path').default;
 const TrackFiller = require('./__filler/track__filler').default;
@@ -41,33 +40,18 @@ describe('Track class', () => {
     describe('of type Line', () => {
       describe('#1', () => {
         test('should be accessible using the instance "path.line" field', () => {
-          const {
-            entity: track,
-            createEntityCalls
-          } = instantiateTrack($body);
-
-          expect(createEntityCalls.map(call => call.result))
-            .toContain(track.path.line);
-
-          const [testedCall] = createEntityCalls
-            .filter(call => call.result === track.path.line);
-
-          expect(testedCall.args[0].Entity).toBe(Line);
+          testTrack.doesSpawnEntity({
+            Entity: Line,
+            accessor: 'path.line'
+          });
         });
 
         test('should be an immediate child of the Track entity', () => {
-          const {
-            entity: track,
-            createEntityCalls
-          } = instantiateTrack($body);
-
-          expect(createEntityCalls.map(call => call.result))
-            .toContain(track.path.line);
-
-          const [testedCall] = createEntityCalls
-            .filter(call => call.result === track.path.line);
-
-          expect(testedCall.args[0].$parent).toBe(track.$html);
+          testTrack.doesSpawnEntity({
+            Entity: Line,
+            accessor: 'path.line',
+            parentAccessor: ''
+          });
         });
 
         describe('should have applied modifiers', () => {
@@ -93,19 +77,11 @@ describe('Track class', () => {
         describe('should have a mix created via addMix', () => {
           describe('of type TrackPath', () => {
             test('accessible using the instance "path.trackPath" field', () => {
-              const {
-                entity: track,
-                addMixCalls
-              } = instantiateTrack($body);
-
-              expect(addMixCalls.map(call => call.result))
-                .toContain(track.path.trackPath);
-
-              const [testedCall] = addMixCalls
-                .filter(call => call.result === track.path.trackPath);
-
-              expect(testedCall.args[0].Mix).toBe(TrackPath);
-              expect(testedCall.args[0].entity).toBe(track.path.line);
+              testTrack.doesMixEntities({
+                Mix: TrackPath,
+                baseAccessor: 'path.line',
+                mixAccessor: 'path.trackPath'
+              });
             });
           });
         });
@@ -113,33 +89,18 @@ describe('Track class', () => {
 
       describe('#2', () => {
         test('should be accessible using the instance "fill.line" field', () => {
-          const {
-            entity: track,
-            createEntityCalls
-          } = instantiateTrack($body);
-
-          expect(createEntityCalls.map(call => call.result))
-            .toContain(track.fill.line);
-
-          const [testedCall] = createEntityCalls
-            .filter(call => call.result === track.fill.line);
-
-          expect(testedCall.args[0].Entity).toBe(Line);
+          testTrack.doesSpawnEntity({
+            Entity: Line,
+            accessor: 'fill.line',
+          });
         });
 
         test('should be a child of the entity "path.line" entity', () => {
-          const {
-            entity: track,
-            createEntityCalls
-          } = instantiateTrack($body);
-
-          expect(createEntityCalls.map(call => call.result))
-            .toContain(track.fill.line);
-
-          const [testedCall] = createEntityCalls
-            .filter(call => call.result === track.fill.line);
-
-          expect(testedCall.args[0].$parent).toBe(track.path.line.$html);
+          testTrack.doesSpawnEntity({
+            Entity: Line,
+            accessor: 'fill.line',
+            parentAccessor: 'path.line'
+          });
         });
 
         describe('should have applied modifiers', () => {
@@ -156,19 +117,11 @@ describe('Track class', () => {
         describe('should have a mix created via addMix', () => {
           describe('of type TrackFiller', () => {
             test('accessible using the instance "fill.trackFiller" field', () => {
-              const {
-                entity: track,
-                addMixCalls
-              } = instantiateTrack($body);
-
-              expect(addMixCalls.map(call => call.result))
-                .toContain(track.fill.trackFiller);
-
-              const [testedCall] = addMixCalls
-                .filter(call => call.result === track.fill.trackFiller);
-
-              expect(testedCall.args[0].Mix).toBe(TrackFiller);
-              expect(testedCall.args[0].entity).toBe(track.fill.line);
+              testTrack.doesMixEntities({
+                Mix: TrackFiller,
+                baseAccessor: 'fill.line',
+                mixAccessor: 'fill.trackFiller'
+              });
             });
           });
         });
