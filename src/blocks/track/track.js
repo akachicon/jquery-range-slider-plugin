@@ -72,7 +72,6 @@ export default class Track extends Modifiable {
   }
 
   set fillStartPortion(fraction) {
-    const { _fillEndPortion } = this;
     let fillIndent = 0;
 
     if (fraction !== null) {
@@ -87,10 +86,7 @@ export default class Track extends Modifiable {
 
     this.fill.trackFiller.marginPx = fillIndent;
     this._fillStartPortion = fraction;
-
-    if (_fillEndPortion !== null) {
-      this.fillEndPortion = _fillEndPortion;
-    }
+    this._syncFillEndPortion();
   }
 
   get fillStartPortion() {
@@ -98,7 +94,7 @@ export default class Track extends Modifiable {
   }
 
   set fillEndPortion(fraction) {
-    const { path, _fillStartPortion } = this;
+    const { path, fillStartPortion } = this;
     const {
       lengthPx: pathLength,
       thicknessPx: pathThickness
@@ -106,11 +102,11 @@ export default class Track extends Modifiable {
 
     let fillLength;
 
-    if (_fillStartPortion === null) {
+    if (fillStartPortion === null) {
       fillLength = (fraction * (pathLength - pathThickness)
         + pathThickness / 2) / pathLength * 100;
     } else {
-      fillLength = (fraction - _fillStartPortion)
+      fillLength = (fraction - fillStartPortion)
         * (pathLength - pathThickness) / pathLength * 100;
     }
 
@@ -120,6 +116,14 @@ export default class Track extends Modifiable {
 
   get fillEndPortion() {
     return this._fillEndPortion;
+  }
+
+  _syncFillStartPortion() {
+    this.fillStartPortion = this._fillStartPortion;
+  }
+
+  _syncFillEndPortion() {
+    this.fillEndPortion = this._fillEndPortion;
   }
 }
 

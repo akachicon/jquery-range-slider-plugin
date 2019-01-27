@@ -35,7 +35,7 @@ describe('Circle class', () => {
     });
   });
 
-  describe('should instantiate child entities via createEntity', () => {
+  describe('should instantiate child entities via the bem "createEntity" method', () => {
     describe('of type Hint', () => {
       describe('#1', () => {
         test('should be accessible using the instance "hint.hint" field', () => {
@@ -46,7 +46,7 @@ describe('Circle class', () => {
           });
         });
 
-        describe('should have a mix created via addMix', () => {
+        describe('should have a mix created via the bem "addMix" method', () => {
           describe('of type CircleHint', () => {
             test('accessible using the instance "hint.circleHint" field', () => {
               testCircle.doesMixEntities({

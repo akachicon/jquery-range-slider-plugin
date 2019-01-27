@@ -34,7 +34,7 @@ describe('Hint class', () => {
     });
   });
 
-  describe('should instantiate child entities via createEntity', () => {
+  describe('should instantiate child entities via the bem "createEntity" method', () => {
     describe('of type HintContent', () => {
       describe('#1', () => {
         test('should be accessible using the instance "content" field', () => {

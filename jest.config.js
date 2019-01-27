@@ -15,5 +15,9 @@ module.exports = {
   setupFiles: [
     '<rootDir>/test/bem'
   ],
-  setupTestFrameworkScriptFile: 'jest-extended'
+  setupTestFrameworkScriptFile: 'jest-extended',
+  testMatch: [
+    '**/__tests__/**/*.[jt]s?(x)',
+    '**/src/**/?(*.)+(spec|test).[jt]s?(x)'
+  ]
 };

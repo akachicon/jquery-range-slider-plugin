@@ -196,6 +196,30 @@ const testEntity = {
     }
 
     expect(satisfied).toBeTruthy();
+  },
+
+  doesApply(modifier, subModifier, toAccessor) {
+    const { entity } = instantiateEntity($('<div></div>'));
+    const applyModSpy = jest.spyOn(
+      getObjectWithAccessor(entity, toAccessor),
+      'applyMod'
+    );
+
+    applyMod(entity, modifier);
+
+    expect(applyModSpy).toHaveBeenCalledWith(subModifier);
+  },
+
+  doesRemove(modifier, subModifier, fromAccessor) {
+    const { entity } = instantiateEntity($('<div></div>'));
+    const removeModSpy = jest.spyOn(
+      getObjectWithAccessor(entity, fromAccessor),
+      'removeMod'
+    );
+
+    removeMod(entity, modifier);
+
+    expect(removeModSpy).toHaveBeenCalledWith(subModifier);
   }
 };
 
