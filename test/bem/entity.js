@@ -22,6 +22,7 @@ module.exports = (config) => {
 
   return {
     instantiateEntity,
+    instantiateMixEntity,
     removeEntities,
     applyMod,
     removeMod,
@@ -75,9 +76,14 @@ const instantiateEntity = ($parent) => {
   };
 };
 
-const instantiateMixEntity = baseEntity => ({
-  entity: new entityConfig.Entity(baseEntity.$html)
-});
+const instantiateMixEntity = (baseEntity) => {
+  const entity = new entityConfig.Entity(baseEntity.$html);
+
+  entity.$html = baseEntity.$html;
+  entity.$parent = baseEntity.$parent;
+
+  return { entity };
+};
 
 const removeEntities = () => {
   mountedEntities.forEach((entity) => {
