@@ -33,24 +33,30 @@ describe('HintContent class', () => {
     });
   });
 
-  test('should expose "text" setter which calls the instance "$html.text" function with its arg', () => {
-    const hintContent = instantiateHintContent($body).entity;
-    const htmlTextSpy = jest.spyOn(hintContent.$html, 'text');
-    const testData = 'test-data';
+  describe('should expose "text" getter/setter', () => {
+    describe('setter', () => {
+      test('should call the instance "$html.text" function with its arg', () => {
+        const hintContent = instantiateHintContent($body).entity;
+        const htmlTextSpy = jest.spyOn(hintContent.$html, 'text');
+        const testData = 'test-data';
 
-    hintContent.text = testData;
+        hintContent.text = testData;
 
-    expect(htmlTextSpy).toHaveBeenCalledWith(testData);
-  });
+        expect(htmlTextSpy).toHaveBeenCalledWith(testData);
+      });
+    });
 
-  test('should expose "text" getter which returns a call result of the instance "$html.text" function', () => {
-    const hintContent = instantiateHintContent($body).entity;
-    const htmlTextSpy = jest.spyOn(hintContent.$html, 'text');
-    const testData = 'test-data';
+    describe('getter', () => {
+      test('should return a call result of the instance "$html.text" function', () => {
+        const hintContent = instantiateHintContent($body).entity;
+        const htmlTextSpy = jest.spyOn(hintContent.$html, 'text');
+        const testData = 'test-data';
 
-    htmlTextSpy.mockImplementation(() => testData);
+        htmlTextSpy.mockImplementation(() => testData);
 
-    expect(hintContent.text).toBe(testData);
-    expect(htmlTextSpy).toHaveBeenCalled();
+        expect(hintContent.text).toBe(testData);
+        expect(htmlTextSpy).toHaveBeenCalled();
+      });
+    });
   });
 });

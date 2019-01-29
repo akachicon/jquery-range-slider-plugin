@@ -34,137 +34,111 @@ describe('Line class', () => {
   });
 
   describe('should expose lengthPct getter/setter for the instance', () => {
-    describe('in case "line_vertical" modifier is not applied', () => {
-      test('the setter calls "$html.width" with a received argument concatenated with "%"', () => {
-        const line = instantiateLine($body).entity;
-        const htmlWidthSpy = jest.spyOn(line.$html, 'width');
+    describe('setter', () => {
+      describe('line_vertical modifier is not applied', () => {
+        test('should call the instance "$html.width" with a received argument concatenated with "%"', () => {
+          const line = instantiateLine($body).entity;
+          const htmlWidthSpy = jest.spyOn(line.$html, 'width');
 
-        line.lengthPct = 15;
-        expect(htmlWidthSpy).toHaveBeenCalledWith('15%');
-        expect(htmlWidthSpy).toHaveBeenCalledTimes(1);
+          jest.spyOn(line, 'hasMod').mockImplementation(() => false);
 
-        htmlWidthSpy.mockClear();
-        line.lengthPct = 110;
-        expect(htmlWidthSpy).toHaveBeenCalledWith('110%');
-        expect(htmlWidthSpy).toHaveBeenCalledTimes(1);
+          line.lengthPct = 15;
+          expect(htmlWidthSpy).toHaveBeenLastCalledWith('15%');
 
-        htmlWidthSpy.mockClear();
-        line.lengthPct = 0;
-        expect(htmlWidthSpy).toHaveBeenCalledWith('0%');
-        expect(htmlWidthSpy).toHaveBeenCalledTimes(1);
+          line.lengthPct = 110;
+          expect(htmlWidthSpy).toHaveBeenLastCalledWith('110%');
+
+          line.lengthPct = 0;
+          expect(htmlWidthSpy).toHaveBeenLastCalledWith('0%');
+        });
       });
 
-      test('the getter returns previously set value or the default value of 100', () => {
-        const line = instantiateLine($body).entity;
+      describe('line_vertical modifier is applied', () => {
+        test('should call the instance "$html.height" with a received argument concatenated with "%"', () => {
+          const line = instantiateLine($body).entity;
+          const htmlHeightSpy = jest.spyOn(line.$html, 'height');
 
-        expect(line.lengthPct).toBe(100);
+          jest.spyOn(line, 'hasMod').mockImplementation(() => true);
 
-        line.lengthPct = 20;
-        expect(line.lengthPct).toBe(20);
+          line.lengthPct = 15;
+          expect(htmlHeightSpy).toHaveBeenLastCalledWith('15%');
 
-        line.applyMod('line_vertical'); // TODO: consider mock of the 'hasMod' method
-        line.lengthPct = 101;
-        line.removeMod('line_vertical');
-        expect(line.lengthPct).toBe(101);
+          line.lengthPct = 110;
+          expect(htmlHeightSpy).toHaveBeenLastCalledWith('110%');
+
+          line.lengthPct = 0;
+          expect(htmlHeightSpy).toHaveBeenLastCalledWith('0%');
+        });
       });
     });
 
-    describe('in case "line_vertical" modifier is applied', () => {
-      test('the setter calls "$html.height" with a received argument concatenated with "%"', () => {
-        const line = instantiateLine($body).entity;
-        const htmlHeightSpy = jest.spyOn(line.$html, 'height');
-
-        line.applyMod('line_vertical');
-
-        htmlHeightSpy.mockClear();
-        line.lengthPct = 15;
-        expect(htmlHeightSpy).toHaveBeenCalledWith('15%');
-        expect(htmlHeightSpy).toHaveBeenCalledTimes(1);
-
-        htmlHeightSpy.mockClear();
-        line.lengthPct = 110;
-        expect(htmlHeightSpy).toHaveBeenCalledWith('110%');
-        expect(htmlHeightSpy).toHaveBeenCalledTimes(1);
-
-        htmlHeightSpy.mockClear();
-        line.lengthPct = 0;
-        expect(htmlHeightSpy).toHaveBeenCalledWith('0%');
-        expect(htmlHeightSpy).toHaveBeenCalledTimes(1);
-      });
-
-      test('the getter returns previously set value or the default value of 100', () => {
+    describe('getter', () => {
+      test('should return a previously set value or the default value of 100', () => {
         const line = instantiateLine($body).entity;
 
-        line.applyMod('line_vertical');
         expect(line.lengthPct).toBe(100);
 
         line.lengthPct = 20;
         expect(line.lengthPct).toBe(20);
 
-        line.removeMod('line_vertical');
         line.lengthPct = 101;
-        line.applyMod('line_vertical');
         expect(line.lengthPct).toBe(101);
       });
     });
   });
 
   describe('should expose lengthPx getter for the instance', () => {
-    describe('in case "line_vertical" modifier is not applied', () => {
-      test('the getter returns the result of the "$html.width" call', () => {
+    describe('line_vertical modifier is not applied', () => {
+      test('should return the result of the "$html.width" call', () => {
         const line = instantiateLine($body).entity;
         const htmlWidthSpy = jest.spyOn(line.$html, 'width');
 
+        jest.spyOn(line, 'hasMod').mockImplementation(() => false);
         // eslint-disable-next-line no-unused-expressions
         line.lengthPx;
 
-        expect(htmlWidthSpy).toHaveBeenCalledWith();
-        expect(htmlWidthSpy).toHaveBeenCalledTimes(1);
+        expect(htmlWidthSpy).toHaveBeenLastCalledWith();
       });
     });
 
-    describe('in case "line_vertical" modifier is applied', () => {
-      test('the getter returns the result of the "$html.height" call', () => {
+    describe('line_vertical modifier is applied', () => {
+      test('shuold return the result of the "$html.height" call', () => {
         const line = instantiateLine($body).entity;
         const htmlHeightSpy = jest.spyOn(line.$html, 'height');
 
-        line.applyMod('line_vertical');
-        htmlHeightSpy.mockClear();
+        jest.spyOn(line, 'hasMod').mockImplementation(() => true);
         // eslint-disable-next-line no-unused-expressions
         line.lengthPx;
 
-        expect(htmlHeightSpy).toHaveBeenCalledWith();
-        expect(htmlHeightSpy).toHaveBeenCalledTimes(1);
+        expect(htmlHeightSpy).toHaveBeenLastCalledWith();
       });
     });
   });
 
   describe('should expose thicknessPx getter for the instance', () => {
-    describe('in case "line_vertical" modifier is not applied', () => {
-      test('the getter returns the result of the "$html.height" call', () => {
+    describe('"line_vertical" modifier is not applied', () => {
+      test('should return the result of the "$html.height" call', () => {
         const line = instantiateLine($body).entity;
         const htmlHeightSpy = jest.spyOn(line.$html, 'height');
 
-        line.applyMod('line_vertical');
-        htmlHeightSpy.mockClear();
+        jest.spyOn(line, 'hasMod').mockImplementation(() => false);
         // eslint-disable-next-line no-unused-expressions
-        line.lengthPx;
+        line.thicknessPx;
 
-        expect(htmlHeightSpy).toHaveBeenCalledWith();
-        expect(htmlHeightSpy).toHaveBeenCalledTimes(1);
+        expect(htmlHeightSpy).toHaveBeenLastCalledWith();
       });
     });
 
-    describe('in case "line_vertical" modifier is applied', () => {
-      test('the getter returns the result of the "$html.width" call', () => {
+    describe('"line_vertical" modifier is applied', () => {
+      test('should return the result of the "$html.width" call', () => {
         const line = instantiateLine($body).entity;
         const htmlWidthSpy = jest.spyOn(line.$html, 'width');
 
+        jest.spyOn(line, 'hasMod').mockImplementation(() => true);
         // eslint-disable-next-line no-unused-expressions
-        line.lengthPx;
+        line.thicknessPx;
 
-        expect(htmlWidthSpy).toHaveBeenCalledWith();
-        expect(htmlWidthSpy).toHaveBeenCalledTimes(1);
+        expect(htmlWidthSpy).toHaveBeenLastCalledWith();
       });
     });
   });

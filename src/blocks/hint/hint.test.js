@@ -48,24 +48,30 @@ describe('Hint class', () => {
     });
   });
 
-  test('should expose "text" setter which assigns an arg to the instance "content.text" field', () => {
-    const hint = instantiateHint($body).entity;
-    const contentTextSpy = jest.spyOn(hint.content, 'text', 'set');
-    const testData = 'test-data';
+  describe('should expose "text" getter/setter', () => {
+    describe('setter', () => {
+      test('should assign an arg to the instance "content.text" field', () => {
+        const hint = instantiateHint($body).entity;
+        const contentTextSpy = jest.spyOn(hint.content, 'text', 'set');
+        const testData = 'test-data';
 
-    hint.text = testData;
+        hint.text = testData;
 
-    expect(contentTextSpy).toHaveBeenCalledWith(testData);
-  });
+        expect(contentTextSpy).toHaveBeenCalledWith(testData);
+      });
+    });
 
-  test('should expose "text" getter which returns the instance "content.text" prop', () => {
-    const hint = instantiateHint($body).entity;
-    const contentTextSpy = jest.spyOn(hint.content, 'text', 'get');
-    const testData = 'test-data';
+    describe('getter', () => {
+      test('should return the instance "content.text" value', () => {
+        const hint = instantiateHint($body).entity;
+        const contentTextSpy = jest.spyOn(hint.content, 'text', 'get');
+        const testData = 'test-data';
 
-    contentTextSpy.mockImplementation(() => testData);
+        contentTextSpy.mockImplementation(() => testData);
 
-    expect(hint.text).toBe(testData);
-    expect(contentTextSpy).toHaveBeenCalled();
+        expect(hint.text).toBe(testData);
+        expect(contentTextSpy).toHaveBeenCalled();
+      });
+    });
   });
 });

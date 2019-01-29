@@ -1,16 +1,29 @@
 const $ = require('jquery');
+const Track = require('../track').default;
 const TrackFiller = require('./track__filler').default;
+const testBemEntity = require('../../../../test/bem/entity');
+
+const {
+  instantiateEntity: instantiateTrack,
+  removeEntities: removeTracks
+} = testBemEntity({ Entity: Track });
 const {
   instantiateMixEntity: instantiateTrackFiller,
   testEntity: testTrackFiller
-} = require('../../../../test/bem/entity')({
+} = testBemEntity({
   Entity: TrackFiller,
   expected: {
     className: 'track__filler'
   }
 });
 
+const $body = $('body');
+
 describe('TrackFiller class', () => {
+  beforeEach(() => {
+    removeTracks();
+  });
+
   test('should extend Modifiable', () => {
     testTrackFiller.doesMixExtendModifiable();
   });
@@ -23,43 +36,42 @@ describe('TrackFiller class', () => {
     describe('setter', () => {
       describe('track__filler_vertical modifier is not applied', () => {
         test('should call the instance "$html.css" with ("margin-left", setterArg + "px")', () => {
-          const $html = $('<div></div>');
-          const trackFiller = instantiateTrackFiller({ $html }).entity;
-          const htmlCssSpy = jest.spyOn($html, 'css');
+          const track = instantiateTrack($body).entity;
+          const trackFiller = instantiateTrackFiller(track).entity;
+          const htmlCssSpy = jest.spyOn(track.$html, 'css');
 
           trackFiller.marginPx = 10;
-          expect(htmlCssSpy).toHaveBeenLastCalledWith('margin-left', '10px');
+          expect(htmlCssSpy).toHaveBeenCalledWith('margin-left', '10px');
 
           trackFiller.marginPx = 0;
-          expect(htmlCssSpy).toHaveBeenLastCalledWith('margin-left', '0px');
+          expect(htmlCssSpy).toHaveBeenCalledWith('margin-left', '0px');
         });
       });
 
       describe('track__filler_vertical modifier is applied', () => {
         test('should call the instance "$html.css" with ("margin-top", setterArg + "px")', () => {
-          const $html = $('<div></div>');
-          const trackFiller = instantiateTrackFiller({ $html }).entity;
-          const htmlCssSpy = jest.spyOn($html, 'css');
+          const track = instantiateTrack($body).entity;
+          const trackFiller = instantiateTrackFiller(track).entity;
+          const htmlCssSpy = jest.spyOn(track.$html, 'css');
 
           jest.spyOn(trackFiller, 'hasMod')
             .mockImplementation(() => true);
 
           trackFiller.marginPx = 10;
-          expect(htmlCssSpy).toHaveBeenLastCalledWith('margin-top', '10px');
+          expect(htmlCssSpy).toHaveBeenCalledWith('margin-top', '10px');
 
           trackFiller.marginPx = -5;
-          expect(htmlCssSpy).toHaveBeenLastCalledWith('margin-top', '-5px');
+          expect(htmlCssSpy).toHaveBeenCalledWith('margin-top', '-5px');
         });
       });
     });
   });
 
   describe('getter', () => {
-    test('shuold return previously set value (default if none was set)', () => {
+    test('should return previously set value (default if none was set)', () => {
       const def = 0;
-      const trackFiller = instantiateTrackFiller({
-        $html: $('<div></div>')
-      }).entity;
+      const track = instantiateTrack($body).entity;
+      const trackFiller = instantiateTrackFiller(track).entity;
 
       expect(trackFiller.marginPx).toBe(def);
 

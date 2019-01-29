@@ -61,24 +61,30 @@ describe('Circle class', () => {
     });
   });
 
-  test('should expose "hintText" setter which assigns an arg to the instance "hint.hint.text" field', () => {
-    const circle = instantiateCircle($body).entity;
-    const hintTextSpy = jest.spyOn(circle.hint.hint, 'text', 'set');
-    const testData = 'test-data';
+  describe('should expose "hintText" getter/setter', () => {
+    describe('setter', () => {
+      test('should assign an arg to the instance "hint.hint.text" field', () => {
+        const circle = instantiateCircle($body).entity;
+        const hintTextSpy = jest.spyOn(circle.hint.hint, 'text', 'set');
+        const testData = 'test-data';
 
-    circle.hintText = testData;
+        circle.hintText = testData;
 
-    expect(hintTextSpy).toHaveBeenCalledWith(testData);
-  });
+        expect(hintTextSpy).toHaveBeenCalledWith(testData);
+      });
+    });
 
-  test('should expose "hintText" getter which returns the instance "hint.hint.text" prop', () => {
-    const circle = instantiateCircle($body).entity;
-    const hintTextSpy = jest.spyOn(circle.hint.hint, 'text', 'get');
-    const testData = 'test-data';
+    describe('getter', () => {
+      test('should return the instance "hint.hint.text" value', () => {
+        const circle = instantiateCircle($body).entity;
+        const hintTextSpy = jest.spyOn(circle.hint.hint, 'text', 'get');
+        const testData = 'test-data';
 
-    hintTextSpy.mockImplementation(() => testData);
+        hintTextSpy.mockImplementation(() => testData);
 
-    expect(circle.hintText).toBe(testData);
-    expect(hintTextSpy).toHaveBeenCalled();
+        expect(circle.hintText).toBe(testData);
+        expect(hintTextSpy).toHaveBeenCalled();
+      });
+    });
   });
 });

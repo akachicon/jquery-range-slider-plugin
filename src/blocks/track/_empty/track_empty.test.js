@@ -1,4 +1,3 @@
-const $ = require('jquery');
 const Track = require('../track').default;
 const trackEmpty = require('./track_empty').default;
 const {
