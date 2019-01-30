@@ -19,17 +19,37 @@ export default class RangeSlider extends Modifiable {
     const track = createEntity({ Entity: Track, $parent: $html });
     const thumbs = {};
 
+    const singleThumbPortion = (fraction) => {
+      if (this.hasMod('range-slider_range_multiple')) {
+        return;
+      }
+      track.fillEndPortion = fraction;
+    };
+    const rangeFirstThumbPortion = (fraction) => {
+      if (!this.hasMod('range-slider_range_multiple')) {
+        return;
+      }
+      track.fillStartPortion = fraction;
+    };
+    const rangeSecondThumbPortion = (fraction) => {
+      if (!this.hasMod('range-slider_range_multiple')) {
+        return;
+      }
+      track.fillEndPortion = fraction;
+    };
+
     [
-      'single',
-      'rangeFirst',
-      'rangeSecond'
-    ].forEach((name) => {
-      thumbs[name] = this.genThumb({
-        name,
+      ['single', singleThumbPortion],
+      ['rangeFirst', rangeFirstThumbPortion],
+      ['rangeSecond', rangeSecondThumbPortion]
+    ].forEach(([name, portionCallback]) => {
+      thumbs[name] = RangeSlider.genThumb({
         track,
+        portionCallback,
         $parent: $html
       });
     });
+
     track.applyMod('track_empty');
     thumbs.rangeFirst.rangeSliderThumb.applyMod('range-slider__thumb_hidden');
     thumbs.rangeSecond.rangeSliderThumb.applyMod('range-slider__thumb_hidden');
@@ -40,62 +60,14 @@ export default class RangeSlider extends Modifiable {
     setHtml($html);
   }
 
-  genThumb({ name, track, $parent }) {
-    const circle = createEntity({ Entity: Circle, $parent });
-    const that = this;
-
-    circle.applyMod('circle_color_53b6a8');
-    circle.hint.hint.applyMod('hint_color_53b6a8');
-
-    return {
-      circle,
-      rangeSliderThumb: addMix({
-        Mix: RangeSliderThumb,
-        entity: circle
-      }),
-      _portion: null,
-
-      syncPortion() {
-        this.portion = this._portion;
-      },
-
-      set portion(fraction) {
-        let singleMode = true;
-
-        if (that.hasMod('range-slider_range_multiple')) {
-          singleMode = false;
-        }
-
-        /* eslint-disable no-param-reassign */
-        if (singleMode) {
-          if (name === 'single') {
-            track.fillEndPortion = fraction;
-          }
-        } else {
-          if (name === 'rangeFirst') {
-            track.fillStartPortion = fraction;
-          }
-          if (name === 'rangeSecond') {
-            track.fillEndPortion = fraction;
-          }
-        }
-        /* eslint-enable no-param-reassign */
-
-        this.rangeSliderThumb.marginPx = track.distancePx * fraction;
-        this._portion = fraction;
-      },
-
-      get portion() {
-        return this._portion;
-      }
-    };
-  }
-
   didMount() {
     this._width = this.$html.width();
     this._heighgt = this.$html.height();
 
-    this._onResizeInterval = setInterval(this._onResize.bind(this), RESIZE_CHECK_INTERVAL);
+    this._onResizeInterval = setInterval(
+      this._onResize.bind(this),
+      RESIZE_CHECK_INTERVAL
+    );
   }
 
   destroy() {
@@ -115,6 +87,37 @@ export default class RangeSlider extends Modifiable {
       this._width = currentWidth;
       this._height = currentHeight;
     }
+  }
+
+  static genThumb({ track, portionCallback, $parent }) {
+    const circle = createEntity({ Entity: Circle, $parent });
+
+    circle.applyMod('circle_color_53b6a8');
+    circle.hint.hint.applyMod('hint_color_53b6a8');
+
+    return {
+      circle,
+      rangeSliderThumb: addMix({
+        Mix: RangeSliderThumb,
+        entity: circle
+      }),
+      _portion: null,
+
+      set portion(fraction) {
+        portionCallback(fraction);
+
+        this.rangeSliderThumb.marginPx = track.distancePx * fraction;
+        this._portion = fraction;
+      },
+
+      get portion() {
+        return this._portion;
+      },
+
+      syncPortion() {
+        this.portion = this._portion;
+      }
+    };
   }
 }
 
