@@ -385,4 +385,41 @@ describe('RangeSlider class', () => {
       });
     });
   });
+
+  describe('should expose "didMount" method', () => {
+    describe('the method should set an interval', () => {
+      describe('the interval should call "syncPortion" on each object from the instance "thumbs"', () => {
+        test('if calling the instance "$html.width" or "$html.height" returns a value different from the previous one', () => {
+          const rangeSlider = instantiateRangeSlider($body).entity;
+
+          jest.useFakeTimers();
+          rangeSlider.didMount();
+
+          const widthMock = jest.spyOn(rangeSlider.$html, 'width');
+          const heightMock = jest.spyOn(rangeSlider.$html, 'height');
+
+          const syncPortionSpies = Object.values(rangeSlider.thumbs)
+            .map(thumb => jest.spyOn(thumb, 'syncPortion'));
+
+          widthMock.mockImplementation(() => 15);
+          jest.runOnlyPendingTimers();
+
+          syncPortionSpies.forEach((spy) => {
+            expect(spy).toHaveBeenCalled();
+          });
+
+          syncPortionSpies.forEach((spy) => {
+            spy.mockClear();
+          });
+
+          heightMock.mockImplementation(() => 21);
+          jest.runOnlyPendingTimers();
+
+          syncPortionSpies.forEach((spy) => {
+            expect(spy).toHaveBeenCalled();
+          });
+        });
+      });
+    });
+  });
 });

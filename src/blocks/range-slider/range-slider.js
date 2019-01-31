@@ -11,6 +11,8 @@ import './range-slider.scss';
 
 const RESIZE_CHECK_INTERVAL = 500;
 
+
+
 export default class RangeSlider extends Modifiable {
   constructor(setHtml) {
     super();
