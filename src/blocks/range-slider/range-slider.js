@@ -50,7 +50,6 @@ export default class RangeSlider extends Modifiable {
       });
     });
 
-    track.applyMod('track_empty');
     thumbs.rangeFirst.rangeSliderThumb.applyMod('range-slider__thumb_hidden');
     thumbs.rangeSecond.rangeSliderThumb.applyMod('range-slider__thumb_hidden');
 

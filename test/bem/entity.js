@@ -2,6 +2,10 @@
 
 const $ = require('jquery');
 const bem = require('../../src/bem');
+const {
+  mockBemToTrackCalls,
+  bemMockRestore
+} = require('./index');
 
 /**
  * @param {Object} entityConfig
@@ -18,34 +22,15 @@ module.exports = (entityConfig) => {
   let mountedEntities = [];
 
   const instantiateEntity = ($parent) => {
+    const {
+      createEntityCalls,
+      addMixCalls
+    } = mockBemToTrackCalls();
     const { Entity } = entityConfig;
     const setHtml = jest.fn();
-
-    // When retrieve mock.calls and mock.results they both contain
-    // data in chronological order (which might not be the same).
-    // So we need a way to match call args with their corresponding results.
-
-    const upgradeBemMethodToTrackCalls = (method) => {
-      const callStore = [];
-
-      bem[method].mockImplementation((...args) => {
-        // Cause jest.requireActual does not work here the origin is used
-        const result = bem.__test__.origin[method](...args);
-
-        callStore.push({
-          args,
-          result
-        });
-
-        return result;
-      });
-
-      return callStore;
-    };
-
-    const createEntityCalls = upgradeBemMethodToTrackCalls('createEntity');
-    const addMixCalls = upgradeBemMethodToTrackCalls('addMix');
     const entity = new Entity(setHtml);
+
+    bemMockRestore();
 
     // It executes some part of the bem contract
     // but does not test the bem behaviour

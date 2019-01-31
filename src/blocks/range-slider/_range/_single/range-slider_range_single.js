@@ -7,11 +7,8 @@ export default {
     rangeFirst.rangeSliderThumb.applyMod('range-slider__thumb_hidden');
     rangeSecond.rangeSliderThumb.applyMod('range-slider__thumb_hidden');
 
-    track.removeMod('track_empty');
     track.fillStartPortion = null;
     track.fillEndPortion = thumbs.single.portion;
   },
-  remove() {
-    this.track.applyMod('track_empty');
-  }
+  remove() {}
 };

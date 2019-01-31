@@ -1,8 +1,9 @@
 const $ = require('jquery');
 const RangeSlider = require('./range-slider').default;
-const RangeSliderThumb = require('./__thumb/range-slider__thumb');
+const RangeSliderThumb = require('./__thumb/range-slider__thumb').default;
 const Track = require('../track/track').default;
 const Circle = require('../circle/circle').default;
+
 const {
   instantiateEntity: instantiateRangeSlider,
   removeEntities: removeRangeSliders,
@@ -14,6 +15,15 @@ const {
     className: 'range-slider'
   }
 });
+const {
+  instantiateEntity: instantiateTrack,
+} = require('../../../test/bem/entity')({
+  Entity: Track,
+});
+const {
+  mockBemToTrackCalls,
+  bemMockRestore
+} = require('../../../test/bem');
 
 const $body = $('body');
 
@@ -195,6 +205,183 @@ describe('RangeSlider class', () => {
             });
           });
         });
+      });
+    });
+  });
+
+  test('should apply range-slider__thumb_hidden modifier to the instance "thumbs.rangeFirst.rangeSliderThumb" entity', () => {
+    const rangeSlider = instantiateRangeSlider($body).entity;
+
+    testRangeSlider.hasModBeenApplied({
+      mod: 'range-slider__thumb_hidden',
+      to: rangeSlider.thumbs.rangeFirst.rangeSliderThumb
+    });
+  });
+
+  test('should apply range-slider__thumb_hidden modifier to the instance "thumbs.rangeSecond.rangeSliderThumb" entity', () => {
+    const rangeSlider = instantiateRangeSlider($body).entity;
+
+    testRangeSlider.hasModBeenApplied({
+      mod: 'range-slider__thumb_hidden',
+      to: rangeSlider.thumbs.rangeSecond.rangeSliderThumb
+    });
+  });
+
+  describe('should expose "genThumb" static method which returns an object containing the fields', () => {
+    const track = instantiateTrack($body).entity;
+    const $parent = $body;
+    const portionCallback = jest.fn();
+
+    const {
+      createEntityCalls,
+      addMixCalls
+    } = mockBemToTrackCalls();
+
+    const thumb = RangeSlider.genThumb({
+      track,
+      $parent,
+      portionCallback
+    });
+
+    bemMockRestore();
+
+    describe('"circle"', () => {
+      describe('should be created via the bem "createEntity" method', () => {
+        test('', () => {
+          expect(createEntityCalls.map(call => call.result))
+            .toContain(thumb.circle);
+        });
+
+        test('called with an arg having "Entity" field populated with Circle class', () => {
+          const [testedCall] = createEntityCalls
+            .filter(call => call.result === thumb.circle);
+
+          expect(testedCall.args[0].Entity).toBe(Circle);
+        });
+
+        test('called with an arg having "$parent" field populated with the method corresponding arg field', () => {
+          const [testedCall] = createEntityCalls
+            .filter(call => call.result === thumb.circle);
+
+          expect(testedCall.args[0].$parent).toBe($parent);
+        });
+      });
+
+      test('should have applied circle_color_53b6a8 modifier', () => {
+        testRangeSlider.hasModBeenApplied({
+          mod: 'circle_color_53b6a8',
+          to: thumb.circle
+        });
+      });
+
+      test('should have applied hint_color_53b6a8 modifier for its "hint.hint" property', () => {
+        testRangeSlider.hasModBeenApplied({
+          mod: 'hint_color_53b6a8',
+          to: thumb.circle.hint.hint
+        });
+      });
+    });
+
+    describe('"rangeSliderThumb"', () => {
+      describe('should be created via the bem "addMix" method', () => {
+        test('', () => {
+          expect(addMixCalls.map(call => call.result))
+            .toContain(thumb.rangeSliderThumb);
+        });
+
+        test('called with an arg having "Mix" field populated with RangeSliderThumb class', () => {
+          const [testedCall] = addMixCalls
+            .filter(call => call.result === thumb.rangeSliderThumb);
+
+          expect(testedCall.args[0].Mix).toBe(RangeSliderThumb);
+        });
+
+        test('called with an arg having "entity" field populated with the value of the object "circle" field', () => {
+          const [testedCall] = addMixCalls
+            .filter(call => call.result === thumb.rangeSliderThumb);
+
+          expect(testedCall.args[0].entity).toBe(thumb.circle);
+        });
+      });
+    });
+
+    describe('"portion"', () => {
+      describe('setter', () => {
+        test('should call the arg "portionCallback" function with a passed argument', () => {
+          portionCallback.mockClear();
+
+          thumb.portion = 9.44;
+          expect(portionCallback).toHaveBeenLastCalledWith(9.44);
+        });
+
+        test('should assign a product of a passed argument and the arg "track.distancePx" to the object "rangeSliderThumb.marginPx"', () => {
+          const distancePxSpy = jest.spyOn(
+            track,
+            'distancePx',
+            'get'
+          );
+          const marginPxSpy = jest.spyOn(
+            thumb.rangeSliderThumb,
+            'marginPx',
+            'set'
+          );
+
+          distancePxSpy.mockImplementation(() => 0.5);
+          thumb.portion = 0.821;
+
+          expect(marginPxSpy).toHaveBeenLastCalledWith(0.821 * 0.5);
+
+          distancePxSpy.mockRestore();
+          marginPxSpy.mockRestore();
+        });
+      });
+
+      describe('getter', () => {
+        test('should return previously set value or the default of null', () => {
+          const freshThumb = RangeSlider.genThumb({
+            track,
+            $parent,
+            portionCallback
+          });
+
+          expect(freshThumb.portion).toBe(null);
+
+          freshThumb.portion = 0.6;
+          expect(freshThumb.portion).toBe(0.6);
+
+          freshThumb.portion = 0.1;
+          expect(freshThumb.portion).toBe(0.1);
+        });
+      });
+    });
+
+    describe('"syncPortion"', () => {
+      test('should be a function which assigns previously set "portion" value to the object "portion" field', () => {
+        const freshThumb = RangeSlider.genThumb({
+          track,
+          $parent,
+          portionCallback
+        });
+        const portionSpy = jest.spyOn(
+          freshThumb,
+          'portion',
+          'set'
+        );
+
+        freshThumb.syncPortion();
+        expect(portionSpy).toHaveBeenLastCalledWith(null);
+
+        freshThumb.portion = 0.7;
+        portionSpy.mockClear();
+        freshThumb.syncPortion();
+
+        expect(portionSpy).toHaveBeenLastCalledWith(0.7);
+
+        freshThumb.portion = 0.911;
+        portionSpy.mockClear();
+        freshThumb.syncPortion();
+
+        expect(portionSpy).toHaveBeenLastCalledWith(0.911);
       });
     });
   });

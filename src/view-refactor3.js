@@ -42,7 +42,7 @@ export default class View extends AbstractView {
       this._trackOnMouseClick.bind(this)
     );
 
-    this._rangeSlider = rangeSlider;
+    this._rangeSlider = rangeSlider; // TODO: make public
     this._activeThumb = null;
     this._onUpdate(initialState);
   }
@@ -227,11 +227,13 @@ export default class View extends AbstractView {
     const rangeSlider = this._rangeSlider;
 
     if (shouldBeInterval) {
+      rangeSlider.removeMod('range-slider_range_single');
       rangeSlider.applyMod('range-slider_range_multiple');
 
       return;
     }
     rangeSlider.removeMod('range-slider_range_multiple');
+    rangeSlider.applyMod('range-slider_range_single');
   }
 
   _publishUpdate(data) {
