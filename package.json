@@ -2,7 +2,7 @@
   "name": "wp-react-boilerplate",
   "version": "1.0.0",
   "description": "",
-  "browserslist": "Chrome 59",
+  "browserslist": "Chrome > 5, Firefox > 5, Edge > 5",
   "main": "dist/index.js",
   "scripts": {
     "build:prod": "cross-env NODE_ENV=production webpack --config \"./webpack-config/webpack.config.prod.js\"",
@@ -56,10 +56,8 @@
     "webpack-merge": "^4.1.4"
   },
   "dependencies": {
-    "@babel/runtime": "^7.1.2",
-    "core-js": "^2.5.7",
+    "@babel/runtime-corejs2": "^7.3.1",
     "deep-copy": "^1.4.2",
-    "lodash.throttle": "^4.1.1",
-    "regenerator-runtime": "^0.12.1"
+    "lodash.throttle": "^4.1.1"
   }
 }

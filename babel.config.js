@@ -10,7 +10,8 @@ module.exports = (api) => {
       [
         '@babel/plugin-transform-runtime',
         {
-          regenerator: false,
+          corejs: 2,
+          regenerator: false, // this project currently does not use any async syntax or built-ins
           useESModules: !__TEST__
         }
       ]
@@ -19,10 +20,10 @@ module.exports = (api) => {
       [
         '@babel/preset-env',
         {
+          loose: true,
           modules: __TEST__ ? 'commonjs' : false,
-          useBuiltIns: 'usage',
+          useBuiltIns: false,
           debug: !__TEST__
-          // forceAllTransforms: __PROD__  // in case of using UglifyJS
         }
       ]
     ]

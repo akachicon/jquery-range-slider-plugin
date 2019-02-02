@@ -11,8 +11,6 @@ import './range-slider.scss';
 
 const RESIZE_CHECK_INTERVAL = 500;
 
-
-
 export default class RangeSlider extends Modifiable {
   constructor(setHtml) {
     super();
@@ -63,7 +61,7 @@ export default class RangeSlider extends Modifiable {
 
   didMount() {
     this._width = this.$html.width();
-    this._heighgt = this.$html.height();
+    this._height = this.$html.height();
 
     this._onResizeInterval = setInterval(
       this._onResize.bind(this),
